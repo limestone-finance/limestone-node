@@ -1,0 +1,17 @@
+{
+  "name": "limestone-node",
+  "version": "1.0.0",
+  "description": "A data provider module that fetches price information and serves it to end users. ",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "arql-ops": "^1.0.0",
+    "arweave": "^1.10.11",
+    "coinbase": "^2.0.8",
+    "coingecko-api": "^1.0.10",
+    "console-stamp": "^0.2.9",
+    "exchange-rates-api": "^1.0.2",
+    "isomorphic-fetch": "^3.0.0",
+    "moment": "^2.29.1"
+  }
+}
