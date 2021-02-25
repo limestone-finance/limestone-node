@@ -11,12 +11,6 @@ const fetchers = {
 
 const keeper = require('./keepers/basic-keeper');
 
-
-
-const MINING_INTERVAL = 300; //In seconds
-
-var lastMinedTimes = {};
-
 var config;
 
 async function uploadData(config) {
@@ -62,7 +56,6 @@ async function uploadData(config) {
   // }
 }
 
-
 async function process(token) {
 
   //TODO: Iterate across all the sources
@@ -82,21 +75,59 @@ async function process(token) {
   await keeper.keep(token.symbol, source, price);
 }
 
+async function fetchAll(tokens) {
+  // Grouping tokens by source
+  const sources = {};
+  for (const token of tokens) {
+    for (const source of token.source) { // token.source is an array
+      if (!sources[source]) {
+        sources[source] = [token.symbol];
+      } else {
+        sources[source].push(token.symbol);
+      }
+    }
+  }
+
+  // Fetching token prices and merging them into a single array
+  let result = [];
+  for (const source in sources) {
+    // TODO: implement support for other sources
+    // Currently only coingecko works correctly with fetchAll function
+    let pricesFromSource = await fetchers[source].fetchAll(sources[source]);
+
+    // Adding source to each fetched price
+    pricesFromSource = pricesFromSource.map(p => {
+      return { ...p, source };
+    });
+
+    result = result.concat(pricesFromSource);
+  }
+
+  return result;
+}
+
 async function processAll() {
   console.log("Processing tokens");
-  config.tokens.forEach(process);
 
+  const pricesFetched = await fetchAll(config.tokens);
 
-  setTimeout(processAll, config.interval);
+  for (const price of pricesFetched) {
+    // TODO implement keeping on Arweave blockchain
+    // await keeper.keep(price.symbol, price.source, price.price);
+
+    console.log(`Fetched price: ${price.symbol} : ${price.price}`);
+    console.log("Keeping on arweave blockchain [skipped]");
+  }
 }
 
 async function run(_config) {
   config = _config;
   console.log("Running limestone-node with config:");
-  console.log(config);
-  await processAll();
+  console.log(JSON.stringify(config));
+  
+  processAll(); // Start immediately then repeat in config.interval
+  setInterval(processAll, config.interval);
 }
 
 //EXPORTS:
 module.exports.run = run;
-
