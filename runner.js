@@ -3,7 +3,7 @@ require('console-stamp')(console, '[HH:MM:ss.l]');
 
 //TODO: consider moving to fetcher folder and create a lookup module there
 const fetchers = {
-  coingecko: require("./fetchers/coingecko-fetcher.js"),
+  coingecko: require("./fetchers/coingecko"),
   uniswap: require("./fetchers/uniswap-fetcher.js"),
   coinbase: require("./fetchers/coinbase-fetcher.js"),
   ecb: require("./fetchers/european-central-bank-fetcher.js")
@@ -94,6 +94,7 @@ async function fetchAll(tokens) {
     // TODO: implement support for other sources
     // Currently only coingecko works correctly with fetchAll function
     let pricesFromSource = await fetchers[source].fetchAll(sources[source]);
+    console.log(`Fetched USD prices for ${pricesFromSource.length} currencies from ${source}`);
 
     // Adding source to each fetched price
     pricesFromSource = pricesFromSource.map(p => {
