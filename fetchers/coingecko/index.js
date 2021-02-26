@@ -30,8 +30,6 @@ async function fetchAll(tokenSymbols) {
   });
 }
 
-//EXPORTS:
-
 module.exports = {
   fetch,
   fetchAll,

@@ -25,4 +25,3 @@ async function fetchLatest(tokenName) {
 //EXPORTS:
 module.exports.fetchBundle = fetchBundle;
 module.exports.fetchLatest = fetchLatest;
-
