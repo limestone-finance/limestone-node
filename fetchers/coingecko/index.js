@@ -16,18 +16,17 @@ async function fetch(symbol) {
 
 async function fetchAll(tokenSymbols) {
   const ids = tokenSymbols.map((symbol) => symbolToId[symbol]);
-  const response = await CoinGeckoClient.coins.markets({
-    ids,
-    per_page: 1000,
-    localization: false,
-  });
-  
-  return response.data.map(coin => {
-    return {
-      symbol: coin.symbol,
-      price: coin.current_price,
-    };
-  });
+  const response = await CoinGeckoClient.simple.price({ ids });
+  const prices = [];
+
+  for (const symbol in response.data) {
+    prices.push({
+      symbol,
+      price: response.data[symbol].usd,
+    });
+  }
+
+  return prices;
 }
 
 module.exports = {

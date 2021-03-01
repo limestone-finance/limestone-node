@@ -7,5 +7,3 @@ let configFileName = process.argv[2];
 
 let config = JSON.parse(fs.readFileSync(configFileName, 'utf-8'));
 runner.run(config);
-
-
