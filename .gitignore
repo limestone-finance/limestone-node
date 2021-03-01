@@ -6,3 +6,4 @@ node_modules/
 
 # Custom files and folders
 .experiments
+.secrets*
