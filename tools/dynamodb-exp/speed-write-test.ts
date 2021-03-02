@@ -52,7 +52,6 @@ async function uploadTokenPricesToDB(pricesCount: number): Promise<void> {
   const promises = [];
 
   for (const batch of batches) {
-    // TODO maybe add error handling for each write promise here
     promises.push(uploadPricesBatch(batch));
   }
 
@@ -86,7 +85,6 @@ async function uploadPricesBatch(batch: PriceData[]): Promise<void> {
   const data = await client.send(command);
 
   console.log("Batch uploaded");
-  // console.log(data); // TODO comment
 }
 
 function generatePricesData(pricesCount: number): PriceData[] {
