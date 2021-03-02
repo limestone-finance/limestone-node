@@ -1,0 +1,19 @@
+=== Links ===
+- DynamoDB basics: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.CoreComponents.html
+- Three fields for Primary Key: https://stackoverflow.com/questions/32620215/3-fields-composite-primary-key-unique-item-in-dynamodb
+- Best practices for time-series data in DynamoDB: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-time-series.html
+- AWS Lambda with DynamoDB: https://docs.aws.amazon.com/lambda/latest/dg/with-ddb.html
+- Amazon Api Gateway with DynamoDB: https://aws.amazon.com/blogs/compute/using-amazon-api-gateway-as-a-proxy-for-dynamodb/
+
+=== Proposed structure for prices table ===
+- Primary key consists of two attributes:
+    - Token: String (token symbol) <- token will be a partition key. It means that data for different tokens will be stored in different partitions 
+    - Source#Time: String <- Source should be forst for being able to filter by source. Time should be also included in primary key for being able to sort by time
+- Other attributes:
+    - Price: Number (median of prices from different providers)
+    - Type: String (for example: "data-latest")
+    - Version: String (for example: "0.005")
+    - Prices: String (JSON with prices from different sources)
+
+=== Thoughts ===
+- We can use AWS lambda as a DB trigger to automate "latest" price item update

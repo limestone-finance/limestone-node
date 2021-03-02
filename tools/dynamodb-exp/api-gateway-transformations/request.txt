@@ -1,0 +1,19 @@
+#set($token = $input.params().querystring.get('token'))
+#set($source = $input.params().querystring.get('source'))
+{
+    "TableName": "prices",
+    "KeyConditionExpression": "#T = :token and begins_with(TimeSource, :source)",
+    "ScanIndexForward": "false",
+    "ExpressionAttributeNames": {
+      "#T": "Token"
+    },
+    "ExpressionAttributeValues": {
+      ":token": {
+        "S": "$token"
+      },
+      ":source": {
+        "S": "$source"
+      }
+    },
+    "Limit": 1
+}

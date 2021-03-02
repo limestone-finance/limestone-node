@@ -1,0 +1,6 @@
+#set($inputRoot = $input.path('$'))
+{
+    "price": "$inputRoot.Items[0].Price.N",
+    "symbol": "$inputRoot.Items[0].Token.S",
+    "time": "$inputRoot.Items[0].TimeSource.S"
+}
