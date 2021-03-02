@@ -1,17 +1,11 @@
+import consoleStamp from "console-stamp";
+import fetchers from "./fetchers";
+import keeper from "./keepers/basic-keeper";
+
 //Format logs
-require('console-stamp')(console, '[HH:MM:ss.l]');
+consoleStamp(console, { pattern: "[HH:MM:ss.l]" });
 
-//TODO: consider moving to fetcher folder and create a lookup module there
-const fetchers = {
-  coingecko: require("./fetchers/coingecko"),
-  uniswap: require("./fetchers/uniswap-fetcher.js"),
-  coinbase: require("./fetchers/coinbase-fetcher.js"),
-  ecb: require("./fetchers/european-central-bank-fetcher.js")
-};
-
-const keeper = require('./keepers/basic-keeper');
-
-var config;
+let config: any;
 
 async function uploadData(config) {
   // let fetchingConfig = await connector.getData(config.tx);
@@ -125,10 +119,11 @@ async function run(_config) {
   config = _config;
   console.log("Running limestone-node with config:");
   console.log(JSON.stringify(config));
-  
+
   processAll(); // Start immediately then repeat in config.interval
   setInterval(processAll, config.interval);
 }
 
-//EXPORTS:
-module.exports.run = run;
+export default {
+  run,
+};

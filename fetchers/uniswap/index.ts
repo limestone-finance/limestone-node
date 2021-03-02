@@ -1,5 +1,6 @@
+import fetchFromGraph from "isomorphic-fetch";
+
 const UNISWAP_SUBGRAPH = "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2";
-const fetchFromGraph = require('isomorphic-fetch');
 
 const UNISWAP_PAIRS = {
   chi: "0xa6f3ef841d371a82ca757fad08efc0dee2f1f5e2",
@@ -27,11 +28,11 @@ async function fetchBundle(tokenName, days) {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
-  body: JSON.stringify({
+    body: JSON.stringify({
       query,
     }),
   });
-  //
+
   let data = (await response.json()).data.pairHourDatas;
   let parsed = data.map(item => {
     let price = parseFloat(item.reserveUSD)/2/parseFloat(item.reserve0);
@@ -71,6 +72,7 @@ async function fetchLatest(tokenName) {
   return parseFloat(data[0].reserveUSD)/2/parseFloat(data[0].reserve0);
 }
 
-//EXPORTS:
-module.exports.fetchBundle = fetchBundle;
-module.exports.fetchLatest = fetchLatest;
+export default {
+  fetchBundle,
+  fetchLatest,
+}
