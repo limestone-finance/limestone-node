@@ -85,8 +85,6 @@ async function fetchAll(tokens) {
   // Fetching token prices and merging them into a single array
   let result = [];
   for (const source in sources) {
-    // TODO: implement support for other sources
-    // Currently only coingecko works correctly with fetchAll function
     let pricesFromSource = await fetchers[source].fetchAll(sources[source]);
     console.log(`Fetched USD prices for ${pricesFromSource.length} currencies from ${source}`);
 

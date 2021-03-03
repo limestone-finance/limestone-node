@@ -7,10 +7,12 @@ const CoinGeckoClient = new CoinGecko();
 
 async function fetchAll(tokenSymbols: string[]): Promise<PriceData[]> {
   // Converting array of symbols to array of ids
-  const ids = [];
+  const ids = [], idToSymbol = {};
   for (const symbol of tokenSymbols) {
-    if (symbolToId[symbol] !== undefined) {
+    const id = symbolToId[symbol];
+    if (id !== undefined) {
       ids.push(symbolToId[symbol]);
+      idToSymbol[id] = symbol;
     } else {
       console.warn(
         colors.bold.bgYellow(`Coingecko doesn't support token: ${symbol}`));
@@ -22,10 +24,10 @@ async function fetchAll(tokenSymbols: string[]): Promise<PriceData[]> {
 
   // Building prices array
   const prices = [];
-  for (const symbol in response.data) {
+  for (const id in response.data) {
     prices.push({
-      symbol,
-      price: response.data[symbol].usd,
+      symbol: idToSymbol[id],
+      price: response.data[id].usd,
     });
   }
 
