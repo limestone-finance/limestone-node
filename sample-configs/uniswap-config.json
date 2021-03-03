@@ -1,0 +1,6 @@
+{
+  "interval": 5000,
+  "tokens": [
+    { "symbol": "uni", "source": ["uniswap"] }
+  ]
+}

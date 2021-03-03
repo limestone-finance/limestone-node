@@ -1,42 +1,48 @@
-import CoinGecko from "coingecko-api";
 import Coinbase from "coinbase";
-
-const CoinGeckoClient = new CoinGecko();
+import colors from "colors";
+import { PriceData } from "../types";
 
 const CoinbaseClient = Coinbase.Client;
-const coinbaseClient = new CoinbaseClient({
-  'apiKey': 'KEY',
-  'apiSecret': 'SECRET',
-  strictSSL: false
-});
-
-const symbolsMapping = {
-  "kyber-network": "KNC",
-  "maker": "MKR",
-  "loopring": "LRC"
+const coinbaseConfig: any = {
+  "apiKey": "KEY",
+  "apiSecret": "SECRET",
+  "strictSSL": false,
 };
+const coinbaseClient = new CoinbaseClient(coinbaseConfig);
 
-// TODO: Hmm, why coinbase fetcher contains coingecko api request
-async function fetchBundle(tokenName, days) {
-  console.log("Fetching: " + tokenName + " days: " + days);
-  let response = await CoinGeckoClient.coins.fetchMarketChart(tokenName, {days: days});
-  return response.data.prices;
-};
-
-async function fetchLatest(tokenName) {
-  console.log("Fetching: " + tokenName + " latest price");
-  return new Promise((resolve, reject) => {
-    coinbaseClient.getSpotPrice({'currencyPair': symbolsMapping[tokenName] + '-USD'}, function (err, response) {
+async function fetchAll(tokenSymbols: string[]): Promise<PriceData[]> {
+  // Fetching prices
+  const currencies: any = await new Promise((resolve, reject) => {
+    coinbaseClient.getExchangeRates({
+      "currency": "USD",
+    }, (err, response) => {
       if (err) {
-        console.log("Error");
-        console.log(err);
+        reject(err);
+      } else {
+        resolve(response.data);
       }
-      return response.data.amount;
     });
   });
+
+  // Building prices array
+  const prices = [];
+  for (const symbol of tokenSymbols) {
+    const rates = currencies.rates;
+    const price = rates[symbol];
+    if (price !== undefined) {
+      prices.push({
+        symbol,
+        price: 1 / price,
+      });
+    } else {
+      console.warn(
+        colors.bold.bgYellow(`Coingecko doesn't support token: ${symbol}`));
+    }
+  }
+
+  return prices;
 }
 
 export default {
-  fetchBundle,
-  fetchLatest,
+  fetchAll,
 };
