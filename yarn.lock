@@ -2,12 +2,22 @@
 # yarn lockfile v1
 
 
+"@types/coinbase@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@types/coinbase/-/coinbase-2.0.5.tgz#47c9ac019a3a3ad3f5492a2ff6ad0e1fd95dccf3"
+  integrity sha512-qk6YQTvxrJuT2+9h+U8ZwjgdXQIx2QYNXM/eWeP80nSJKFmYM1TiDK940kSL2oflo+mlPqlNEPo2GIa8NUMgDA==
+
 "@types/console-stamp@^0.2.33":
   version "0.2.33"
   resolved "https://registry.yarnpkg.com/@types/console-stamp/-/console-stamp-0.2.33.tgz#c64ffead303b32d503b35357d9bb786fa4ec7161"
   integrity sha512-ISAh9MXEnmW8eP6C0ItiMJX/cqqgUfom9W8XUwk9Ze51PRA01a9J3daWAUL1wDIVDovi7nD/AC6Efj2nJH6JdA==
   dependencies:
     "@types/node" "*"
+
+"@types/exchange-rates-api@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/exchange-rates-api/-/exchange-rates-api-1.0.0.tgz#9ce649b4faf87e451187e80a07dc8faae9b0b3be"
+  integrity sha512-OtJfIBx0rHdC9IHITw4/6A+izmhkbMBSgqR3dJMBEIZnCqyyORro84/pxrywdb5yEKXUmJpOQjPab/1y9kJ4aQ==
 
 "@types/node@*", "@types/node@^14.14.31":
   version "14.14.31"
