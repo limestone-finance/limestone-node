@@ -1,7 +1,7 @@
 import CoinGecko from "coingecko-api";
 import colors from "colors";
 import symbolToId from "./coingecko-symbol-to-id.json";
-import { PriceData } from "../types";
+import { PriceData } from "../../types";
 
 const CoinGeckoClient = new CoinGecko();
 

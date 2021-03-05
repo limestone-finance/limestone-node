@@ -1,5 +1,5 @@
 import { exchangeRates } from "exchange-rates-api";
-import { PriceData } from "../types";
+import { PriceData } from "../../types";
 
 async function fetchAll(symbols: string[]): Promise<PriceData[]> {
   // Fetching prices

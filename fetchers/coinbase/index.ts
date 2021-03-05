@@ -1,6 +1,6 @@
 import Coinbase from "coinbase";
 import colors from "colors";
-import { PriceData } from "../types";
+import { PriceData } from "../../types";
 
 const CoinbaseClient = Coinbase.Client;
 const coinbaseConfig: any = {
@@ -36,7 +36,8 @@ async function fetchAll(tokenSymbols: string[]): Promise<PriceData[]> {
       });
     } else {
       console.warn(
-        colors.bold.bgYellow(`Coingecko doesn't support token: ${symbol}`));
+        colors.bold.bgYellow(
+          `Token is not supported with coinbase source: ${symbol}`));
     }
   }
 
