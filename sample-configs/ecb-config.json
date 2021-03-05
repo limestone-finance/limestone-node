@@ -1,8 +1,0 @@
-{
-  "interval": 5000,
-  "tokens": [
-    { "symbol": "EUR", "source": ["ecb"] },
-    { "symbol": "GBP", "source": ["ecb"] },
-    { "symbol": "USD", "source": ["ecb"] }
-  ]
-}

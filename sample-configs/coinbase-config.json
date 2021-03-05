@@ -1,8 +1,0 @@
-{
-  "interval": 5000,
-  "tokens": [
-    { "symbol": "ETH", "source": ["coinbase"] },
-    { "symbol": "BTC", "source": ["coinbase"] },
-    { "symbol": "LINK", "source": ["coinbase"] }
-  ]
-}

@@ -1,32 +1,33 @@
 import fs from "fs";
 import colors from "colors";
 import runner from "./runner";
+import { Manifest } from "./types";
 
 try {
   main();
 } catch (e) {
   console.error(e);
   console.log(colors.bold.bgGreen(
-    "USAGE: yarn start <PATH_TO_CONFIG_FILE_WITH_VALID_JSON>"));
+    "USAGE: yarn start <PATH_TO_manifest_FILE_WITH_VALID_JSON>"));
 };
 
 function main(): void {
-  const configFileName: string = process.argv[2];
+  const manifestFileName: string = process.argv[2];
 
-  // Validating config file argument
-  if (configFileName === undefined || configFileName === "") {
-    throw new Error("Path to config file cannot be empty");
+  // Validating manifest file argument
+  if (manifestFileName === undefined || manifestFileName === "") {
+    throw new Error("Path to manifest file cannot be empty");
   }
 
-  // Reading and parsing config file
-  let config: object;
-  const configFileContent: string = fs.readFileSync(configFileName, "utf-8");
+  // Reading and parsing manifest file
+  let manifest: Manifest;
+  const manifestFileContent: string = fs.readFileSync(manifestFileName, "utf-8");
   try {
-    config = JSON.parse(configFileContent);
+    manifest = JSON.parse(manifestFileContent);
   } catch (e) {
-    throw new Error("Config file must be a valid JSON");
+    throw new Error("manifest file must be a valid JSON");
   }
 
-  // Running limestone-node with config
-  runner.run(config);
+  // Running limestone-node with manifest
+  runner.run(manifest);
 }

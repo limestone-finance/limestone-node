@@ -1,0 +1,17 @@
+{
+  "interval": 5000,
+  "source": [ "coingecko" ],
+  "tokens": [
+    {
+      "symbol": "BTC",
+      "source": [ "coingecko", "coinbase" ]
+    },
+    { "symbol": "ETH" },
+    { "symbol": "BNB" },
+    {
+      "symbol": "USDT",
+      "source": [ "coingecko", "uniswap" ]
+    },
+    { "symbol": "ADA" }
+  ]
+}
