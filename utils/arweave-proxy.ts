@@ -1,31 +1,33 @@
-//const Smartweave = require('smartweave');
-const Arweave = require('arweave/node');
-const fetch = require('isomorphic-fetch');
+// import Smartweave "smartweave";
+import Arweave from "arweave/node";
+import ARQL from "arql-ops";
+import fetch from "isomorphic-fetch";
+
 //TODO: Read it from parameter
-const PRIVATE_KEY = require('../.secret.json');
-const ARQL =  require('arql-ops');
-const LIME_TOKEN = 'q2v4Msum6oeNRkSGfaM3E3RU6RCJ17T7Vm9ltMDEv4M';
+import PRIVATE_KEY from "../.secrets/arweave.json";
+
+const LIME_TOKEN = "q2v4Msum6oeNRkSGfaM3E3RU6RCJ17T7Vm9ltMDEv4M";
 
 //Value to be updated after calculations
 const FEE = 1000000;
 
-var recentHeight;
+let recentHeight: number;
 
 async function getCurrentHeight() {
   if (!recentHeight) {
     let info = await arweave.network.getInfo();
-    recentHeight = parseInt(info.height);
+    recentHeight = info.height;
   }
   console.log("Recent height: " + recentHeight);
   return recentHeight;
 }
 
 const arweave = Arweave.init({
-  host: 'arweave.net',// Hostname or IP address for a Arweave host
-  port: 443,          // Port
-  protocol: 'https',  // Network protocol http or https
-  timeout: 60000,     // Network request timeouts in milliseconds
-  logging: false,     // Enable network request logging
+  host: 'arweave.net', // Hostname or IP address for a Arweave host
+  port: 443,           // Port
+  protocol: 'https',   // Network protocol http or https
+  timeout: 60000,      // Network request timeouts in milliseconds
+  logging: false,      // Enable network request logging
 });
 
 
@@ -64,7 +66,6 @@ async function payFee() {
   //   console.log(response.data.error.validation);
   // }
 }
-
 
 async function find(parameters) {
   let arqlParameters = Object.keys(parameters).reduce((acc, key) => {
@@ -116,11 +117,11 @@ async function findLastTx(parameters) {
     }),
   });
 
-  let res = await response.json();
+  const res = await response.json();
   console.log(res);
   if (res.data) {
-    let tags = res.data.transactions.edges[0].node.tags;
-    let result = {};
+    const tags = res.data.transactions.edges[0].node.tags;
+    const result: any = {};
     tags.forEach(tag => {
       if (tag.name === "time") {
         result.time = new Date(parseInt(tag.value))
@@ -130,21 +131,19 @@ async function findLastTx(parameters) {
   } else {
     throw Error("No data returned from Arweave Graph QL");
   }
-
 }
-
 
 async function getData(tx) {
   let rawData = await arweave.transactions.getData(tx, {decode: true, string: true});
-  let data = JSON.parse(rawData);
+  let data = JSON.parse(rawData as string);
   return data;
 }
 
-
 async function getTags(tx) {
-  let transaction = await arweave.transactions.get(tx);
-  let tags = {};
-  transaction.get('tags').forEach(tag => {
+  const transaction = await arweave.transactions.get(tx);
+  const tags = {};
+  const tagsArr = transaction.get('tags') as any;
+  tagsArr.forEach(tag => {
     let key = tag.get('name', {decode: true, string: true});
     let value = tag.get('value', {decode: true, string: true});
     //console.log(`${key} : ${value}`);
@@ -153,9 +152,8 @@ async function getTags(tx) {
   return tags;
 }
 
-
 async function findAndDownload(token, source) {
-  let txs = await find(token, source);
+  let txs = await find(token);
   console.log("TX found: " + txs[0]);
   let data = await getData(txs[0]);
 
@@ -168,11 +166,12 @@ async function getStatus(tx) {
   return status
 }
 
-//EXPORTS:
-module.exports.upload = upload;
-module.exports.findAndDownload = findAndDownload;
-module.exports.find = find;
-module.exports.findLastTx = findLastTx;
-module.exports.getData = getData;
-module.exports.getTags = getTags;
-module.exports.getStatus = getStatus;
+export default {
+  upload,
+  findAndDownload,
+  find,
+  findLastTx,
+  getData,
+  getTags,
+  getStatus,
+};

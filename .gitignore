@@ -1,6 +1,9 @@
 # Dependency directories
 node_modules/
 
-#IDE configs
+# IDE configs
 .idea
 
+# Custom files and folders
+.experiments
+.secrets*

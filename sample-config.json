@@ -1,6 +1,0 @@
-{
-  "interval" : 5000,
-  "tokens" : [
-    {"symbol": "ETH", "source": ["coingecko"]}
-  ]
-}
