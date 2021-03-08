@@ -23,7 +23,9 @@ async function fetchAll(
   manifest: Manifest
 ): Promise<PriceDataAfterAggregation[]> {
 
-  const sources = groupTokensBySource(manifest.tokens, manifest.source);
+  const sources = groupTokensBySource(
+    manifest.tokens,
+    manifest.defaultSource);
 
   // Fetching token prices from all sources
   // And grouping them by token symbols
@@ -69,34 +71,35 @@ function calculateAggregatedValues(
 // This function converts tokens from manifest to object with the following
 // type: { <SourceName>: <Array of tokens to fetch from source> }
 function groupTokensBySource(
-  tokens: TokenConfig[],
+  tokens: { [symbol: string]: TokenConfig },
   defaultSource: string[]
 ): object {
   const sources = {};
 
-  for (const token of tokens) {
+  for (const symbol in tokens) {
+    const source = tokens[symbol].source;
     let sourcesForToken: string[];
 
     // If no source is defined for token
     // we use global source from manifest
-    if (token.source === undefined) {
+    if (source === undefined) {
       if (defaultSource === undefined) {
         const errMsg =
-          `Token source is not defined for "${token.symbol}"`
+          `Token source is not defined for "${symbol}"`
           + `and global source is not defined`;
         throw new Error(errMsg);
       } else {
         sourcesForToken = defaultSource;
       }
     } else {
-      sourcesForToken = token.source;
+      sourcesForToken = source;
     }
 
-    for (const source of sourcesForToken) {
-      if (!sources[source]) {
-        sources[source] = [token.symbol];
+    for (const singleSource of sourcesForToken) {
+      if (!sources[singleSource]) {
+        sources[singleSource] = [symbol];
       } else {
-        sources[source].push(token.symbol);
+        sources[singleSource].push(symbol);
       }
     }
   }

@@ -16,7 +16,8 @@ const coingeckoFetcher: Fetcher = {
         idToSymbol[id] = symbol;
       } else {
         console.warn(
-          colors.bold.bgYellow(`Coingecko doesn't support token: ${symbol}`));
+          colors.bold.bgYellow(
+            `Token is not supported with coingecko source: ${symbol}`));
       }
     }
 

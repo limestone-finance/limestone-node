@@ -1,18 +1,16 @@
 {
-  "interval": 5000,
+  "interval": 15000,
   "priceAggregator": "median",
-  "source": [ "coingecko" ],
-  "tokens": [
-    {
-      "symbol": "BTC",
-      "source": [ "coingecko", "coinbase" ]
+  "defaultSource": ["coingecko"],
+  "tokens": {
+    "BTC": {
+      "source": ["coingecko", "coinbase"]
     },
-    { "symbol": "ETH" },
-    { "symbol": "BNB" },
-    {
-      "symbol": "USDT",
-      "source": [ "coingecko", "uniswap" ]
+    "USDT": {
+      "source": ["coingecko", "uniswap"]
     },
-    { "symbol": "ADA" }
-  ]
+    "ETH": {},
+    "BNB": {},
+    "ADA": {}
+  }
 }

@@ -1,12 +1,11 @@
 export interface Manifest {
   interval: number,
   priceAggregator: string,
-  source?: string[],
-  tokens: TokenConfig[],
+  defaultSource?: string[],
+  tokens: { [symbol: string]: TokenConfig },
 };
 
 export interface TokenConfig {
-  symbol: string,
   source?: string[],
 };
 
