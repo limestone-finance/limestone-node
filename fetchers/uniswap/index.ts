@@ -1,36 +1,39 @@
 import colors from "colors";
 import uniswapProxy from "../../utils/uniswap-proxy";
-import { PriceData } from "../../types";
+import { PriceDataFetched, Fetcher } from "../../types";
 import symbolToPairId from "./uniswap-symbol-to-pair-id.json";
 
-async function fetchAll(tokenSymbols: string[]): Promise<PriceData[]> {
-  const tokenIds = convertSymbolsToPairIds(tokenSymbols);
+const uniswapFetcher: Fetcher = {
+  async fetchAll(tokenSymbols: string[]): Promise<PriceDataFetched[]> {
+    const tokenIds = convertSymbolsToPairIds(tokenSymbols);
 
-  const query = `{
-    pairs(where: { id_in: ${JSON.stringify(tokenIds)} }) {
-      token0 {
-        symbol
+    const query = `{
+      pairs(where: { id_in: ${JSON.stringify(tokenIds)} }) {
+        token0 {
+          symbol
+        }
+        reserve0
+        reserveUSD
       }
-      reserve0
-      reserveUSD
+    }`;
+
+    // Fetching pairs data from uniswap subgraph
+    const response = await uniswapProxy.executeQueryOnUniswapSubgraph(query);
+
+    // Building prices array
+    const prices = [];
+    for (const pair of response.data.pairs) {
+      prices.push({
+        symbol: pair.token0.symbol,
+        value: parseFloat(pair.reserveUSD) / (2 * parseFloat(pair.reserve0)),
+      });
     }
-  }`;
 
-  // Fetching pairs data from uniswap subgraph
-  const response = await uniswapProxy.executeQueryOnUniswapSubgraph(query);
-
-  // Building prices array
-  const prices = [];
-  for (const pair of response.data.pairs) {
-    const price = parseFloat(pair.reserveUSD) / (2 * parseFloat(pair.reserve0));
-    prices.push({
-      symbol: pair.token0.symbol,
-      price,
-    });
+    return prices;
   }
+};
 
-  return prices;
-}
+
 
 function convertSymbolsToPairIds(symbols: string[]): string[] {
   const pairIds = [];
@@ -49,7 +52,4 @@ function convertSymbolsToPairIds(symbols: string[]): string[] {
   return pairIds;
 }
 
-
-export default {
-  fetchAll,
-};
+export default uniswapFetcher;

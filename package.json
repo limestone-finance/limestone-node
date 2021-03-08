@@ -19,7 +19,8 @@
     "isomorphic-fetch": "^3.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
-    "ts-node": "^9.1.1"
+    "ts-node": "^9.1.1",
+    "uuid-random": "^1.3.2"
   },
   "devDependencies": {
     "@types/coinbase": "^2.0.5",

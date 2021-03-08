@@ -1,27 +1,30 @@
 import proxy from "../utils/arweave-proxy";
+import { Keeper, PriceDataSigned, PriceDataKeeped } from "../types";
 
-const VERSION = "0.005";
+const mockKeeper: Keeper = {
+  async keep(price: PriceDataSigned): Promise<PriceDataKeeped> {
+    // TODO: think about naming unification
+    // for example change names:
+    // time -> timestamp
+    // token -> symbol
+    const tags = {
+      app: "Limestone",
+      version: price.version,
+      type: "data-latest",
+      token: price.symbol,
+      time: Date.now(),
+      source: price.source,
+      value: price.value,
+    };
 
-async function keep(
-  token: string,
-  source: string,
-  value: string
-): Promise<void> {
+    const tx = await proxy.upload(tags, price.value);
+    console.log(`Keeper tx (${tags.token}): ${tx.id}`);
 
-  const tags = {
-    app: "Limestone",
-    version: VERSION,
-    type: "data-latest",
-    token: token,
-    time: Date.now(),
-    source: source,
-    value: value,
-  };
-
-  const tx = await proxy.upload(tags, value);
-  console.log(`Keeper tx (${token}): ${tx.id}`);
-}
-
-export default {
-  keep,
+    return {
+      ...price,
+      permawebTx: tx.id,
+    };
+  }
 };
+
+export default mockKeeper;

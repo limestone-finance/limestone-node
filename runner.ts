@@ -1,18 +1,78 @@
 import consoleStamp from "console-stamp";
+import uuid from "uuid-random";
 import fetchers from "./fetchers";
-import keeper from "./keepers/basic-keeper";
-import { PriceData, Manifest, TokenConfig } from "./types";
+import keepers from "./keepers";
+import aggregators from "./aggregators";
+import broadcaster from "./broadcasters/lambda-broadcaster";
+import {
+  PriceDataBeforeAggregation,
+  PriceDataAfterAggregation,
+  PriceDataSigned,
+  PriceDataKeeped,
+  Manifest,
+  TokenConfig } from "./types";
+import _ from "lodash";
 
 //Format logs
 consoleStamp(console, { pattern: "[HH:MM:ss.l]" });
 
+const VERSION = "0.005";
+
 async function fetchAll(
+  manifest: Manifest
+): Promise<PriceDataAfterAggregation[]> {
+
+  const sources = groupTokensBySource(manifest.tokens, manifest.source);
+
+  // Fetching token prices from all sources
+  // And grouping them by token symbols
+  const prices = {};
+  for (const source in sources) {
+    // Fetching
+    const pricesFromSource = await fetchers[source].fetchAll(sources[source]);
+    console.log(
+      `Fetched prices in USD for ${pricesFromSource.length} `
+      + `currencies from source: "${source}"`);
+
+    // Grouping
+    const timestamp = Date.now();
+    for (const price of pricesFromSource) {
+      if (prices[price.symbol] === undefined) {
+        prices[price.symbol] = {
+          id: uuid(), // Generating unique id for each price
+          source: {},
+          symbol: price.symbol,
+          value: price.value, // value may be changed by agregator
+          timestamp,
+          version: VERSION,
+
+          // TODO: implement getting real provider public key
+          provider: "mock-provider",
+        };
+      }
+      prices[price.symbol].source[source] = price.value;
+    }
+  }
+
+  return calculateAggregatedValues(_.values(prices), manifest);
+}
+
+function calculateAggregatedValues(
+  prices: PriceDataBeforeAggregation[],
+  manifest: Manifest
+): PriceDataAfterAggregation[] {
+  return prices.map((p) =>
+    aggregators[manifest.priceAggregator].getAggregatedValue(p));
+}
+
+// This function converts tokens from manifest to object with the following
+// type: { <SourceName>: <Array of tokens to fetch from source> }
+function groupTokensBySource(
   tokens: TokenConfig[],
   defaultSource: string[]
-): Promise<PriceData[]> {
-
-  // Grouping tokens by source
+): object {
   const sources = {};
+
   for (const token of tokens) {
     let sourcesForToken: string[];
 
@@ -40,37 +100,40 @@ async function fetchAll(
     }
   }
 
-  // Fetching token prices and merging them into a single array
-  let result = [];
-  for (const source in sources) {
-    let pricesFromSource = await fetchers[source].fetchAll(sources[source]);
-    console.log(`Fetched USD prices for ${pricesFromSource.length} currencies from ${source}`);
-
-    // Adding source to each fetched price
-    pricesFromSource = pricesFromSource.map((p: PriceData) => {
-      return { ...p, source };
-    });
-
-    result = result.concat(pricesFromSource);
-  }
-
-  return result;
+  return sources;
 }
 
 async function processAll(manifest: Manifest): Promise<void> {
   console.log("Processing tokens");
 
-  const pricesFetched = await fetchAll(manifest.tokens, manifest.source);
+  const pricesFetched: PriceDataAfterAggregation[] =
+    await fetchAll(manifest);
 
   for (const price of pricesFetched) {
-    // TODO implement broadcasting
+    console.log(
+      `Fetched price (${price.id}) : ${price.symbol} : ${price.value}`);
 
-    // TODO implement keeping on Arweave blockchain
-    // await keeper.keep(price.symbol, price.source, price.price);
+    // Signing price data
+    console.log(`Signing price: ${price.id}`);
+    const signedPrice: PriceDataSigned = signPrice(price);
 
-    console.log(`Fetched price: ${price.symbol} : ${price.price}`);
-    console.log("Keeping on arweave blockchain [skipped]");
+    // Keeping on blockchain
+    console.log(`Keeping on arweave blockchain: ${signedPrice.id}`);
+    const { keep } = keepers.mock; // <- replace mock with basic to enable saving to arweave
+    const priceKeeped: PriceDataKeeped = await keep(signedPrice);
+
+    // Broadcasting
+    console.log(`Broadcasting price ${priceKeeped.id}`);
+    await broadcaster.broadcast(priceKeeped);
   }
+}
+
+// TODO: implement real signing
+function signPrice(price: PriceDataAfterAggregation): PriceDataSigned {
+  return {
+    ...price,
+    signature: "mock-signature",
+  };
 }
 
 function run(manifest: Manifest): void {
