@@ -1,5 +1,6 @@
 import consoleStamp from "console-stamp";
 import uuid from "uuid-random";
+import _ from "lodash";
 import fetchers from "./fetchers";
 import keepers from "./keepers";
 import aggregators from "./aggregators";
@@ -10,8 +11,8 @@ import {
   PriceDataSigned,
   PriceDataKeeped,
   Manifest,
-  TokenConfig } from "./types";
-import _ from "lodash";
+  TokenConfig,
+} from "./types";
 
 //Format logs
 consoleStamp(console, { pattern: "[HH:MM:ss.l]" });
