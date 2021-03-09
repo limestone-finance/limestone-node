@@ -15,7 +15,7 @@ try {
     "USAGE: yarn start --manifest <PATH_TO_MANIFEST_FILE_WITH_VALID_JSON> --jwk <PATH_TO_JWK>"));
 };
 
-function main(): void {
+async function main(): Promise<void> {
   // Reading cli arguments
   const argv = yargs(hideBin(process.argv)).argv,
         manifestFilePath = String(argv.manifest),
@@ -42,6 +42,6 @@ function main(): void {
   }
 
   // Running limestone-node with manifest
-  const runner = new Runner(manifest, jwk);
+  const runner = await Runner.init(manifest, jwk);
   runner.run();
 }

@@ -11,8 +11,8 @@ import config from "./config";
 import {
   PriceDataBeforeAggregation,
   PriceDataAfterAggregation,
+  PriceDataBeforeSigning,
   PriceDataSigned,
-  TransactionId,
   Manifest,
 } from "./types";
 
@@ -22,15 +22,24 @@ consoleStamp(console, { pattern: "[HH:MM:ss.l]" });
 export default class Runner {
   manifest: Manifest;
   arweave: ArweaveProxy;
+  providerAddress: string;
 
-  constructor(manifest: Manifest, jwk: JWKInterface) {
+  constructor(manifest: Manifest, arweave: ArweaveProxy, provider: string) {
     this.manifest = manifest;
-    this.arweave = new ArweaveProxy(jwk);
+    this.arweave = arweave;
+    this.providerAddress = provider;
+  }
+
+  static async init(manifest: Manifest, jwk: JWKInterface): Promise<Runner> {
+    const arweave = new ArweaveProxy(jwk);
+    const providerAddress = await arweave.getAddress();
+    return new Runner(manifest, arweave, providerAddress);
   }
 
   run(): void {
     console.log("Running limestone-node with manifest: ");
     console.log(JSON.stringify(this.manifest));
+    console.log(`Address: ${this.providerAddress}`);
 
     const runIteration = () => {
       this.processAll();
@@ -43,29 +52,35 @@ export default class Runner {
   async processAll(): Promise<void> {
     console.log("Processing tokens");
 
-    const pricesFetched: PriceDataAfterAggregation[] = await this.fetchAll();
+    const prices: PriceDataAfterAggregation[] = await this.fetchAll();
 
-    // Signing each price separately
-    const signedPrices: PriceDataSigned[] = [];
-    for (const price of pricesFetched) {
+    // TODO: decide if this logging is really needed
+    for (const price of prices) {
       console.log(
         `Fetched price : ${price.symbol} : ${price.value}`);
-
-      // Signing price data
-      console.log(`Signing price: ${price.id}`);
-      const signed: PriceDataSigned = await this.signPrice(price);
-      signedPrices.push(signed);
     }
 
     // Keeping on blockchain
     console.log("Keeping prices on arweave blockchain");
     const { keep } = keepers.basic;
-    const permawebTx: TransactionId = await keep(signedPrices, this.arweave);
+    const permawebTx: string = await keep(prices, this.arweave);
+
+    // Signing each price separately
+    const signedPrices: PriceDataSigned[] = [];
+    for (const price of prices) {
+      // Signing price data
+      console.log(`Signing price: ${price.id}`);
+      const signed: PriceDataSigned = await this.signPrice({
+        ...price,
+        permawebTx,
+        provider: this.providerAddress,
+      });
+      signedPrices.push(signed);
+    }
 
     // Broadcasting
     console.log("Broadcasting prices");
-    const poviderAddress = await this.arweave.getAddress();
-    await broadcaster.broadcast(signedPrices, permawebTx, poviderAddress);
+    await broadcaster.broadcast(signedPrices);
   }
 
   async fetchAll(): Promise<PriceDataAfterAggregation[]> {
@@ -144,7 +159,7 @@ export default class Runner {
   }
 
   async signPrice(
-    price: PriceDataAfterAggregation): Promise<PriceDataSigned> {
+    price: PriceDataBeforeSigning): Promise<PriceDataSigned> {
 
     // TODO: think about keeping stringified version which was signed
     // to avoid problems with signature verification

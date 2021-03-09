@@ -22,17 +22,13 @@ export interface Aggregator {
 
 export interface Keeper {
   keep: (
-    prices: PriceDataSigned[],
-    arweaveProxy: ArweaveProxy) => Promise<TransactionId>;
+    prices: PriceDataAfterAggregation[],
+    arweaveProxy: ArweaveProxy) => Promise<string>;
 };
 
 export interface Broadcaster {
-  broadcast: (prices: PriceDataSigned[],
-              permawebTx: TransactionId,
-              provider: string) => Promise<void>;
+  broadcast: (prices: PriceDataSigned[]) => Promise<void>;
 };
-
-export type TransactionId = string;
 
 export interface PriceDataFetched {
   symbol: string;
@@ -51,6 +47,11 @@ export interface PriceDataAfterAggregation extends PriceDataBeforeAggregation {
   value: number;
 };
 
-export interface PriceDataSigned extends PriceDataAfterAggregation {
+export interface PriceDataBeforeSigning extends PriceDataAfterAggregation {
+  permawebTx: string;
+  provider: string;
+};
+
+export interface PriceDataSigned extends PriceDataBeforeSigning {
   signature: string;
 };

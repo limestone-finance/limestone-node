@@ -44,7 +44,9 @@ export default class ArweaveProxy  {
       uploadTx.addTag(key, tags[key]);
     });
 
-    await this.arweave.transactions.sign(uploadTx, this.jwk);
+    const txSigned: any = await this.arweave.transactions.sign(uploadTx, this.jwk);
+
+    console.log({txSigned});
 
     // TODO: check if we must wait for this repsponse
     const response = await this.arweave.transactions.post(uploadTx);
