@@ -1,3 +1,4 @@
+import Transaction from "arweave/node/lib/transaction";
 import ArweaveProxy from "./utils/arweave-proxy";
 
 export interface Manifest {
@@ -21,9 +22,9 @@ export interface Aggregator {
 };
 
 export interface Keeper {
-  keep: (
+  prepareTransaction: (
     prices: PriceDataAfterAggregation[],
-    arweaveProxy: ArweaveProxy) => Promise<string>;
+    arweaveProxy: ArweaveProxy) => Promise<Transaction>;
 };
 
 export interface Broadcaster {
@@ -54,4 +55,8 @@ export interface PriceDataBeforeSigning extends PriceDataAfterAggregation {
 
 export interface PriceDataSigned extends PriceDataBeforeSigning {
   signature: string;
+};
+
+export interface ArweaveTransactionTags {
+  [tag: string]: string,
 };

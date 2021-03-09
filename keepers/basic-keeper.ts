@@ -1,21 +1,20 @@
-import { Keeper, PriceDataAfterAggregation } from "../types";
-import config from "../config";
+import Transaction from "arweave/node/lib/transaction";
 import ArweaveProxy from "../utils/arweave-proxy";
+import config from "../config";
+import {
+  ArweaveTransactionTags,
+  Keeper,
+  PriceDataAfterAggregation,
+} from "../types";
 
-interface Tags {
-  [tag: string]: string,
-};
-
-const mockKeeper: Keeper = {
-  async keep(
-    prices: PriceDataAfterAggregation[],
-    arweaveProxy: ArweaveProxy): Promise<string> {
-
+async function prepareTransaction(
+  prices: PriceDataAfterAggregation[],
+  arweaveProxy: ArweaveProxy): Promise<Transaction> {
     if (prices.length === 0) {
       throw new Error("Can not keep empty array of prices in arweave");
     }
 
-    const tags: Tags = {
+    const tags: ArweaveTransactionTags = {
       app: "Limestone",
       type: "data",
       version: config.version,
@@ -28,11 +27,9 @@ const mockKeeper: Keeper = {
       tags["AR"] = String(arPrice.value);
     }
 
-    const txId = await arweaveProxy.upload(tags, prices);
+    return await arweaveProxy.prepareUploadTransaction(tags, prices);
+  };
 
-    return txId;
-    // return tx.id;
-  }
-};
-
-export default mockKeeper;
+export default {
+  prepareTransaction,
+} as Keeper;

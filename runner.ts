@@ -2,6 +2,7 @@ import consoleStamp from "console-stamp";
 import uuid from "uuid-random";
 import _ from "lodash";
 import { JWKInterface } from "arweave/node/lib/wallet";
+import Transaction from "arweave/node/lib/transaction";
 import fetchers from "./fetchers";
 import keepers from "./keepers";
 import aggregators from "./aggregators";
@@ -60,10 +61,11 @@ export default class Runner {
         `Fetched price : ${price.symbol} : ${price.value}`);
     }
 
-    // Keeping on blockchain
-    console.log("Keeping prices on arweave blockchain");
-    const { keep } = keepers.basic;
-    const permawebTx: string = await keep(prices, this.arweave);
+    // Preparing arweave transaction
+    console.log("Keeping prices on arweave blockchain - preparing transaction");
+    const { prepareTransaction } = keepers.basic;
+    const transaction: Transaction =
+      await prepareTransaction(prices, this.arweave);
 
     // Signing each price separately
     const signedPrices: PriceDataSigned[] = [];
@@ -72,7 +74,7 @@ export default class Runner {
       console.log(`Signing price: ${price.id}`);
       const signed: PriceDataSigned = await this.signPrice({
         ...price,
-        permawebTx,
+        permawebTx: transaction.id,
         provider: this.providerAddress,
       });
       signedPrices.push(signed);
@@ -81,6 +83,12 @@ export default class Runner {
     // Broadcasting
     console.log("Broadcasting prices");
     await broadcaster.broadcast(signedPrices);
+
+    // Posting prices data on arweave blockchain
+    console.log(
+      "Keeping prices on arweave blockchain - posting transaction "
+      + transaction.id);
+    await this.arweave.postTransaction(transaction);
   }
 
   async fetchAll(): Promise<PriceDataAfterAggregation[]> {

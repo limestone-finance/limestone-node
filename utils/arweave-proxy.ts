@@ -35,7 +35,9 @@ export default class ArweaveProxy  {
     return await this.arweave.wallets.jwkToAddress(this.jwk);
   }
 
-  async upload(tags: any, data: object): Promise<string> {
+  // This method creates and signs arweave transaction
+  // It doesn't post transaction to arweave, to do so use postTransaction
+  async prepareUploadTransaction(tags: any, data: any): Promise<Transaction> {
     const uploadTx = await this.arweave.createTransaction({
       data: JSON.stringify(data),
     }, this.jwk);
@@ -44,23 +46,15 @@ export default class ArweaveProxy  {
       uploadTx.addTag(key, tags[key]);
     });
 
-    const txSigned: any = await this.arweave.transactions.sign(uploadTx, this.jwk);
+    // Transaction id is generated during signing
+    await this.arweave.transactions.sign(uploadTx, this.jwk);
 
-    console.log({txSigned});
+    return uploadTx;
+  }
 
-    // TODO: check if we must wait for this repsponse
-    const response = await this.arweave.transactions.post(uploadTx);
-
-    if (response.data) {
-      console.log(response.data);
-    }
-
-    // TODO: remove
-    console.log({response});
-
-    // return response.data
-    // return uploadTx;
-    return "mock-tx-id";
+  async postTransaction(tx: Transaction): Promise<void> {
+    const response = await this.arweave.transactions.post(tx);
+    console.log({ response }); // <- TODO: maybe this logging should be removed
   }
 
 };
