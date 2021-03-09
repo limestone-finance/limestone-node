@@ -25,6 +25,7 @@
     "SOL": { "source": ["coingecko"] },
     "TRX": { "source": ["coingecko"] },
     "NEO": { "source": ["coingecko"] },
+    "AR": { "source": ["coingecko"] },
 
     "USDC": { "source": ["coingecko", "coinbase", "uniswap"] },
     "DAI": { "source": ["coingecko", "coinbase", "uniswap"] },
