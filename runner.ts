@@ -7,6 +7,7 @@ import keepers from "./keepers";
 import aggregators from "./aggregators";
 import broadcaster from "./broadcasters/lambda-broadcaster";
 import ArweaveProxy from "./utils/arweave-proxy";
+import config from "./config";
 import {
   PriceDataBeforeAggregation,
   PriceDataAfterAggregation,
@@ -17,8 +18,6 @@ import {
 
 //Format logs
 consoleStamp(console, { pattern: "[HH:MM:ss.l]" });
-
-const VERSION = "0.005";
 
 export default class Runner {
   manifest: Manifest;
@@ -60,8 +59,8 @@ export default class Runner {
 
     // Keeping on blockchain
     console.log("Keeping prices on arweave blockchain");
-    const { keep } = keepers.mock; // <- replace mock with basic to enable saving to arweave
-    const permawebTx: TransactionId = await keep(signedPrices);
+    const { keep } = keepers.basic;
+    const permawebTx: TransactionId = await keep(signedPrices, this.arweave);
 
     // Broadcasting
     console.log("Broadcasting prices");
@@ -92,7 +91,7 @@ export default class Runner {
             source: {},
             symbol: price.symbol,
             timestamp,
-            version: VERSION,
+            version: config.version,
           };
         }
         prices[price.symbol].source[source] = price.value;
@@ -147,6 +146,8 @@ export default class Runner {
   async signPrice(
     price: PriceDataAfterAggregation): Promise<PriceDataSigned> {
 
+    // TODO: think about keeping stringified version which was signed
+    // to avoid problems with signature verification
     const priceStringified = JSON.stringify(price);
     const signature: string = await this.arweave.sign(priceStringified);
 

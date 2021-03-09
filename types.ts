@@ -1,16 +1,18 @@
+import ArweaveProxy from "./utils/arweave-proxy";
+
 export interface Manifest {
-  interval: number,
-  priceAggregator: string,
-  defaultSource?: string[],
-  tokens: { [symbol: string]: TokenConfig },
+  interval: number;
+  priceAggregator: string;
+  defaultSource?: string[];
+  tokens: { [symbol: string]: TokenConfig };
 };
 
 export interface TokenConfig {
-  source?: string[],
+  source?: string[];
 };
 
 export interface Fetcher {
-  fetchAll: (tokenSymbols: string[]) => Promise<PriceDataFetched[]>,
+  fetchAll: (tokenSymbols: string[]) => Promise<PriceDataFetched[]>;
 };
 
 export interface Aggregator {
@@ -19,34 +21,36 @@ export interface Aggregator {
 };
 
 export interface Keeper {
-  keep: (prices: PriceDataSigned[]) => Promise<TransactionId>,
+  keep: (
+    prices: PriceDataSigned[],
+    arweaveProxy: ArweaveProxy) => Promise<TransactionId>;
 };
 
 export interface Broadcaster {
   broadcast: (prices: PriceDataSigned[],
               permawebTx: TransactionId,
-              provider: string) => Promise<void>,
+              provider: string) => Promise<void>;
 };
 
 export type TransactionId = string;
 
 export interface PriceDataFetched {
-  symbol: string,
-  value: number,
+  symbol: string;
+  value: number;
 };
 
 export interface PriceDataBeforeAggregation {
-  id: string,
-  symbol: string,
-  source: { [sourceName: string]: number },
-  timestamp: number,
-  version: string,
+  id: string;
+  symbol: string;
+  source: { [sourceName: string]: number };
+  timestamp: number;
+  version: string;
 };
 
 export interface PriceDataAfterAggregation extends PriceDataBeforeAggregation {
-  value: number,
+  value: number;
 };
 
 export interface PriceDataSigned extends PriceDataAfterAggregation {
-  signature: string,
+  signature: string;
 };

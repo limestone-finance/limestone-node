@@ -54,10 +54,6 @@ async function sign(dataToSign: any) {
   return "hehe";
 }
 
-async function getProviderAddress() {
-  await arweave.wallets.jwkToAddress()
-}
-
 async function payFee() {
   // let address = await arweave.wallets.jwkToAddress(PRIVATE_KEY);
   // let balance = await arweave.wallets.getBalance(address);

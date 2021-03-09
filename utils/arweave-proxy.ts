@@ -1,5 +1,7 @@
 import Arweave from "arweave/node";
+import Transaction from "arweave/node/lib/transaction";
 import { JWKInterface } from "arweave/node/lib/wallet";
+import _  from "lodash";
 // import ARQL from "arql-ops";
 
 // const LIME_TOKEN = "q2v4Msum6oeNRkSGfaM3E3RU6RCJ17T7Vm9ltMDEv4M";
@@ -31,6 +33,32 @@ export default class ArweaveProxy  {
 
   async getAddress(): Promise<string> {
     return await this.arweave.wallets.jwkToAddress(this.jwk);
+  }
+
+  async upload(tags: any, data: object): Promise<string> {
+    const uploadTx = await this.arweave.createTransaction({
+      data: JSON.stringify(data),
+    }, this.jwk);
+
+    _.keys(tags).forEach((key) => {
+      uploadTx.addTag(key, tags[key]);
+    });
+
+    await this.arweave.transactions.sign(uploadTx, this.jwk);
+
+    // TODO: check if we must wait for this repsponse
+    const response = await this.arweave.transactions.post(uploadTx);
+
+    if (response.data) {
+      console.log(response.data);
+    }
+
+    // TODO: remove
+    console.log({response});
+
+    // return response.data
+    // return uploadTx;
+    return "mock-tx-id";
   }
 
 };
