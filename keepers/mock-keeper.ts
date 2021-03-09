@@ -1,11 +1,8 @@
-import { Keeper, PriceDataSigned, PriceDataKeeped } from "../types";
+import { Keeper, PriceDataSigned, TransactionId } from "../types";
 
-const mockKeeper = {
-  async keep(price: PriceDataSigned): Promise<PriceDataKeeped> {
-    return {
-      ...price,
-      permawebTx: "mock-permaweb-tx",
-    };
+const mockKeeper: Keeper = {
+  async keep(_prices: PriceDataSigned[]): Promise<TransactionId> {
+    return "mock-permaweb-tx";
   }
 };
 

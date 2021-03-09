@@ -1,17 +1,18 @@
 import consoleStamp from "console-stamp";
 import uuid from "uuid-random";
 import _ from "lodash";
+import { JWKInterface } from "arweave/node/lib/wallet";
 import fetchers from "./fetchers";
 import keepers from "./keepers";
 import aggregators from "./aggregators";
 import broadcaster from "./broadcasters/lambda-broadcaster";
+import ArweaveProxy from "./utils/arweave-proxy";
 import {
   PriceDataBeforeAggregation,
   PriceDataAfterAggregation,
   PriceDataSigned,
-  PriceDataKeeped,
+  TransactionId,
   Manifest,
-  TokenConfig,
 } from "./types";
 
 //Format logs
@@ -19,139 +20,140 @@ consoleStamp(console, { pattern: "[HH:MM:ss.l]" });
 
 const VERSION = "0.005";
 
-async function fetchAll(
-  manifest: Manifest
-): Promise<PriceDataAfterAggregation[]> {
+export default class Runner {
+  manifest: Manifest;
+  arweave: ArweaveProxy;
 
-  const sources = groupTokensBySource(
-    manifest.tokens,
-    manifest.defaultSource);
-
-  // Fetching token prices from all sources
-  // And grouping them by token symbols
-  const prices = {};
-  for (const source in sources) {
-    // Fetching
-    const pricesFromSource = await fetchers[source].fetchAll(sources[source]);
-    console.log(
-      `Fetched prices in USD for ${pricesFromSource.length} `
-      + `currencies from source: "${source}"`);
-
-    // Grouping
-    const timestamp = Date.now();
-    for (const price of pricesFromSource) {
-      if (prices[price.symbol] === undefined) {
-        prices[price.symbol] = {
-          id: uuid(), // Generating unique id for each price
-          source: {},
-          symbol: price.symbol,
-          value: price.value, // value may be changed by agregator
-          timestamp,
-          version: VERSION,
-
-          // TODO: implement getting real provider public key
-          provider: "mock-provider",
-        };
-      }
-      prices[price.symbol].source[source] = price.value;
-    }
+  constructor(manifest: Manifest, jwk: JWKInterface) {
+    this.manifest = manifest;
+    this.arweave = new ArweaveProxy(jwk);
   }
 
-  return calculateAggregatedValues(_.values(prices), manifest);
-}
+  run(): void {
+    console.log("Running limestone-node with manifest: ");
+    console.log(JSON.stringify(this.manifest));
 
-function calculateAggregatedValues(
-  prices: PriceDataBeforeAggregation[],
-  manifest: Manifest
-): PriceDataAfterAggregation[] {
-  return prices.map((p) =>
-    aggregators[manifest.priceAggregator].getAggregatedValue(p));
-}
+    const runIteration = () => {
+      this.processAll();
+    };
 
-// This function converts tokens from manifest to object with the following
-// type: { <SourceName>: <Array of tokens to fetch from source> }
-function groupTokensBySource(
-  tokens: { [symbol: string]: TokenConfig },
-  defaultSource: string[]
-): object {
-  const sources = {};
-
-  for (const symbol in tokens) {
-    const source = tokens[symbol].source;
-    let sourcesForToken: string[];
-
-    // If no source is defined for token
-    // we use global source from manifest
-    if (source === undefined) {
-      if (defaultSource === undefined) {
-        const errMsg =
-          `Token source is not defined for "${symbol}"`
-          + `and global source is not defined`;
-        throw new Error(errMsg);
-      } else {
-        sourcesForToken = defaultSource;
-      }
-    } else {
-      sourcesForToken = source;
-    }
-
-    for (const singleSource of sourcesForToken) {
-      if (!sources[singleSource]) {
-        sources[singleSource] = [symbol];
-      } else {
-        sources[singleSource].push(symbol);
-      }
-    }
+    runIteration(); // Start immediately then repeat in manifest.interval
+    setInterval(runIteration, this.manifest.interval);
   }
 
-  return sources;
-}
+  async processAll(): Promise<void> {
+    console.log("Processing tokens");
 
-async function processAll(manifest: Manifest): Promise<void> {
-  console.log("Processing tokens");
+    const pricesFetched: PriceDataAfterAggregation[] = await this.fetchAll();
 
-  const pricesFetched: PriceDataAfterAggregation[] =
-    await fetchAll(manifest);
+    // Signing each price separately
+    const signedPrices: PriceDataSigned[] = [];
+    for (const price of pricesFetched) {
+      console.log(
+        `Fetched price : ${price.symbol} : ${price.value}`);
 
-  for (const price of pricesFetched) {
-    console.log(
-      `Fetched price (${price.id}) : ${price.symbol} : ${price.value}`);
-
-    // Signing price data
-    console.log(`Signing price: ${price.id}`);
-    const signedPrice: PriceDataSigned = signPrice(price);
+      // Signing price data
+      console.log(`Signing price: ${price.id}`);
+      const signed: PriceDataSigned = await this.signPrice(price);
+      signedPrices.push(signed);
+    }
 
     // Keeping on blockchain
-    console.log(`Keeping on arweave blockchain: ${signedPrice.id}`);
+    console.log("Keeping prices on arweave blockchain");
     const { keep } = keepers.mock; // <- replace mock with basic to enable saving to arweave
-    const priceKeeped: PriceDataKeeped = await keep(signedPrice);
+    const permawebTx: TransactionId = await keep(signedPrices);
 
     // Broadcasting
-    console.log(`Broadcasting price ${priceKeeped.id}`);
-    await broadcaster.broadcast(priceKeeped);
+    console.log("Broadcasting prices");
+    const poviderAddress = await this.arweave.getAddress();
+    await broadcaster.broadcast(signedPrices, permawebTx, poviderAddress);
   }
-}
 
-// TODO: implement real signing
-function signPrice(price: PriceDataAfterAggregation): PriceDataSigned {
-  return {
-    ...price,
-    signature: "mock-signature",
-  };
-}
+  async fetchAll(): Promise<PriceDataAfterAggregation[]> {
 
-function run(manifest: Manifest): void {
-  console.log("Running limestone-node with manifest: ");
-  console.log(JSON.stringify(manifest));
+    const sources = this.groupTokensBySource();
 
-  const runIteration = () => {
-    processAll(manifest);
-  };
+    // Fetching token prices from all sources
+    // And grouping them by token symbols
+    const prices: { [symbol: string]: PriceDataBeforeAggregation } = {};
+    const timestamp = Date.now();
+    for (const source in sources) {
+      // Fetching
+      const pricesFromSource = await fetchers[source].fetchAll(sources[source]);
+      console.log(
+        `Fetched prices in USD for ${pricesFromSource.length} `
+        + `currencies from source: "${source}"`);
 
-  runIteration(); // Start immediately then repeat in manifest.interval
-  setInterval(runIteration, manifest.interval);
-}
+      // Grouping
+      for (const price of pricesFromSource) {
+        if (prices[price.symbol] === undefined) {
+          prices[price.symbol] = {
+            id: uuid(), // Generating unique id for each price
+            source: {},
+            symbol: price.symbol,
+            timestamp,
+            version: VERSION,
+          };
+        }
+        prices[price.symbol].source[source] = price.value;
+      }
+    }
 
-export default {
-  run,
+    return this.calculateAggregatedValues(_.values(prices));
+  }
+
+  // This function converts tokens from manifest to object with the following
+  // type: { <SourceName>: <Array of tokens to fetch from source> }
+  groupTokensBySource(): { [source: string]: string[] } {
+    const sources: { [source: string]: string[] } = {};
+
+    for (const symbol in this.manifest.tokens) {
+      const source = this.manifest.tokens[symbol].source;
+      let sourcesForToken: string[];
+
+      // If no source is defined for token
+      // we use global source from manifest
+      if (source === undefined) {
+        if (this.manifest.defaultSource === undefined) {
+          const errMsg =
+            `Token source is not defined for "${symbol}"`
+            + `and global source is not defined`;
+          throw new Error(errMsg);
+        } else {
+          sourcesForToken = this.manifest.defaultSource;
+        }
+      } else {
+        sourcesForToken = source;
+      }
+
+      for (const singleSource of sourcesForToken) {
+        if (!sources[singleSource]) {
+          sources[singleSource] = [symbol];
+        } else {
+          sources[singleSource].push(symbol);
+        }
+      }
+    }
+
+    return sources;
+  }
+
+  calculateAggregatedValues(
+    prices: PriceDataBeforeAggregation[]): PriceDataAfterAggregation[] {
+    return prices.map((p) =>
+      aggregators[this.manifest.priceAggregator].getAggregatedValue(p));
+  }
+
+  async signPrice(
+    price: PriceDataAfterAggregation): Promise<PriceDataSigned> {
+
+    const priceStringified = JSON.stringify(price);
+    const signature: string = await this.arweave.sign(priceStringified);
+
+    return {
+      ...price,
+      signature,
+    };
+  }
+
 };

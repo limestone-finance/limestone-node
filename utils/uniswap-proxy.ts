@@ -9,7 +9,7 @@ export async function getAllPairs(): Promise<any[]> {
   let allPairsFetched = false,
       pageNr = 0,
       lastId = "",
-      allPairs = [];
+      allPairs: any[] = [];
 
   while (!allPairsFetched) {
     console.log(

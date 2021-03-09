@@ -19,12 +19,16 @@ export interface Aggregator {
 };
 
 export interface Keeper {
-  keep: (price: PriceDataSigned) => Promise<PriceDataKeeped>,
+  keep: (prices: PriceDataSigned[]) => Promise<TransactionId>,
 };
 
 export interface Broadcaster {
-  broadcast: (price: PriceDataKeeped) => Promise<void>,
+  broadcast: (prices: PriceDataSigned[],
+              permawebTx: TransactionId,
+              provider: string) => Promise<void>,
 };
+
+export type TransactionId = string;
 
 export interface PriceDataFetched {
   symbol: string,
@@ -34,10 +38,9 @@ export interface PriceDataFetched {
 export interface PriceDataBeforeAggregation {
   id: string,
   symbol: string,
-  source: object,
+  source: { [sourceName: string]: number },
   timestamp: number,
   version: string,
-  provider: string,
 };
 
 export interface PriceDataAfterAggregation extends PriceDataBeforeAggregation {
@@ -46,8 +49,4 @@ export interface PriceDataAfterAggregation extends PriceDataBeforeAggregation {
 
 export interface PriceDataSigned extends PriceDataAfterAggregation {
   signature: string,
-};
-
-export interface PriceDataKeeped extends PriceDataSigned {
-  permawebTx: string,
 };

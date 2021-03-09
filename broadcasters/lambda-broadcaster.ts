@@ -1,12 +1,25 @@
 import axios from "axios";
-import { PriceDataKeeped, Broadcaster } from "../types";
+import { PriceDataSigned, Broadcaster, TransactionId } from "../types";
 
-// TODO: connect limestone.finance domain and change URL
-const PRICED_EP_URL = "https://3t0z836dv2.execute-api.eu-north-1.amazonaws.com/default/pricesHttpEndpoint";
+const PRICES_EP_URL = "https://api.limestone.finance/prices";
 
 const lambdaBroadcaster: Broadcaster = {
-  async broadcast(price: PriceDataKeeped): Promise<void> {
-    await axios.post(PRICED_EP_URL, price);
+  async broadcast(prices: PriceDataSigned[],
+    permawebTx: TransactionId, provider: string): Promise<void> {
+
+    // TODO: implement lambda endpoint for bulk prices uploading
+    // await axios.post(PRICES_EP_URL, {
+    //   prices,
+    //   permawebTx,
+    // });
+
+    for (const price of prices) {
+      await axios.post(PRICES_EP_URL, {
+        ...price,
+        permawebTx,
+        provider,
+      });
+    }
   },
 };
 

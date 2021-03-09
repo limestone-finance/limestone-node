@@ -16,13 +16,18 @@ const medianAggregator: Aggregator = {
 };
 
 function getMedianValue(arr: number[]): number {
-  arr = arr.sort();
+  arr = arr.sort((a, b) => a - b);
+
+  if (arr.length === 0) {
+    throw new Error("Can not get median value of an empty array");
+  }
+
+  const middle = Math.floor(arr.length / 2);
 
   if (arr.length % 2 === 0) {
-    // TODO: maybe we should return mean value of two values in center
-    return arr[arr.length / 2];
+    return (arr[middle] + arr[middle - 1]) / 2;
   } else {
-    return arr[(arr.length - 1) / 2];
+    return arr[middle];
   }
 }
 

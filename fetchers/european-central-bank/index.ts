@@ -1,6 +1,10 @@
 import { exchangeRates } from "exchange-rates-api";
 import { PriceDataFetched, Fetcher } from "../../types";
 
+interface EcbResponseObject {
+  [symbol: string]: number,
+};
+
 const ecbFetcher: Fetcher = {
   async fetchAll(symbols: string[]): Promise<PriceDataFetched[]> {
     // Fetching prices
@@ -16,7 +20,7 @@ const ecbFetcher: Fetcher = {
       for (const symbol in response) {
         prices.push({
           symbol,
-          value: response[symbol],
+          value: (response as EcbResponseObject)[symbol],
         });
       }
     } else {

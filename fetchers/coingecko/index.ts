@@ -1,6 +1,8 @@
-import CoinGecko from "coingecko-api";
+const CoinGecko = require("coingecko-api");
+const symbolToId: { [symbol: string]: string } =
+  require("./coingecko-symbol-to-id.json");
+
 import colors from "colors";
-import symbolToId from "./coingecko-symbol-to-id.json";
 import { PriceDataFetched, Fetcher } from "../../types";
 
 const CoinGeckoClient = new CoinGecko();
@@ -8,7 +10,8 @@ const CoinGeckoClient = new CoinGecko();
 const coingeckoFetcher: Fetcher = {
   async fetchAll(tokenSymbols: string[]): Promise<PriceDataFetched[]> {
     // Converting array of symbols to array of ids
-    const ids = [], idToSymbol = {};
+    const ids = [];
+    const idToSymbol: { [id: string]: string } = {};
     for (const symbol of tokenSymbols) {
       const id = symbolToId[symbol];
       if (id !== undefined) {

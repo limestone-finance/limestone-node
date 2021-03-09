@@ -1,7 +1,9 @@
 import colors from "colors";
 import uniswapProxy from "../../utils/uniswap-proxy";
 import { PriceDataFetched, Fetcher } from "../../types";
-import symbolToPairId from "./uniswap-symbol-to-pair-id.json";
+
+const symbolToPairId: { [symbol: string]: string } =
+  require("./uniswap-symbol-to-pair-id.json");
 
 const uniswapFetcher: Fetcher = {
   async fetchAll(tokenSymbols: string[]): Promise<PriceDataFetched[]> {
