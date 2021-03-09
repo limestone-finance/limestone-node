@@ -22,12 +22,10 @@ export default class ArweaveProxy  {
   async sign(strToSign: string): Promise<string> {
     // TODO: check alternative method
     // crypto module is marked as deprecated
-    console.log({strToSign});
     const dataToSign: Uint8Array = new TextEncoder().encode(strToSign);
-    console.log({dataToSign});
     const signature = await this.arweave.crypto.sign(this.jwk, dataToSign);
-    console.log({signature});
     const buffer = Buffer.from(signature);
+
     return buffer.toString("base64");
   }
 

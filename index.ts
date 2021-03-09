@@ -36,7 +36,7 @@ function main(): void {
         jwkFileContent: string = fs.readFileSync(jwkFilePath, "utf-8");
   try {
     manifest = JSON.parse(manifestFileContent);
-    jwk = JSON.parse(manifestFileContent);
+    jwk = JSON.parse(jwkFileContent);
   } catch (e) {
     throw new Error("Manifest file and jwk file must be valid JSONs");
   }
