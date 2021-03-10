@@ -1,33 +1,37 @@
 import { exchangeRates } from "exchange-rates-api";
-import { PriceData } from "../../types";
+import { PriceDataFetched, Fetcher } from "../../types";
 
-async function fetchAll(symbols: string[]): Promise<PriceData[]> {
-  // Fetching prices
-  const response = (await exchangeRates()
-    .latest()
-    .base('USD')
-    .symbols(symbols)
-    .fetch());
+interface EcbResponseObject {
+  [symbol: string]: number,
+};
 
-  // Building prices array
-  const prices = [];
-  if (typeof response === "object") {
-    for (const symbol in response) {
+const ecbFetcher: Fetcher = {
+  async fetchAll(symbols: string[]): Promise<PriceDataFetched[]> {
+    // Fetching prices
+    const response = (await exchangeRates()
+      .latest()
+      .base('USD')
+      .symbols(symbols)
+      .fetch());
+
+    // Building prices array
+    const prices = [];
+    if (typeof response === "object") {
+      for (const symbol in response) {
+        prices.push({
+          symbol,
+          value: 1 / (response as EcbResponseObject)[symbol],
+        });
+      }
+    } else {
       prices.push({
-        symbol,
-        price: response[symbol],
+        symbol: symbols[0],
+        value: 1 / response,
       });
     }
-  } else {
-    prices.push({
-      symbol: symbols[0],
-      price: response,
-    });
-  }
 
-  return prices;
-}
-
-export default {
-  fetchAll,
+    return prices;
+  },
 };
+
+export default ecbFetcher;

@@ -1,27 +1,37 @@
-import proxy from "../utils/arweave-proxy";
+import Transaction from "arweave/node/lib/transaction";
+import ArweaveProxy from "../utils/arweave-proxy";
+import config from "../config";
+import {
+  ArweaveTransactionTags,
+  Keeper,
+  PriceDataAfterAggregation,
+} from "../types";
 
-const VERSION = "0.005";
+async function prepareTransaction(
+  prices: PriceDataAfterAggregation[],
+  arweaveProxy: ArweaveProxy): Promise<Transaction> {
+    if (prices.length === 0) {
+      throw new Error("Can not keep empty array of prices in arweave");
+    }
 
-async function keep(
-  token: string,
-  source: string,
-  value: string
-): Promise<void> {
+    const tags: ArweaveTransactionTags = {
+      app: "Limestone",
+      type: "data",
+      version: config.version,
 
-  const tags = {
-    app: "Limestone",
-    version: VERSION,
-    type: "data-latest",
-    token: token,
-    time: Date.now(),
-    source: source,
-    value: value,
+      // all prices should have the same timestamp
+      timestamp: String(prices[0].timestamp),
+    };
+
+    // Adding AR price to tags if possible
+    const arPrice = prices.find(p => p.symbol === "AR");
+    if (arPrice !== undefined) {
+      tags["AR"] = String(arPrice.value);
+    }
+
+    return await arweaveProxy.prepareUploadTransaction(tags, prices);
   };
 
-  const tx = await proxy.upload(tags, value);
-  console.log(`Keeper tx (${token}): ${tx.id}`);
-}
-
 export default {
-  keep,
-};
+  prepareTransaction,
+} as Keeper;

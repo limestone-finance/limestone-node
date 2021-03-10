@@ -1,49 +1,49 @@
 import Coinbase from "coinbase";
 import colors from "colors";
-import { PriceData } from "../../types";
+import { PriceDataFetched, Fetcher } from "../../types";
 
-const CoinbaseClient = Coinbase.Client;
-const coinbaseConfig: any = {
+const coinbaseClient = new Coinbase.Client({
   "apiKey": "KEY",
   "apiSecret": "SECRET",
+  // @ts-ignore: strictSSL property is not set in coinbase types
+  // but it is required for coinbase client to work properly
   "strictSSL": false,
-};
-const coinbaseClient = new CoinbaseClient(coinbaseConfig);
+});
 
-async function fetchAll(tokenSymbols: string[]): Promise<PriceData[]> {
-  // Fetching prices
-  const currencies: any = await new Promise((resolve, reject) => {
-    coinbaseClient.getExchangeRates({
-      "currency": "USD",
-    }, (err, response) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(response.data);
-      }
-    });
-  });
-
-  // Building prices array
-  const prices = [];
-  for (const symbol of tokenSymbols) {
-    const rates = currencies.rates;
-    const price = rates[symbol];
-    if (price !== undefined) {
-      prices.push({
-        symbol,
-        price: 1 / price,
+const coinbaseFetcher: Fetcher = {
+  async fetchAll(tokenSymbols: string[]): Promise<PriceDataFetched[]> {
+    // Fetching prices
+    const currencies: any = await new Promise((resolve, reject) => {
+      coinbaseClient.getExchangeRates({
+        "currency": "USD",
+      }, (err, response) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(response.data);
+        }
       });
-    } else {
-      console.warn(
-        colors.bold.bgYellow(
-          `Token is not supported with coinbase source: ${symbol}`));
+    });
+
+    // Building prices array
+    const prices = [];
+    for (const symbol of tokenSymbols) {
+      const rates = currencies.rates;
+      const exchangeRate = rates[symbol];
+      if (exchangeRate !== undefined) {
+        prices.push({
+          symbol,
+          value: 1 / exchangeRate,
+        });
+      } else {
+        console.warn(
+          colors.bold.bgYellow(
+            `Token is not supported with coinbase source: ${symbol}`));
+      }
     }
-  }
 
-  return prices;
-}
-
-export default {
-  fetchAll,
+    return prices;
+  },
 };
+
+export default coinbaseFetcher;
