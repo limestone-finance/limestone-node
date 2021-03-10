@@ -7,13 +7,15 @@ import Runner from "./runner";
 
 const { hideBin } = require("yargs/helpers");
 
-try {
-  main();
-} catch (e) {
-  console.error(e);
-  console.log(colors.bold.bgGreen(
-    "USAGE: yarn start --manifest <PATH_TO_MANIFEST_FILE_WITH_VALID_JSON> --jwk <PATH_TO_JWK_FILE>"));
-};
+async function start() {
+  try {
+    await main();
+  } catch (e) {
+    console.error(e);
+    console.log(colors.bold.bgGreen(
+      "USAGE: yarn start --manifest <PATH_TO_MANIFEST_FILE_WITH_VALID_JSON> --jwk <PATH_TO_JWK_FILE>"));
+  };
+}
 
 async function main(): Promise<void> {
   // Reading cli arguments
@@ -45,3 +47,5 @@ async function main(): Promise<void> {
   const runner = await Runner.init(manifest, jwk);
   runner.run();
 }
+
+start();
