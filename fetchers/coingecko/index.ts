@@ -5,7 +5,7 @@ const symbolToId: { [symbol: string]: string } =
 import colors from "colors";
 import { PriceDataFetched, Fetcher } from "../../types";
 
-const CoinGeckoClient = new CoinGecko();
+const coinGeckoClient = new CoinGecko();
 
 const coingeckoFetcher: Fetcher = {
   async fetchAll(tokenSymbols: string[]): Promise<PriceDataFetched[]> {
@@ -25,7 +25,7 @@ const coingeckoFetcher: Fetcher = {
     }
 
     // Fetching prices data
-    const response = await CoinGeckoClient.simple.price({ ids });
+    const response = await coinGeckoClient.simple.price({ ids });
 
     // Building prices array
     const prices = [];

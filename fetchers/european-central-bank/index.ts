@@ -20,13 +20,13 @@ const ecbFetcher: Fetcher = {
       for (const symbol in response) {
         prices.push({
           symbol,
-          value: (response as EcbResponseObject)[symbol],
+          value: 1 / (response as EcbResponseObject)[symbol],
         });
       }
     } else {
       prices.push({
         symbol: symbols[0],
-        value: response,
+        value: 1 / response,
       });
     }
 
