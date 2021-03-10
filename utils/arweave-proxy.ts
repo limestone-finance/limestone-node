@@ -2,9 +2,6 @@ import Arweave from "arweave/node";
 import Transaction from "arweave/node/lib/transaction";
 import { JWKInterface } from "arweave/node/lib/wallet";
 import _  from "lodash";
-// import ARQL from "arql-ops";
-
-// const LIME_TOKEN = "q2v4Msum6oeNRkSGfaM3E3RU6RCJ17T7Vm9ltMDEv4M";
 
 export default class ArweaveProxy  {
   jwk: JWKInterface;
@@ -34,6 +31,13 @@ export default class ArweaveProxy  {
   async getAddress(): Promise<string> {
     return await this.arweave.wallets.jwkToAddress(this.jwk);
   }
+
+  async getBalance(): Promise<number> {
+    let address = await this.getAddress();
+    let rawBalance = await this.arweave.wallets.getBalance(address);
+    return parseFloat(this.arweave.ar.winstonToAr(rawBalance));
+  }
+
 
   // This method creates and signs arweave transaction
   // It doesn't post transaction to arweave, to do so use postTransaction

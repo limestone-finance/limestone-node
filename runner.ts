@@ -18,6 +18,8 @@ import {
   Manifest,
 } from "./types";
 
+const MIN_AR_BALANCE:Number = 0.1;
+
 //Format logs
 consoleStamp(console, { pattern: "[HH:MM:ss.l]" });
 
@@ -38,16 +40,24 @@ export default class Runner {
     return new Runner(manifest, arweave, providerAddress);
   }
 
-  run(): void {
+  async run(): Promise<void> {
     console.log("Running limestone-node with manifest: ");
     console.log(JSON.stringify(this.manifest));
+    let balance = await this.arweave.getBalance();
     console.log(`Address: ${this.providerAddress}`);
+    console.log(`Balance: ${balance}`);
 
-    const runIteration = () => {
-      this.processAll();
+    //Assure minimum balance
+    if (balance < MIN_AR_BALANCE) {
+      console.log(`You should have at least ${MIN_AR_BALANCE} AR to start a node service.`);
+      process.exit(0);
+    }
+
+    const runIteration = async () => {
+      await this.processAll();
     };
 
-    runIteration(); // Start immediately then repeat in manifest.interval
+    await runIteration(); // Start immediately then repeat in manifest.interval
     setInterval(runIteration, this.manifest.interval);
   }
 
