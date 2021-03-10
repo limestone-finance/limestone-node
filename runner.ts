@@ -1,6 +1,7 @@
 import consoleStamp from "console-stamp";
 import uuid from "uuid-random";
 import _ from "lodash";
+import colors from "colors";
 import { JWKInterface } from "arweave/node/lib/wallet";
 import Transaction from "arweave/node/lib/transaction";
 import fetchers from "./fetchers";
@@ -82,7 +83,12 @@ export default class Runner {
 
     // Broadcasting
     console.log("Broadcasting prices");
-    await broadcaster.broadcast(signedPrices);
+    try {
+      await broadcaster.broadcast(signedPrices);
+    } catch (e) {
+      console.error(colors.bgRed("Broadcasting failed"));
+      console.error(e);
+    }
 
     // Posting prices data on arweave blockchain
     console.log(
@@ -95,34 +101,58 @@ export default class Runner {
 
     const sources = this.groupTokensBySource();
 
-    // Fetching token prices from all sources
+    // Fetching token prices from all sources in parallel
     // And grouping them by token symbols
     const prices: { [symbol: string]: PriceDataBeforeAggregation } = {};
     const timestamp = Date.now();
+    const promises: Promise<void>[] = [];
     for (const source in sources) {
-      // Fetching
-      const pricesFromSource = await fetchers[source].fetchAll(sources[source]);
-      console.log(
-        `Fetched prices in USD for ${pricesFromSource.length} `
-        + `currencies from source: "${source}"`);
-
-      // Grouping
-      for (const price of pricesFromSource) {
-        if (prices[price.symbol] === undefined) {
-          prices[price.symbol] = {
-            id: uuid(), // Generating unique id for each price
-            source: {},
-            symbol: price.symbol,
-            timestamp,
-            version: config.version,
-          };
-        }
-        prices[price.symbol].source[source] = price.value;
-      }
+      promises.push(
+        this.safeFetchFromSourceAndGroup(
+          source,
+          sources,
+          timestamp,
+          prices));
     }
+    await Promise.all(promises);
 
     return this.calculateAggregatedValues(_.values(prices));
   }
+
+  async safeFetchFromSourceAndGroup(
+    source: string,
+    sources: { [source: string]: string[] },
+    timestamp: number,
+    prices: { [symbol: string]: PriceDataBeforeAggregation }) {
+      try {
+        // Fetching
+        const pricesFromSource =
+          await fetchers[source].fetchAll(sources[source]);
+        console.log(
+          `Fetched prices in USD for ${pricesFromSource.length} `
+          + `currencies from source: "${source}"`);
+
+        // Grouping
+        for (const price of pricesFromSource) {
+          if (prices[price.symbol] === undefined) {
+            prices[price.symbol] = {
+              id: uuid(), // Generating unique id for each price
+              source: {},
+              symbol: price.symbol,
+              timestamp,
+              version: config.version,
+            };
+          }
+          prices[price.symbol].source[source] = price.value;
+        }
+      } catch (e) {
+        // We don't throw an error because we want to continue with
+        // other fetchers even if some fetchers failed
+        console.error(
+          colors.bgRed(`Fetching failed for source: ${source}`));
+        console.error(e);
+      }
+    }
 
   // This function converts tokens from manifest to object with the following
   // type: { <SourceName>: <Array of tokens to fetch from source> }
