@@ -18,6 +18,8 @@ async function prepareTransaction(
       app: "Limestone",
       type: "data",
       version: config.version,
+
+      // all prices should have the same timestamp
       timestamp: String(prices[0].timestamp),
     };
 

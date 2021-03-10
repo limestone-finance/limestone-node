@@ -12,7 +12,7 @@ try {
 } catch (e) {
   console.error(e);
   console.log(colors.bold.bgGreen(
-    "USAGE: yarn start --manifest <PATH_TO_MANIFEST_FILE_WITH_VALID_JSON> --jwk <PATH_TO_JWK>"));
+    "USAGE: yarn start --manifest <PATH_TO_MANIFEST_FILE_WITH_VALID_JSON> --jwk <PATH_TO_JWK_FILE>"));
 };
 
 async function main(): Promise<void> {
@@ -26,7 +26,7 @@ async function main(): Promise<void> {
     throw new Error("Path to manifest file cannot be empty");
   }
   if (jwkFilePath === undefined || jwkFilePath === "") {
-    throw new Error("Path to keys file cannot be empty");
+    throw new Error("Path to jwk file cannot be empty");
   }
 
   // Reading and parsing manifest file
