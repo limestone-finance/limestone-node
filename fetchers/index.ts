@@ -1,13 +1,15 @@
+import { Fetcher } from "../types";
 import coingecko from "./coingecko";
 import coinbase from "./coinbase";
-import ecb from "./european-central-bank";
+import balancer from "./balancer";
 import uniswap from "./uniswap";
 import kyber from "./kyber";
-import { Fetcher } from "../types";
+import ecb from "./european-central-bank";
 
 export default {
   coingecko,
   coinbase,
+  balancer,
   uniswap,
   kyber,
   ecb,

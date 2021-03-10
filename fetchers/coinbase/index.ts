@@ -5,10 +5,8 @@ import { PriceDataFetched, Fetcher } from "../../types";
 const coinbaseClient = new Coinbase.Client({
   "apiKey": "KEY",
   "apiSecret": "SECRET",
-  // @ts-ignore: strictSSL property is not set in coinbase types
-  // but it is required for coinbase client to work properly
   "strictSSL": false,
-});
+} as any);
 
 const coinbaseFetcher: Fetcher = {
   async fetchAll(tokenSymbols: string[]): Promise<PriceDataFetched[]> {

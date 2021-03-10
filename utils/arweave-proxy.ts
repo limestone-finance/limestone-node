@@ -38,7 +38,6 @@ export default class ArweaveProxy  {
     return parseFloat(this.arweave.ar.winstonToAr(rawBalance));
   }
 
-
   // This method creates and signs arweave transaction
   // It doesn't post transaction to arweave, to do so use postTransaction
   async prepareUploadTransaction(tags: any, data: any): Promise<Transaction> {
