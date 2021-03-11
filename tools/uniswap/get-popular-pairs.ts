@@ -1,4 +1,4 @@
-import uniswapProxy from "../../utils/uniswap-proxy";
+import uniswapProxy from "./uniswap-proxy";
 
 main();
 
