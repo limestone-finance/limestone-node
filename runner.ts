@@ -9,7 +9,6 @@ import keepers from "./keepers";
 import aggregators from "./aggregators";
 import broadcaster from "./broadcasters/lambda-broadcaster";
 import ArweaveProxy from "./utils/arweave-proxy";
-import config from "./config";
 import {
   PriceDataBeforeAggregation,
   PriceDataAfterAggregation,
@@ -17,6 +16,8 @@ import {
   PriceDataSigned,
   Manifest,
 } from "./types";
+
+const { version } = require("./package.json") as any;
 
 const MIN_AR_BALANCE:Number = 0.1;
 
@@ -177,7 +178,7 @@ export default class Runner {
               source: {},
               symbol: price.symbol,
               timestamp,
-              version: config.version,
+              version,
             };
           }
           prices[price.symbol].source[source] = price.value;
