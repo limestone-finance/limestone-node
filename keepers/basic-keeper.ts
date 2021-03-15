@@ -6,7 +6,7 @@ import {
   PriceDataAfterAggregation,
 } from "../types";
 
-const { version } = require("./package.json") as any;
+const { version } = require("../package.json") as any;
 
 async function prepareTransaction(
   prices: PriceDataAfterAggregation[],

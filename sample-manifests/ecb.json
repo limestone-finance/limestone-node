@@ -1,0 +1,12 @@
+{
+  "interval": 15000,
+  "priceAggregator": "median",
+  "defaultSource": ["ecb"],
+  "tokens": {
+    "EUR": {},
+    "JPY": {},
+    "GBP": {},
+    "AUD": {},
+    "CHF": {}
+  }
+}

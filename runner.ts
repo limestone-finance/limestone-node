@@ -207,7 +207,7 @@ export default class Runner {
         if (this.manifest.defaultSource === undefined) {
           const errMsg =
             `Token source is not defined for "${symbol}"`
-            + `and global source is not defined`;
+            + ` and global source is not defined`;
           throw new Error(errMsg);
         } else {
           sourcesForToken = this.manifest.defaultSource;
