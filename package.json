@@ -1,6 +1,6 @@
 {
   "name": "limestone-node",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "A data provider module that fetches price information and serves it to end users. ",
   "main": "index.js",
   "scripts": {

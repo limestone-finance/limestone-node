@@ -1,4 +1,4 @@
-import uniswapProxy from "../../utils/uniswap-proxy";
+import uniswapProxy from "./uniswap-proxy";
 
 // This script can be used to fetch all available uniswap pairs from the graph
 // USAGE: ts-node tools/uniswap/get-all-pairs.ts > uniswap-all-pairs.json

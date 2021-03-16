@@ -13,15 +13,18 @@ async function start() {
   } catch (e) {
     console.error(e);
     console.log(colors.bold.bgGreen(
-      "USAGE: yarn start --manifest <PATH_TO_MANIFEST_FILE_WITH_VALID_JSON> --jwk <PATH_TO_JWK_FILE>"));
+      "USAGE: yarn start --manifest <PATH_TO_MANIFEST_FILE_WITH_VALID_JSON> --jwk <PATH_TO_JWK_FILE> [--infura-key <INFURA_API_KEY>] [--covalent-key <COVALENT_API_KEY>]"));
   };
 }
 
 async function main(): Promise<void> {
   // Reading cli arguments
   const argv = yargs(hideBin(process.argv)).argv,
-        manifestFilePath = String(argv.manifest),
-        jwkFilePath = String(argv.jwk);
+        manifestFilePath = argv.manifest,
+        jwkFilePath = argv.jwk,
+        infuraApiKey = argv["infura-key"] as string | undefined,
+        covalentApiKey = argv["covalent-key"] as string | undefined;
+
 
   // Validating cli arguments
   if (manifestFilePath === undefined || manifestFilePath === "") {
@@ -34,8 +37,10 @@ async function main(): Promise<void> {
   // Reading and parsing manifest file
   let manifest: Manifest,
       jwk: JWKInterface;
-  const manifestFileContent: string = fs.readFileSync(manifestFilePath, "utf-8"),
-        jwkFileContent: string = fs.readFileSync(jwkFilePath, "utf-8");
+  const manifestFileContent: string =
+    fs.readFileSync(String(manifestFilePath), "utf-8");
+  const jwkFileContent: string =
+    fs.readFileSync(String(jwkFilePath), "utf-8");
   try {
     manifest = JSON.parse(manifestFileContent);
     jwk = JSON.parse(jwkFileContent);
@@ -44,7 +49,12 @@ async function main(): Promise<void> {
   }
 
   // Running limestone-node with manifest
-  const runner = await Runner.init(manifest, jwk);
+  const runner = await Runner.init({
+    manifest,
+    jwk,
+    infuraApiKey,
+    covalentApiKey,
+  });
   runner.run();
 }
 

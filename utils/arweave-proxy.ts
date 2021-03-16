@@ -10,9 +10,9 @@ export default class ArweaveProxy  {
   constructor(jwk: JWKInterface) {
     this.jwk = jwk;
     this.arweave = Arweave.init({
-      host: 'arweave.net', // Hostname or IP address for a Arweave host
+      host: "arweave.net", // Hostname or IP address for a Arweave host
       port: 443,           // Port
-      protocol: 'https',   // Network protocol http or https
+      protocol: "https",   // Network protocol http or https
       timeout: 60000,      // Network request timeouts in milliseconds
       logging: false,      // Enable network request logging
     });
@@ -37,7 +37,6 @@ export default class ArweaveProxy  {
     let rawBalance = await this.arweave.wallets.getBalance(address);
     return parseFloat(this.arweave.ar.winstonToAr(rawBalance));
   }
-
 
   // This method creates and signs arweave transaction
   // It doesn't post transaction to arweave, to do so use postTransaction

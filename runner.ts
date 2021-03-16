@@ -9,7 +9,6 @@ import keepers from "./keepers";
 import aggregators from "./aggregators";
 import broadcaster from "./broadcasters/lambda-broadcaster";
 import ArweaveProxy from "./utils/arweave-proxy";
-import config from "./config";
 import {
   PriceDataBeforeAggregation,
   PriceDataAfterAggregation,
@@ -17,6 +16,8 @@ import {
   PriceDataSigned,
   Manifest,
 } from "./types";
+
+const { version } = require("./package.json") as any;
 
 const MIN_AR_BALANCE:Number = 0.1;
 
@@ -27,27 +28,51 @@ export default class Runner {
   manifest: Manifest;
   arweave: ArweaveProxy;
   providerAddress: string;
+  infuraApiKey?: string;
+  covalentApiKey?: string;
 
-  constructor(manifest: Manifest, arweave: ArweaveProxy, provider: string) {
-    this.manifest = manifest;
-    this.arweave = arweave;
-    this.providerAddress = provider;
+  constructor(opts: {
+    manifest: Manifest;
+    arweave: ArweaveProxy;
+    provider: string;
+    infuraApiKey?: string;
+    covalentApiKey?: string;
+  }) {
+    this.manifest = opts.manifest;
+    this.arweave = opts.arweave;
+    this.providerAddress = opts.provider;
+    this.infuraApiKey = opts.infuraApiKey;
+    this.covalentApiKey = opts.covalentApiKey;
   }
 
-  static async init(manifest: Manifest, jwk: JWKInterface): Promise<Runner> {
-    const arweave = new ArweaveProxy(jwk);
-    const providerAddress = await arweave.getAddress();
-    return new Runner(manifest, arweave, providerAddress);
-  }
+  static async init(opts: {
+    manifest: Manifest,
+    jwk: JWKInterface,
+    infuraApiKey?: string,
+    covalentApiKey?: string
+  }): Promise<Runner> {
+      const arweave = new ArweaveProxy(opts.jwk);
+      const provider = await arweave.getAddress();
+      const optsToCopy = _.pick(opts, [
+        "manifest",
+        "infuraApiKey",
+        "covalentApiKey"
+      ]);
+      return new Runner({
+        ...optsToCopy,
+        arweave,
+        provider,
+      });
+    }
 
   async run(): Promise<void> {
     console.log("Running limestone-node with manifest: ");
     console.log(JSON.stringify(this.manifest));
-    let balance = await this.arweave.getBalance();
     console.log(`Address: ${this.providerAddress}`);
+    const balance = await this.arweave.getBalance();
     console.log(`Balance: ${balance}`);
 
-    //Assure minimum balance
+    // Assure minimum balance
     if (balance < MIN_AR_BALANCE) {
       console.log(`You should have at least ${MIN_AR_BALANCE} AR to start a node service.`);
       process.exit(0);
@@ -66,10 +91,10 @@ export default class Runner {
 
     const prices: PriceDataAfterAggregation[] = await this.fetchAll();
 
-    // TODO: decide if this logging is really needed
     for (const price of prices) {
+      const sourcesData = JSON.stringify(price.source);
       console.log(
-        `Fetched price : ${price.symbol} : ${price.value}`);
+        `Fetched price : ${price.symbol} : ${price.value} | ${sourcesData}`);
     }
 
     // Preparing arweave transaction
@@ -137,7 +162,10 @@ export default class Runner {
       try {
         // Fetching
         const pricesFromSource =
-          await fetchers[source].fetchAll(sources[source]);
+          await fetchers[source].fetchAll(sources[source], {
+            covalentApiKey: this.covalentApiKey,
+            infuraApiKey: this.infuraApiKey,
+          });
         console.log(
           `Fetched prices in USD for ${pricesFromSource.length} `
           + `currencies from source: "${source}"`);
@@ -150,7 +178,7 @@ export default class Runner {
               source: {},
               symbol: price.symbol,
               timestamp,
-              version: config.version,
+              version,
             };
           }
           prices[price.symbol].source[source] = price.value;
@@ -179,7 +207,7 @@ export default class Runner {
         if (this.manifest.defaultSource === undefined) {
           const errMsg =
             `Token source is not defined for "${symbol}"`
-            + `and global source is not defined`;
+            + ` and global source is not defined`;
           throw new Error(errMsg);
         } else {
           sourcesForToken = this.manifest.defaultSource;

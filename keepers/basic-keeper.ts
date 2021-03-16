@@ -1,11 +1,12 @@
 import Transaction from "arweave/node/lib/transaction";
 import ArweaveProxy from "../utils/arweave-proxy";
-import config from "../config";
 import {
   ArweaveTransactionTags,
   Keeper,
   PriceDataAfterAggregation,
 } from "../types";
+
+const { version } = require("../package.json") as any;
 
 async function prepareTransaction(
   prices: PriceDataAfterAggregation[],
@@ -17,7 +18,7 @@ async function prepareTransaction(
     const tags: ArweaveTransactionTags = {
       app: "Limestone",
       type: "data",
-      version: config.version,
+      version,
 
       // all prices should have the same timestamp
       timestamp: String(prices[0].timestamp),

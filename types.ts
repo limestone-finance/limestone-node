@@ -13,7 +13,12 @@ export interface TokenConfig {
 };
 
 export interface Fetcher {
-  fetchAll: (tokenSymbols: string[]) => Promise<PriceDataFetched[]>;
+  fetchAll: (
+    tokenSymbols: string[],
+    opts?: {
+      covalentApiKey?: string,
+      infuraApiKey?: string,
+    }) => Promise<PriceDataFetched[]>;
 };
 
 export interface Aggregator {

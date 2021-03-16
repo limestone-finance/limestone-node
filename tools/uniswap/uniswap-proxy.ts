@@ -1,9 +1,6 @@
 import axios from "axios";
 import _ from "lodash";
 
-const UNISWAP_SUBGRAPH =
-  "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2";
-
 export async function getAllPairs(): Promise<any[]> {
   const pageSize = 1000;
   let allPairsFetched = false,
