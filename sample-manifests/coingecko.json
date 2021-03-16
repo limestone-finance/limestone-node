@@ -3,6 +3,7 @@
   "priceAggregator": "median",
   "defaultSource": ["coingecko"],
   "tokens": {
+    "AR": {},
     "BTC": {},
     "ETH": {},
     "BNB": {},
