@@ -19,7 +19,7 @@ import {
 
 const { version } = require("./package.json") as any;
 
-const MIN_AR_BALANCE:Number = 0.1;
+const MIN_AR_BALANCE = 0.1;
 
 //Format logs
 consoleStamp(console, { pattern: "[HH:MM:ss.l]" });
@@ -69,21 +69,43 @@ export default class Runner {
     console.log("Running limestone-node with manifest: ");
     console.log(JSON.stringify(this.manifest));
     console.log(`Address: ${this.providerAddress}`);
-    const balance = await this.arweave.getBalance();
-    console.log(`Balance: ${balance}`);
 
     // Assure minimum balance
-    if (balance < MIN_AR_BALANCE) {
-      console.log(`You should have at least ${MIN_AR_BALANCE} AR to start a node service.`);
-      process.exit(0);
-    }
+    await this.checkBalance({
+      stopNodeIfBalanceIsLow: true,
+      notifyIfBalanceIsLow: false,
+    });
 
     const runIteration = async () => {
       await this.processAll();
+      await this.checkBalance({
+        stopNodeIfBalanceIsLow: false,
+        notifyIfBalanceIsLow: true,
+      });
     };
 
     await runIteration(); // Start immediately then repeat in manifest.interval
     setInterval(runIteration, this.manifest.interval);
+  }
+
+  private async checkBalance(args: {
+    stopNodeIfBalanceIsLow: boolean,
+    notifyIfBalanceIsLow: boolean,
+  }): Promise<void> {
+    const balance = await this.arweave.getBalance();
+    const isLow = balance < MIN_AR_BALANCE;
+    console.log(`Balance: ${balance}`);
+
+    if (args.notifyIfBalanceIsLow && isLow) {
+      console.warn(`Your balance is quite low: ${balance}`);
+      // TODO: send email notification
+    }
+
+    if (args.stopNodeIfBalanceIsLow && isLow) {
+      console.warn(
+        `You should have at least ${MIN_AR_BALANCE} AR to start a node service.`);
+      process.exit(0);
+    }
   }
 
   async processAll(): Promise<void> {
