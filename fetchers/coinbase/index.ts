@@ -1,6 +1,9 @@
 import Coinbase from "coinbase";
-import colors from "colors";
+import { Consola } from "consola";
 import { PriceDataFetched, Fetcher } from "../../types";
+
+const logger =
+  require("../../utils/logger")("fetchers/coinbase") as Consola;
 
 const coinbaseClient = new Coinbase.Client({
   "apiKey": "KEY",
@@ -34,9 +37,8 @@ const coinbaseFetcher: Fetcher = {
           value: 1 / exchangeRate,
         });
       } else {
-        console.warn(
-          colors.bold.bgYellow(
-            `Token is not supported with coinbase source: ${symbol}`));
+        logger.warn(
+          `Token is not supported with coinbase source: ${symbol}`);
       }
     }
 

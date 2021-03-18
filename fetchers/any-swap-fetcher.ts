@@ -1,6 +1,9 @@
-import colors from "colors";
+import { Consola } from "consola";
 import graphProxy from "../utils/graph-proxy";
 import { PriceDataFetched, Fetcher } from "../types";
+
+const logger =
+  require("../utils/logger")("fetchers/any-swap-fetcher") as Consola;
 
 interface SymbolToPairId {
   [symbol: string]: string;
@@ -64,9 +67,8 @@ function convertSymbolsToPairIds(
     for (const symbol of symbols) {
       const pairId = symbolToPairId[symbol];
       if (pairId === undefined) {
-        console.warn(
-          colors.bold.bgYellow(
-            `Token is not supported with ${sourceName} source: ${symbol}`));
+        logger.warn(
+          `Token is not supported with ${sourceName} source: ${symbol}`);
       } else {
         pairIds.push(pairId);
       }

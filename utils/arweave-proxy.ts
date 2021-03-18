@@ -1,7 +1,11 @@
 import Arweave from "arweave/node";
 import Transaction from "arweave/node/lib/transaction";
 import { JWKInterface } from "arweave/node/lib/wallet";
+import { Consola } from "consola";
 import _  from "lodash";
+
+const logger =
+  require("./logger")("utils/arweave-proxy") as Consola;
 
 export default class ArweaveProxy  {
   jwk: JWKInterface;
@@ -57,7 +61,7 @@ export default class ArweaveProxy  {
 
   async postTransaction(tx: Transaction): Promise<void> {
     const response = await this.arweave.transactions.post(tx);
-    console.log({ response }); // <- TODO: maybe this logging should be removed
+    logger.info("Tx response: ", response);
   }
 
 };

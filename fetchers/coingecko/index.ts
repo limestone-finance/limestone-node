@@ -1,9 +1,11 @@
-const CoinGecko = require("coingecko-api");
-const symbolToId: { [symbol: string]: string } =
-  require("./coingecko-symbol-to-id.json");
-
-import colors from "colors";
+import { Consola } from "consola";
 import { PriceDataFetched, Fetcher } from "../../types";
+
+const CoinGecko = require("coingecko-api") as any;
+const logger =
+  require("../../utils/logger")("fetchers/coingecko") as Consola;
+const symbolToId: { [symbol: string]: string } =
+  require("./coingecko-symbol-to-id.json") as any;
 
 const coinGeckoClient = new CoinGecko();
 
@@ -18,9 +20,8 @@ const coingeckoFetcher: Fetcher = {
         ids.push(symbolToId[symbol]);
         idToSymbol[id] = symbol;
       } else {
-        console.warn(
-          colors.bold.bgYellow(
-            `Token is not supported with coingecko source: ${symbol}`));
+        logger.warn(
+          `Token is not supported with coingecko source: ${symbol}`);
       }
     }
 

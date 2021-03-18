@@ -1,8 +1,10 @@
 import axios from "axios";
-import colors from "colors";
+import { Consola } from "consola";
 import { PriceDataFetched, Fetcher } from "../../types";
 
-const CoinGecko = require("coingecko-api");
+const logger =
+  require("../../utils/logger")("fetchers/kyber") as Consola;
+const CoinGecko = require("coingecko-api") as any;
 
 const ETH_PAIRS_URL = "https://api.kyber.network/api/tokens/pairs";
 
@@ -20,9 +22,8 @@ const kyberFetcher: Fetcher = {
       const pair = pairs["ETH_" + symbol];
 
       if (pair === undefined) {
-        console.warn(
-          colors.bold.bgYellow(
-            `Token is not supported with kyber source: ${symbol}`));
+        logger.warn(
+          `Token is not supported with kyber source: ${symbol}`);
       } else {
         prices.push({
           symbol,

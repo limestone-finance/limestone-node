@@ -1,7 +1,7 @@
 import consoleStamp from "console-stamp";
 import uuid from "uuid-random";
 import _ from "lodash";
-import colors from "colors";
+import { Consola } from "consola";
 import { JWKInterface } from "arweave/node/lib/wallet";
 import Transaction from "arweave/node/lib/transaction";
 import fetchers from "./fetchers";
@@ -16,6 +16,8 @@ import {
   PriceDataSigned,
   Manifest,
 } from "./types";
+
+const logger = require("./utils/logger")("runner") as Consola;
 
 const { version } = require("./package.json") as any;
 
@@ -66,9 +68,9 @@ export default class Runner {
     }
 
   async run(): Promise<void> {
-    console.log("Running limestone-node with manifest: ");
-    console.log(JSON.stringify(this.manifest));
-    console.log(`Address: ${this.providerAddress}`);
+    logger.info("Running limestone-node with manifest: ");
+    logger.info(JSON.stringify(this.manifest));
+    logger.info(`Address: ${this.providerAddress}`);
 
     // Assure minimum balance
     await this.checkBalance({
@@ -94,33 +96,33 @@ export default class Runner {
   }): Promise<void> {
     const balance = await this.arweave.getBalance();
     const isLow = balance < MIN_AR_BALANCE;
-    console.log(`Balance: ${balance}`);
+    logger.info(`Balance: ${balance}`);
 
     if (args.notifyIfBalanceIsLow && isLow) {
-      console.warn(`Your balance is quite low: ${balance}`);
+      logger.info(`Your balance is quite low: ${balance}`);
       // TODO: send email notification
     }
 
     if (args.stopNodeIfBalanceIsLow && isLow) {
-      console.warn(
+      logger.fatal(
         `You should have at least ${MIN_AR_BALANCE} AR to start a node service.`);
       process.exit(0);
     }
   }
 
   async processAll(): Promise<void> {
-    console.log("Processing tokens");
+    logger.info("Processing tokens");
 
     const prices: PriceDataAfterAggregation[] = await this.fetchAll();
 
     for (const price of prices) {
       const sourcesData = JSON.stringify(price.source);
-      console.log(
+      logger.info(
         `Fetched price : ${price.symbol} : ${price.value} | ${sourcesData}`);
     }
 
     // Preparing arweave transaction
-    console.log("Keeping prices on arweave blockchain - preparing transaction");
+    logger.info("Keeping prices on arweave blockchain - preparing transaction");
     const { prepareTransaction } = keepers.basic;
     const transaction: Transaction =
       await prepareTransaction(prices, this.arweave);
@@ -129,7 +131,7 @@ export default class Runner {
     const signedPrices: PriceDataSigned[] = [];
     for (const price of prices) {
       // Signing price data
-      console.log(`Signing price: ${price.id}`);
+      logger.info(`Signing price: ${price.id}`);
       const signed: PriceDataSigned = await this.signPrice({
         ...price,
         permawebTx: transaction.id,
@@ -139,16 +141,15 @@ export default class Runner {
     }
 
     // Broadcasting
-    console.log("Broadcasting prices");
+    logger.info("Broadcasting prices");
     try {
       await broadcaster.broadcast(signedPrices);
     } catch (e) {
-      console.error(colors.bgRed("Broadcasting failed"));
-      console.error(e);
+      logger.error("Broadcasting failed", e);
     }
 
     // Posting prices data on arweave blockchain
-    console.log(
+    logger.info(
       "Keeping prices on arweave blockchain - posting transaction "
       + transaction.id);
     await this.arweave.postTransaction(transaction);
@@ -188,7 +189,7 @@ export default class Runner {
             covalentApiKey: this.covalentApiKey,
             infuraApiKey: this.infuraApiKey,
           });
-        console.log(
+        logger.info(
           `Fetched prices in USD for ${pricesFromSource.length} `
           + `currencies from source: "${source}"`);
 
@@ -208,9 +209,7 @@ export default class Runner {
       } catch (e) {
         // We don't throw an error because we want to continue with
         // other fetchers even if some fetchers failed
-        console.error(
-          colors.bgRed(`Fetching failed for source: ${source}`));
-        console.error(e);
+        logger.error(`Fetching failed for source: ${source}`, e);
       }
     }
 

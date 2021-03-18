@@ -13,7 +13,7 @@
     "axios": "^0.21.1",
     "coinbase": "^2.0.8",
     "coingecko-api": "^1.0.10",
-    "colors": "^1.4.0",
+    "consola": "^2.15.3",
     "console-stamp": "^0.2.9",
     "exchange-rates-api": "^1.0.2",
     "isomorphic-fetch": "^3.0.0",
@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@types/coinbase": "^2.0.5",
+    "@types/consola": "^2.2.5",
     "@types/console-stamp": "^0.2.33",
     "@types/exchange-rates-api": "^1.0.0",
     "@types/isomorphic-fetch": "^0.0.35",
