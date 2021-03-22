@@ -99,7 +99,7 @@ export default class Runner {
     logger.info(`Balance: ${balance}`);
 
     if (args.notifyIfBalanceIsLow && isLow) {
-      logger.info(`Your balance is quite low: ${balance}`);
+      logger.warn(`Your balance is quite low: ${balance}`);
       // TODO: send email notification
     }
 
