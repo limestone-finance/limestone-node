@@ -145,7 +145,7 @@ export default class Runner {
     try {
       await broadcaster.broadcast(signedPrices);
     } catch (e) {
-      logger.error("Broadcasting failed", e);
+      logger.error("Broadcasting failed", e.stack);
     }
 
     // Posting prices data on arweave blockchain
@@ -209,7 +209,7 @@ export default class Runner {
       } catch (e) {
         // We don't throw an error because we want to continue with
         // other fetchers even if some fetchers failed
-        logger.error(`Fetching failed for source: ${source}`, e);
+        logger.error(`Fetching failed for source: ${source}`, e.stack);
       }
     }
 

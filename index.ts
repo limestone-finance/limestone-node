@@ -12,7 +12,7 @@ async function start() {
   try {
     await main();
   } catch (e) {
-    logger.error(e);
+    logger.error(e.stack);
     logger.info(
       "USAGE: yarn start --manifest <PATH_TO_MANIFEST_FILE_WITH_VALID_JSON> --jwk <PATH_TO_JWK_FILE> [--infura-key <INFURA_API_KEY>] [--covalent-key <COVALENT_API_KEY>]");
   };
