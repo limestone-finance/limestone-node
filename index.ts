@@ -1,9 +1,9 @@
 import fs from "fs";
 import yargs from "yargs";
 import { JWKInterface } from "arweave/node/lib/wallet";
+import { Consola } from "consola"
 import { Manifest } from "./types";
 import Runner from "./runner";
-import { Consola } from "consola"
 
 const logger = require("./utils/logger")("index") as Consola;
 const { hideBin } = require("yargs/helpers") as any;

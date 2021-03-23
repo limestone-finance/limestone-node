@@ -9,6 +9,7 @@ import keepers from "./keepers";
 import aggregators from "./aggregators";
 import broadcaster from "./broadcasters/lambda-broadcaster";
 import ArweaveProxy from "./utils/arweave-proxy";
+import { reportError } from "./utils/error-reporter";
 import {
   PriceDataBeforeAggregation,
   PriceDataAfterAggregation,
@@ -98,9 +99,14 @@ export default class Runner {
     const isLow = balance < MIN_AR_BALANCE;
     logger.info(`Balance: ${balance}`);
 
-    if (args.notifyIfBalanceIsLow && isLow) {
-      logger.warn(`Your balance is quite low: ${balance}`);
-      // TODO: send email notification
+    // if (args.notifyIfBalanceIsLow && isLow) {
+    if (true) {
+      const warningText = "AR balance is quite low: ${balance}";
+      logger.warn(warningText);
+      reportError({
+        error: warningText,
+        errorTitle: "AR balance is running low",
+      });
     }
 
     if (args.stopNodeIfBalanceIsLow && isLow) {
