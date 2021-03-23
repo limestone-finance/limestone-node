@@ -99,9 +99,8 @@ export default class Runner {
     const isLow = balance < MIN_AR_BALANCE;
     logger.info(`Balance: ${balance}`);
 
-    // if (args.notifyIfBalanceIsLow && isLow) {
-    if (true) {
-      const warningText = "AR balance is quite low: ${balance}";
+    if (args.notifyIfBalanceIsLow && isLow) {
+      const warningText = `AR balance is quite low: ${balance}`;
       logger.warn(warningText);
       reportError({
         error: warningText,
