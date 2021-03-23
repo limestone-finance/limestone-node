@@ -9,4 +9,4 @@ RUN yarn
 
 COPY . .
 
-CMD yarn start --manifest sample-manifests/all-supported-tokens.json --jwk ./.secrets/arweave.json --covalent-key hehe-not-used
+CMD yarn start --manifest sample-manifests/all-supported-tokens.json --jwk ./.secrets/arweave.json --covalent-key ckey_7dfd8019d0a84935bfdb6c3ffed
