@@ -8,6 +8,7 @@
         "coinbase",
         "coingecko",
         "kyber",
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -17,6 +18,7 @@
         "coinbase",
         "coingecko",
         "kyber",
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -26,6 +28,7 @@
         "coinbase",
         "coingecko",
         "kyber",
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -35,6 +38,7 @@
         "coinbase",
         "coingecko",
         "kyber",
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -43,6 +47,7 @@
         "coinbase",
         "coingecko",
         "kyber",
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -51,6 +56,7 @@
         "coinbase",
         "coingecko",
         "kyber",
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -59,6 +65,7 @@
         "coinbase",
         "coingecko",
         "kyber",
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -67,6 +74,7 @@
         "coinbase",
         "coingecko",
         "kyber",
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -75,6 +83,7 @@
         "coinbase",
         "coingecko",
         "kyber",
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -83,6 +92,7 @@
         "coinbase",
         "coingecko",
         "kyber",
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -91,6 +101,7 @@
         "coinbase",
         "coingecko",
         "kyber",
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -99,6 +110,23 @@
         "coinbase",
         "coingecko",
         "kyber",
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "WETH": {
+      "source": [
+        "balancer",
+        "kyber",
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "LEND": {
+      "source": [
+        "balancer",
+        "kyber",
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -110,24 +138,11 @@
         "uniswap"
       ]
     },
-    "WETH": {
-      "source": [
-        "balancer",
-        "kyber",
-        "uniswap"
-      ]
-    },
-    "LEND": {
-      "source": [
-        "balancer",
-        "kyber",
-        "uniswap"
-      ]
-    },
     "BAND": {
       "source": [
         "coinbase",
         "kyber",
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -135,6 +150,7 @@
       "source": [
         "coinbase",
         "coingecko",
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -142,6 +158,7 @@
       "source": [
         "coingecko",
         "kyber",
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -149,6 +166,63 @@
       "source": [
         "coingecko",
         "kyber",
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "MATIC": {
+      "source": [
+        "coingecko",
+        "kyber",
+        "uniswap"
+      ]
+    },
+    "UST": {
+      "source": [
+        "coingecko",
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "CREAM": {
+      "source": [
+        "kyber",
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "RSR": {
+      "source": [
+        "kyber",
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "1INCH": {
+      "source": [
+        "kyber",
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "BZRX": {
+      "source": [
+        "kyber",
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "OCEAN": {
+      "source": [
+        "kyber",
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "UBT": {
+      "source": [
+        "kyber",
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -194,57 +268,219 @@
         "coingecko"
       ]
     },
-    "MATIC": {
-      "source": [
-        "coingecko",
-        "uniswap"
-      ]
-    },
-    "UST": {
-      "source": [
-        "coingecko",
-        "uniswap"
-      ]
-    },
-    "CREAM": {
-      "source": [
-        "kyber",
-        "uniswap"
-      ]
-    },
-    "RSR": {
-      "source": [
-        "kyber",
-        "uniswap"
-      ]
-    },
-    "1INCH": {
-      "source": [
-        "kyber",
-        "uniswap"
-      ]
-    },
-    "BZRX": {
-      "source": [
-        "kyber",
-        "uniswap"
-      ]
-    },
-    "OCEAN": {
-      "source": [
-        "kyber",
-        "uniswap"
-      ]
-    },
-    "UBT": {
-      "source": [
-        "kyber",
-        "uniswap"
-      ]
-    },
     "QNT": {
       "source": [
         "kyber",
+        "uniswap"
+      ]
+    },
+    "SAND": {
+      "source": [
+        "kyber",
+        "uniswap"
+      ]
+    },
+    "LON": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "BASE": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "STAKE": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "API3": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "wNXM": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "DAO": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "DPI": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "KP3R": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "YFL": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "FXS": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "BAC": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "ESD": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "BAO": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "CVP": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "XOR": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "PICKLE": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "TRU": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "sUSD": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "WHITE": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "CORE": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "TORN": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "DIA": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "FRAX": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "MPH": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "APY": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "SPI": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "FARM": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "MTA": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "RBC": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "ROOM": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "YOP": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "YAX": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "SFI": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "PERP": {
+      "source": [
+        "sushiswap",
         "uniswap"
       ]
     },
@@ -663,179 +899,29 @@
         "kyber"
       ]
     },
-    "SAND": {
+    "YAM": {
       "source": [
-        "uniswap"
+        "sushiswap"
       ]
     },
-    "LON": {
+    "TEND": {
       "source": [
-        "uniswap"
+        "sushiswap"
       ]
     },
-    "BASE": {
+    "KIMCHI": {
       "source": [
-        "uniswap"
+        "sushiswap"
       ]
     },
-    "STAKE": {
+    "YFII": {
       "source": [
-        "uniswap"
+        "sushiswap"
       ]
     },
-    "API3": {
+    "YAMv2": {
       "source": [
-        "uniswap"
-      ]
-    },
-    "wNXM": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "DAO": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "DPI": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "KP3R": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "YFL": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "FXS": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "BAC": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "ESD": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "BAO": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "CVP": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "XOR": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "PICKLE": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "TRU": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "sUSD": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "WHITE": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "CORE": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "TORN": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "DIA": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "FRAX": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "MPH": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "APY": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "SPI": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "FARM": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "MTA": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "RBC": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "ROOM": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "YOP": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "YAX": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "SFI": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "PERP": {
-      "source": [
-        "uniswap"
+        "sushiswap"
       ]
     }
   }
