@@ -1,19 +1,19 @@
-import consoleStamp from "console-stamp";
 import uuid from "uuid-random";
 import _ from "lodash";
 import { Consola } from "consola";
 import { JWKInterface } from "arweave/node/lib/wallet";
 import Transaction from "arweave/node/lib/transaction";
+import { timeout } from 'promise-timeout';
 import fetchers from "./fetchers";
 import keepers from "./keepers";
 import aggregators from "./aggregators";
 import broadcaster from "./broadcasters/lambda-broadcaster";
 import ArweaveProxy from "./utils/arweave-proxy";
-import { reportError } from "./utils/error-reporter";
 import {
   PriceDataBeforeAggregation,
   PriceDataAfterAggregation,
   PriceDataBeforeSigning,
+  PriceDataFetched,
   PriceDataSigned,
   Manifest,
 } from "./types";
@@ -23,9 +23,7 @@ const logger = require("./utils/logger")("runner") as Consola;
 const { version } = require("./package.json") as any;
 
 const MIN_AR_BALANCE = 0.1;
-
-//Format logs
-consoleStamp(console, { pattern: "[HH:MM:ss.l]" });
+const DEFAULT_FETCHER_TIMEOUT = 4000; // ms
 
 export default class Runner {
   manifest: Manifest;
@@ -102,10 +100,6 @@ export default class Runner {
     if (args.notifyIfBalanceIsLow && isLow) {
       const warningText = `AR balance is quite low: ${balance}`;
       logger.warn(warningText);
-      reportError({
-        error: warningText,
-        errorTitle: "AR balance is running low",
-      });
     }
 
     if (args.stopNodeIfBalanceIsLow && isLow) {
@@ -189,11 +183,11 @@ export default class Runner {
     prices: { [symbol: string]: PriceDataBeforeAggregation }) {
       try {
         // Fetching
-        const pricesFromSource =
-          await fetchers[source].fetchAll(sources[source], {
-            covalentApiKey: this.covalentApiKey,
-            infuraApiKey: this.infuraApiKey,
-          });
+        const pricesFromSource = await this.fetchFromSource({
+          symbols: sources[source],
+          source,
+          timeout: DEFAULT_FETCHER_TIMEOUT,
+        });
         logger.info(
           `Fetched prices in USD for ${pricesFromSource.length} `
           + `currencies from source: "${source}"`);
@@ -216,6 +210,19 @@ export default class Runner {
         // other fetchers even if some fetchers failed
         logger.error(`Fetching failed for source: ${source}`, e.stack);
       }
+    }
+
+  async fetchFromSource(args: {
+    symbols: string[];
+    source: string;
+    timeout: number;
+  }): Promise<PriceDataFetched[]> {
+      const fetchPromise = fetchers[args.source].fetchAll(args.symbols, {
+        covalentApiKey: this.covalentApiKey,
+        infuraApiKey: this.infuraApiKey,
+      });
+
+      return timeout(fetchPromise, args.timeout);
     }
 
   // This function converts tokens from manifest to object with the following

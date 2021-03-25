@@ -26,7 +26,6 @@ async function main(): Promise<void> {
         infuraApiKey = argv["infura-key"] as string | undefined,
         covalentApiKey = argv["covalent-key"] as string | undefined;
 
-
   // Validating cli arguments
   if (manifestFilePath === undefined || manifestFilePath === "") {
     throw new Error("Path to manifest file cannot be empty");
