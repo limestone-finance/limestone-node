@@ -136,6 +136,7 @@ export default class Runner {
         permawebTx: transaction.id,
         provider: this.providerAddress,
       });
+
       signedPrices.push(signed);
     }
 
