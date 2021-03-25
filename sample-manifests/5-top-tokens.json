@@ -7,7 +7,7 @@
       "source": ["coingecko", "coinbase"]
     },
     "USDT": {
-      "source": ["coingecko", "uniswap"]
+      "source": ["coingecko", "uniswap", "sushiswap"]
     },
     "ETH": {},
     "BNB": {},
