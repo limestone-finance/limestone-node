@@ -3,6 +3,8 @@
   "priceAggregator": "median",
   "defaultSource": ["huobi"],
   "tokens": {
+    "BTC": {},
+    "ETH": {},
     "AR": {}
   }
 }

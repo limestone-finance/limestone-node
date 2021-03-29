@@ -1,10 +1,10 @@
 import axios from "axios";
 import { Consola } from "consola";
+import LimestoneApi from "limestone-api-v2-beta";
 import { PriceDataFetched, Fetcher } from "../../types";
 
 const logger =
   require("../../utils/logger")("fetchers/kyber") as Consola;
-const CoinGecko = require("coingecko-api") as any;
 
 const ETH_PAIRS_URL = "https://api.kyber.network/api/tokens/pairs";
 
@@ -36,13 +36,12 @@ const kyberFetcher: Fetcher = {
   }
 };
 
-// TODO: after limestone-api update we can
-// use limestone-api here instead of coingecko
 async function getETHPriceInUSD(): Promise<number> {
-  const ethId = "ethereum";
-  const coinGeckoClient = new CoinGecko();
-  const response = await coinGeckoClient.simple.price({ ids: [ethId] });
-  return Number(response.data[ethId].usd);
+  const price = await LimestoneApi.getPrice("ETH");
+  if (price === undefined) {
+    throw new Error("Cannot fetch ETH price from limestone api");
+  }
+  return price.value;
 }
 
 export default kyberFetcher;

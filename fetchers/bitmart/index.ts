@@ -4,7 +4,7 @@ import axios from "axios";
 import { PriceDataFetched, Fetcher } from "../../types";
 
 const logger =
-  require("../../utils/logger")("fetchers/coingecko") as Consola;
+  require("../../utils/logger")("fetchers/bitmart") as Consola;
 
 const URL = "https://api-cloud.bitmart.com/spot/v1/ticker";
 

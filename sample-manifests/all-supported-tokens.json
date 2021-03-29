@@ -1,5 +1,5 @@
 {
-  "interval": 15000,
+  "interval": 60000,
   "priceAggregator": "median",
   "tokens": {
     "USDC": {
@@ -170,6 +170,27 @@
         "uniswap"
       ]
     },
+    "BTC": {
+      "source": [
+        "coinbase",
+        "coingecko",
+        "huobi"
+      ]
+    },
+    "ETH": {
+      "source": [
+        "coinbase",
+        "coingecko",
+        "huobi"
+      ]
+    },
+    "AR": {
+      "source": [
+        "coingecko",
+        "bitmart",
+        "huobi"
+      ]
+    },
     "UST": {
       "source": [
         "coingecko",
@@ -210,18 +231,6 @@
         "kyber",
         "sushiswap",
         "uniswap"
-      ]
-    },
-    "BTC": {
-      "source": [
-        "coinbase",
-        "coingecko"
-      ]
-    },
-    "ETH": {
-      "source": [
-        "coinbase",
-        "coingecko"
       ]
     },
     "LTC": {
@@ -414,11 +423,6 @@
       "source": [
         "sushiswap",
         "uniswap"
-      ]
-    },
-    "AR": {
-      "source": [
-        "coingecko"
       ]
     },
     "BNB": {

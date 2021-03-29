@@ -6,6 +6,7 @@ import balancer from "./balancer";
 import uniswap from "./uniswap";
 import bitmart from "./bitmart";
 import kyber from "./kyber";
+import huobi from "./huobi";
 import ecb from "./european-central-bank";
 
 export default {
@@ -16,5 +17,6 @@ export default {
   uniswap,
   bitmart,
   kyber,
+  huobi,
   ecb,
 } as { [name: string]: Fetcher };
