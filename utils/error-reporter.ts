@@ -10,16 +10,16 @@ export async function reportError(args: {
   error: string;
   errorTitle: string;
 }): Promise<void> {
-  // const errorId = uuid();
-  // try {
-  //   console.log(`Reporting an error ${errorId}`, args);
-  //   await axios.post(URL, args);
-  //   console.log(`Error reported ${errorId}`);
-  // } catch (e) {
-  //   console.error(
-  //     `Error occured during error reporting ${errorId}`,
-  //     e.stack);
-  // }
+  const errorId = uuid();
+  try {
+    console.log(`Reporting an error ${errorId}`, args);
+    await axios.post(URL, args);
+    console.log(`Error reported ${errorId}`);
+  } catch (e) {
+    console.error(
+      `Error occured during error reporting ${errorId}`,
+      e.stack);
+  }
 }
 
 export class ConsolaErrorReporter {
