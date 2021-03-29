@@ -23,7 +23,7 @@ const logger = require("./utils/logger")("runner") as Consola;
 const { version } = require("./package.json") as any;
 
 const MIN_AR_BALANCE = 0.1;
-const DEFAULT_FETCHER_TIMEOUT = 4000; // ms
+const DEFAULT_FETCHER_TIMEOUT = 50000; // ms
 
 export default class Runner {
   manifest: Manifest;
