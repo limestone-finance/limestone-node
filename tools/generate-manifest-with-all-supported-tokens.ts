@@ -48,7 +48,7 @@ function main() {
   }
 
   const manifest = {
-    interval: 15000,
+    interval: 60000,
     priceAggregator: "median",
     tokens: tokensWithSortedKeys,
   };

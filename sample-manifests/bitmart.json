@@ -1,0 +1,8 @@
+{
+  "interval": 15000,
+  "priceAggregator": "median",
+  "defaultSource": ["bitmart"],
+  "tokens": {
+    "AR": {}
+  }
+}

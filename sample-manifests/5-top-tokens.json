@@ -11,6 +11,8 @@
     },
     "ETH": {},
     "BNB": {},
-    "AR": {}
+    "AR": {
+      "source": ["coingecko", "bitmart"]
+    }
   }
 }

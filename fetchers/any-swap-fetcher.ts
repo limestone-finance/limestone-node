@@ -38,6 +38,10 @@ export default {
         const response = await graphProxy.executeQuery(
           config.subgraphUrl,
           query);
+        if (response.data === undefined) {
+          throw new Error(
+            "Response data is undefined: " + JSON.stringify(response));
+        }
 
         // Building prices array
         const prices = [];

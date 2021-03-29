@@ -55,8 +55,10 @@ export default class ArweaveProxy  {
 
     // This is an experiment
     // We want to measure transaction confirmation delay
-    // For 2x smaller gas costs
-    uploadTx.reward = String(Math.round(Number(uploadTx.reward) / 2));
+    // For smaller gas costs
+    // [UPDATE] looks like any transaction with smaller than default reward
+    // is not accepted by arweave :(
+    // uploadTx.reward = String(Math.round(Number(uploadTx.reward) * 0.5));
 
     // Transaction id is generated during signing
     await this.arweave.transactions.sign(uploadTx, this.jwk);

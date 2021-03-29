@@ -511,6 +511,16 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
+limestone-api-v2-beta@^0.2.8:
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/limestone-api-v2-beta/-/limestone-api-v2-beta-0.2.8.tgz#487210da6e96d6d1c4eeaffbf2209de0a1181f2d"
+  integrity sha512-hwMMnV+nKRpZwNaZOjL/udjsqriYGiDswZvJk2j/Cp8Kdh2ZhTsf8UMRP2akFL72INDzdBKEE9tHMTzgrd9sPA==
+  dependencies:
+    ar-gql "^0.0.6"
+    arweave "^1.10.11"
+    axios "^0.21.1"
+    lodash "^4.17.21"
+
 lodash@3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.1.0.tgz#d41b8b33530cb3be088853208ad30092d2c27961"
