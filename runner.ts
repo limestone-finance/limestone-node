@@ -1,9 +1,9 @@
-import consoleStamp from "console-stamp";
 import uuid from "uuid-random";
 import _ from "lodash";
-import colors from "colors";
+import { Consola } from "consola";
 import { JWKInterface } from "arweave/node/lib/wallet";
 import Transaction from "arweave/node/lib/transaction";
+import { timeout } from 'promise-timeout';
 import fetchers from "./fetchers";
 import keepers from "./keepers";
 import aggregators from "./aggregators";
@@ -13,16 +13,17 @@ import {
   PriceDataBeforeAggregation,
   PriceDataAfterAggregation,
   PriceDataBeforeSigning,
+  PriceDataFetched,
   PriceDataSigned,
   Manifest,
 } from "./types";
 
+const logger = require("./utils/logger")("runner") as Consola;
+
 const { version } = require("./package.json") as any;
 
-const MIN_AR_BALANCE:Number = 0.1;
-
-//Format logs
-consoleStamp(console, { pattern: "[HH:MM:ss.l]" });
+const MIN_AR_BALANCE = 0.1;
+const DEFAULT_FETCHER_TIMEOUT = 50000; // ms
 
 export default class Runner {
   manifest: Manifest;
@@ -66,39 +67,61 @@ export default class Runner {
     }
 
   async run(): Promise<void> {
-    console.log("Running limestone-node with manifest: ");
-    console.log(JSON.stringify(this.manifest));
-    console.log(`Address: ${this.providerAddress}`);
-    const balance = await this.arweave.getBalance();
-    console.log(`Balance: ${balance}`);
+    logger.info("Running limestone-node with manifest: ");
+    logger.info(JSON.stringify(this.manifest));
+    logger.info(`Address: ${this.providerAddress}`);
 
     // Assure minimum balance
-    if (balance < MIN_AR_BALANCE) {
-      console.log(`You should have at least ${MIN_AR_BALANCE} AR to start a node service.`);
-      process.exit(0);
-    }
+    await this.checkBalance({
+      stopNodeIfBalanceIsLow: true,
+      notifyIfBalanceIsLow: false,
+    });
 
     const runIteration = async () => {
       await this.processAll();
+      await this.checkBalance({
+        stopNodeIfBalanceIsLow: false,
+        notifyIfBalanceIsLow: true,
+      });
     };
 
     await runIteration(); // Start immediately then repeat in manifest.interval
     setInterval(runIteration, this.manifest.interval);
   }
 
+  private async checkBalance(args: {
+    stopNodeIfBalanceIsLow: boolean,
+    notifyIfBalanceIsLow: boolean,
+  }): Promise<void> {
+    const balance = await this.arweave.getBalance();
+    const isLow = balance < MIN_AR_BALANCE;
+    logger.info(`Balance: ${balance}`);
+
+    if (args.notifyIfBalanceIsLow && isLow) {
+      const warningText = `AR balance is quite low: ${balance}`;
+      logger.warn(warningText);
+    }
+
+    if (args.stopNodeIfBalanceIsLow && isLow) {
+      logger.fatal(
+        `You should have at least ${MIN_AR_BALANCE} AR to start a node service.`);
+      process.exit(0);
+    }
+  }
+
   async processAll(): Promise<void> {
-    console.log("Processing tokens");
+    logger.info("Processing tokens");
 
     const prices: PriceDataAfterAggregation[] = await this.fetchAll();
 
     for (const price of prices) {
       const sourcesData = JSON.stringify(price.source);
-      console.log(
+      logger.info(
         `Fetched price : ${price.symbol} : ${price.value} | ${sourcesData}`);
     }
 
     // Preparing arweave transaction
-    console.log("Keeping prices on arweave blockchain - preparing transaction");
+    logger.info("Keeping prices on arweave blockchain - preparing transaction");
     const { prepareTransaction } = keepers.basic;
     const transaction: Transaction =
       await prepareTransaction(prices, this.arweave);
@@ -107,26 +130,26 @@ export default class Runner {
     const signedPrices: PriceDataSigned[] = [];
     for (const price of prices) {
       // Signing price data
-      console.log(`Signing price: ${price.id}`);
+      logger.info(`Signing price: ${price.id}`);
       const signed: PriceDataSigned = await this.signPrice({
         ...price,
         permawebTx: transaction.id,
         provider: this.providerAddress,
       });
+
       signedPrices.push(signed);
     }
 
     // Broadcasting
-    console.log("Broadcasting prices");
+    logger.info("Broadcasting prices");
     try {
       await broadcaster.broadcast(signedPrices);
     } catch (e) {
-      console.error(colors.bgRed("Broadcasting failed"));
-      console.error(e);
+      logger.error("Broadcasting failed", e.stack);
     }
 
     // Posting prices data on arweave blockchain
-    console.log(
+    logger.info(
       "Keeping prices on arweave blockchain - posting transaction "
       + transaction.id);
     await this.arweave.postTransaction(transaction);
@@ -161,12 +184,12 @@ export default class Runner {
     prices: { [symbol: string]: PriceDataBeforeAggregation }) {
       try {
         // Fetching
-        const pricesFromSource =
-          await fetchers[source].fetchAll(sources[source], {
-            covalentApiKey: this.covalentApiKey,
-            infuraApiKey: this.infuraApiKey,
-          });
-        console.log(
+        const pricesFromSource = await this.fetchFromSource({
+          symbols: sources[source],
+          source,
+          timeout: DEFAULT_FETCHER_TIMEOUT,
+        });
+        logger.info(
           `Fetched prices in USD for ${pricesFromSource.length} `
           + `currencies from source: "${source}"`);
 
@@ -186,10 +209,21 @@ export default class Runner {
       } catch (e) {
         // We don't throw an error because we want to continue with
         // other fetchers even if some fetchers failed
-        console.error(
-          colors.bgRed(`Fetching failed for source: ${source}`));
-        console.error(e);
+        logger.error(`Fetching failed for source: ${source}`, e.stack);
       }
+    }
+
+  async fetchFromSource(args: {
+    symbols: string[];
+    source: string;
+    timeout: number;
+  }): Promise<PriceDataFetched[]> {
+      const fetchPromise = fetchers[args.source].fetchAll(args.symbols, {
+        covalentApiKey: this.covalentApiKey,
+        infuraApiKey: this.infuraApiKey,
+      });
+
+      return timeout(fetchPromise, args.timeout);
     }
 
   // This function converts tokens from manifest to object with the following

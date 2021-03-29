@@ -1,13 +1,15 @@
 import _ from "lodash";
 
 // Load manifests with all supported tokens
-const balancer = require("../sample-manifests/balancer.json") as any;
-const coinbase = require("../sample-manifests/coinbase.json") as any;
-const coingecko = require("../sample-manifests/coingecko.json") as any;
-const ecb = require("../sample-manifests/ecb.json") as any;
-const kyber = require("../sample-manifests/kyber.json") as any;
-const sushiswap = require("../sample-manifests/sushiswap.json") as any;
-const uniswap = require("../sample-manifests/uniswap.json") as any;
+const balancer = require("../../sample-manifests/balancer.json") as any;
+const coinbase = require("../../sample-manifests/coinbase.json") as any;
+const coingecko = require("../../sample-manifests/coingecko.json") as any;
+const ecb = require("../../sample-manifests/ecb.json") as any;
+const kyber = require("../../sample-manifests/kyber.json") as any;
+const sushiswap = require("../../sample-manifests/sushiswap.json") as any;
+const uniswap = require("../../sample-manifests/uniswap.json") as any;
+const bitmart = require("../../sample-manifests/bitmart.json") as any;
+const huobi = require("../../sample-manifests/huobi.json") as any;
 
 main();
 
@@ -20,6 +22,8 @@ function main() {
     kyber,
     sushiswap,
     uniswap,
+    bitmart,
+    huobi,
   ];
 
   // Building tokens
@@ -48,7 +52,7 @@ function main() {
   }
 
   const manifest = {
-    interval: 15000,
+    interval: 60000,
     priceAggregator: "median",
     tokens: tokensWithSortedKeys,
   };

@@ -4,7 +4,9 @@ import sushiswap from "./sushiswap";
 import coinbase from "./coinbase";
 import balancer from "./balancer";
 import uniswap from "./uniswap";
+import bitmart from "./bitmart";
 import kyber from "./kyber";
+import huobi from "./huobi";
 import ecb from "./european-central-bank";
 
 export default {
@@ -13,6 +15,8 @@ export default {
   coinbase,
   balancer,
   uniswap,
+  bitmart,
   kyber,
+  huobi,
   ecb,
 } as { [name: string]: Fetcher };

@@ -1,5 +1,5 @@
 {
-  "interval": 15000,
+  "interval": 60000,
   "priceAggregator": "median",
   "tokens": {
     "USDC": {
@@ -170,11 +170,25 @@
         "uniswap"
       ]
     },
-    "MATIC": {
+    "BTC": {
+      "source": [
+        "coinbase",
+        "coingecko",
+        "huobi"
+      ]
+    },
+    "ETH": {
+      "source": [
+        "coinbase",
+        "coingecko",
+        "huobi"
+      ]
+    },
+    "AR": {
       "source": [
         "coingecko",
-        "kyber",
-        "uniswap"
+        "bitmart",
+        "huobi"
       ]
     },
     "UST": {
@@ -219,25 +233,6 @@
         "uniswap"
       ]
     },
-    "UBT": {
-      "source": [
-        "kyber",
-        "sushiswap",
-        "uniswap"
-      ]
-    },
-    "BTC": {
-      "source": [
-        "coinbase",
-        "coingecko"
-      ]
-    },
-    "ETH": {
-      "source": [
-        "coinbase",
-        "coingecko"
-      ]
-    },
     "LTC": {
       "source": [
         "coinbase",
@@ -268,19 +263,19 @@
         "coingecko"
       ]
     },
+    "MATIC": {
+      "source": [
+        "coingecko",
+        "uniswap"
+      ]
+    },
+    "UBT": {
+      "source": [
+        "kyber",
+        "uniswap"
+      ]
+    },
     "QNT": {
-      "source": [
-        "kyber",
-        "uniswap"
-      ]
-    },
-    "SWRV": {
-      "source": [
-        "kyber",
-        "uniswap"
-      ]
-    },
-    "SAND": {
       "source": [
         "kyber",
         "uniswap"
@@ -293,12 +288,6 @@
       ]
     },
     "BASE": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
-    "YAM": {
       "source": [
         "sushiswap",
         "uniswap"
@@ -328,12 +317,6 @@
         "uniswap"
       ]
     },
-    "TEND": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
     "DPI": {
       "source": [
         "sushiswap",
@@ -346,25 +329,7 @@
         "uniswap"
       ]
     },
-    "KIMCHI": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
-    "YFL": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
     "FXS": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
-    "BAC": {
       "source": [
         "sushiswap",
         "uniswap"
@@ -388,12 +353,6 @@
         "uniswap"
       ]
     },
-    "XOR": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
     "PICKLE": {
       "source": [
         "sushiswap",
@@ -412,18 +371,6 @@
         "uniswap"
       ]
     },
-    "WHITE": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
-    "CORE": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
     "TORN": {
       "source": [
         "sushiswap",
@@ -436,25 +383,7 @@
         "uniswap"
       ]
     },
-    "FRAX": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
     "MPH": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
-    "APY": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
-    "SPI": {
       "source": [
         "sushiswap",
         "uniswap"
@@ -466,25 +395,7 @@
         "uniswap"
       ]
     },
-    "YFII": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
     "MTA": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
-    "RBC": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
-    "YAMv2": {
       "source": [
         "sushiswap",
         "uniswap"
@@ -502,12 +413,6 @@
         "uniswap"
       ]
     },
-    "YAX": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
     "SFI": {
       "source": [
         "sushiswap",
@@ -518,11 +423,6 @@
       "source": [
         "sushiswap",
         "uniswap"
-      ]
-    },
-    "AR": {
-      "source": [
-        "coingecko"
       ]
     },
     "BNB": {
@@ -928,6 +828,91 @@
     "YFV": {
       "source": [
         "kyber"
+      ]
+    },
+    "SWRV": {
+      "source": [
+        "kyber"
+      ]
+    },
+    "YAM": {
+      "source": [
+        "sushiswap"
+      ]
+    },
+    "TEND": {
+      "source": [
+        "sushiswap"
+      ]
+    },
+    "KIMCHI": {
+      "source": [
+        "sushiswap"
+      ]
+    },
+    "YFII": {
+      "source": [
+        "sushiswap"
+      ]
+    },
+    "YAMv2": {
+      "source": [
+        "sushiswap"
+      ]
+    },
+    "SAND": {
+      "source": [
+        "uniswap"
+      ]
+    },
+    "YFL": {
+      "source": [
+        "uniswap"
+      ]
+    },
+    "BAC": {
+      "source": [
+        "uniswap"
+      ]
+    },
+    "XOR": {
+      "source": [
+        "uniswap"
+      ]
+    },
+    "WHITE": {
+      "source": [
+        "uniswap"
+      ]
+    },
+    "CORE": {
+      "source": [
+        "uniswap"
+      ]
+    },
+    "FRAX": {
+      "source": [
+        "uniswap"
+      ]
+    },
+    "APY": {
+      "source": [
+        "uniswap"
+      ]
+    },
+    "SPI": {
+      "source": [
+        "uniswap"
+      ]
+    },
+    "RBC": {
+      "source": [
+        "uniswap"
+      ]
+    },
+    "YAX": {
+      "source": [
+        "uniswap"
       ]
     }
   }

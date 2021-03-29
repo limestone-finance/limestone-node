@@ -1,19 +1,20 @@
 import fs from "fs";
-import colors from "colors";
 import yargs from "yargs";
 import { JWKInterface } from "arweave/node/lib/wallet";
+import { Consola } from "consola"
 import { Manifest } from "./types";
 import Runner from "./runner";
 
-const { hideBin } = require("yargs/helpers");
+const logger = require("./utils/logger")("index") as Consola;
+const { hideBin } = require("yargs/helpers") as any;
 
 async function start() {
   try {
     await main();
   } catch (e) {
-    console.error(e);
-    console.log(colors.bold.bgGreen(
-      "USAGE: yarn start --manifest <PATH_TO_MANIFEST_FILE_WITH_VALID_JSON> --jwk <PATH_TO_JWK_FILE> [--infura-key <INFURA_API_KEY>] [--covalent-key <COVALENT_API_KEY>]"));
+    logger.error(e.stack);
+    logger.info(
+      "USAGE: yarn start --manifest <PATH_TO_MANIFEST_FILE_WITH_VALID_JSON> --jwk <PATH_TO_JWK_FILE> [--infura-key <INFURA_API_KEY>] [--covalent-key <COVALENT_API_KEY>]");
   };
 }
 
@@ -24,7 +25,6 @@ async function main(): Promise<void> {
         jwkFilePath = argv.jwk,
         infuraApiKey = argv["infura-key"] as string | undefined,
         covalentApiKey = argv["covalent-key"] as string | undefined;
-
 
   // Validating cli arguments
   if (manifestFilePath === undefined || manifestFilePath === "") {

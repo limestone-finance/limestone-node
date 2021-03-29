@@ -12,7 +12,9 @@ async function main() {
 
   const symbolToPairId: { [symbol: string]: string } = {};
   for (const pair of pairs) {
-    symbolToPairId[pair.symbol0] = pair.id;
+    if (symbolToPairId[pair.symbol0] === undefined) {
+      symbolToPairId[pair.symbol0] = pair.id;
+    }
   }
 
   console.log(JSON.stringify(symbolToPairId, null, 2));
@@ -21,7 +23,7 @@ async function main() {
 async function get1KMostPopularPairs(): Promise<Pair[]> {
   const url = "https://api.thegraph.com/subgraphs/name/sushiswap/exchange";
   const query = `{
-    pairs(first: 1000, orderBy: volumeUSD, orderDirection: desc) {
+    pairs(first: 1000, orderBy: reserveUSD, orderDirection: desc) {
       id
       token0 {
         symbol
