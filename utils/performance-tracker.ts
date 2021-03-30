@@ -41,8 +41,12 @@ export function trackEnd(label: string): void {
 }
 
 async function saveMetric(label: string, value: number): Promise<void> {
-  await axios.post(URL, {
-    label,
-    value,
-  });
+  if (process.env.MODE === "prod") {
+    await axios.post(URL, {
+      label,
+      value,
+    });
+  } else {
+    logger.info(`Metric: ${label}. Value: ${value}`);
+  }
 }

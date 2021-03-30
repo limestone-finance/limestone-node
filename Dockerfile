@@ -11,7 +11,8 @@ RUN yarn
 # Copying all files
 COPY . .
 
-# Enable JSON logging format
+# Setting production env variables
+ENV MODE=prod
 ENV ENABLE_JSON_LOGS=true
 
 # Running limestone node

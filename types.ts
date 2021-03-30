@@ -29,6 +29,7 @@ export interface Aggregator {
 export interface Keeper {
   prepareTransaction: (
     prices: PriceDataAfterAggregation[],
+    version: string,
     arweaveProxy: ArweaveProxy) => Promise<Transaction>;
 };
 

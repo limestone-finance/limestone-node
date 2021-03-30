@@ -6,10 +6,9 @@ import {
   PriceDataAfterAggregation,
 } from "../types";
 
-const { version } = require("../package.json") as any;
-
 async function prepareTransaction(
   prices: PriceDataAfterAggregation[],
+  version: string,
   arweaveProxy: ArweaveProxy): Promise<Transaction> {
     if (prices.length === 0) {
       throw new Error("Can not keep empty array of prices in arweave");
