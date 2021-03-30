@@ -227,7 +227,9 @@ export default class Runner {
       } catch (e) {
         // We don't throw an error because we want to continue with
         // other fetchers even if some fetchers failed
-        logger.error(`Fetching failed for source: ${source}`, e.stack);
+        const resData = e.response ? e.response.data : "";
+        logger.error(
+          `Fetching failed for source: ${source}: ${resData}`, e.stack);
       }
     }
 

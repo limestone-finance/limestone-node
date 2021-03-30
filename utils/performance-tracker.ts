@@ -12,8 +12,8 @@ export function trackStart(label: string): void {
   }
 
   if (tasks[label] !== undefined) {
-    logger.warn(`Label "${label} is already being tracked"`);
-    return;
+    logger.info(
+      `Label "${label} is already being tracked. Updating start time"`);
   }
 
   tasks[label] = performance.now();
