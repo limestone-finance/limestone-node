@@ -327,6 +327,6 @@ export default class Runner {
 };
 
 function getVersionFromPackageJSON() {
-  const [major, minor] = pjson.version.split(".");
-  return `${major}.${minor}`;
+  const [major] = pjson.version.split(".");
+  return major;
 }
