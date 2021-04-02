@@ -9,6 +9,7 @@ import keepers from "./keepers";
 import aggregators from "./aggregators";
 import broadcaster from "./broadcasters/lambda-broadcaster";
 import ArweaveProxy from "./utils/arweave-proxy";
+import { trackStart, trackEnd } from "./utils/performance-tracker";
 import {
   PriceDataBeforeAggregation,
   PriceDataAfterAggregation,
@@ -19,8 +20,7 @@ import {
 } from "./types";
 
 const logger = require("./utils/logger")("runner") as Consola;
-
-const { version } = require("./package.json") as any;
+const pjson = require("./package.json") as any;
 
 const MIN_AR_BALANCE = 0.1;
 const DEFAULT_FETCHER_TIMEOUT = 50000; // ms
@@ -31,6 +31,7 @@ export default class Runner {
   providerAddress: string;
   infuraApiKey?: string;
   covalentApiKey?: string;
+  version: string;
 
   constructor(opts: {
     manifest: Manifest;
@@ -44,6 +45,7 @@ export default class Runner {
     this.providerAddress = opts.provider;
     this.infuraApiKey = opts.infuraApiKey;
     this.covalentApiKey = opts.covalentApiKey;
+    this.version = getVersionFromPackageJSON();
   }
 
   static async init(opts: {
@@ -69,6 +71,7 @@ export default class Runner {
   async run(): Promise<void> {
     logger.info("Running limestone-node with manifest: ");
     logger.info(JSON.stringify(this.manifest));
+    logger.info(`Version: ${this.version}`);
     logger.info(`Address: ${this.providerAddress}`);
 
     // Assure minimum balance
@@ -78,11 +81,26 @@ export default class Runner {
     });
 
     const runIteration = async () => {
-      await this.processAll();
-      await this.checkBalance({
-        stopNodeIfBalanceIsLow: false,
-        notifyIfBalanceIsLow: true,
-      });
+      try {
+        trackStart("processing-all");
+        await this.processAll();
+      } catch (e) {
+        logger.error("Processing all failed", e.stack);
+      } finally {
+        trackEnd("processing-all");
+      }
+
+      try {
+        trackStart("balance-checking");
+        await this.checkBalance({
+          stopNodeIfBalanceIsLow: false,
+          notifyIfBalanceIsLow: true,
+        });
+      } catch (e) {
+        logger.error("Balance checking failed", e.stack);
+      } finally {
+        trackEnd("balance-checking");
+      }
     };
 
     await runIteration(); // Start immediately then repeat in manifest.interval
@@ -112,21 +130,28 @@ export default class Runner {
   async processAll(): Promise<void> {
     logger.info("Processing tokens");
 
+    trackStart("fetching-all");
     const prices: PriceDataAfterAggregation[] = await this.fetchAll();
+    trackEnd("fetching-all");
 
+    trackStart("fetched-prices-printing");
     for (const price of prices) {
       const sourcesData = JSON.stringify(price.source);
       logger.info(
         `Fetched price : ${price.symbol} : ${price.value} | ${sourcesData}`);
     }
+    trackEnd("fetched-prices-printing");
 
     // Preparing arweave transaction
     logger.info("Keeping prices on arweave blockchain - preparing transaction");
+    trackStart("transaction-preparing");
     const { prepareTransaction } = keepers.basic;
     const transaction: Transaction =
-      await prepareTransaction(prices, this.arweave);
+      await prepareTransaction(prices, this.version, this.arweave);
+    trackEnd("transaction-preparing");
 
     // Signing each price separately
+    trackStart("signing");
     const signedPrices: PriceDataSigned[] = [];
     for (const price of prices) {
       // Signing price data
@@ -139,20 +164,31 @@ export default class Runner {
 
       signedPrices.push(signed);
     }
+    trackEnd("signing");
 
     // Broadcasting
     logger.info("Broadcasting prices");
     try {
+      trackStart("broadcasting");
       await broadcaster.broadcast(signedPrices);
+      trackEnd("broadcasting");
+      logger.info("Broadcasting completed");
     } catch (e) {
-      logger.error("Broadcasting failed", e.stack);
+      if (e.response !== undefined) {
+        logger.error("Broadcasting failed: " + e.response.data, e.stack);
+      } else {
+        logger.error("Broadcasting failed", e.stack);
+      }
     }
 
     // Posting prices data on arweave blockchain
     logger.info(
       "Keeping prices on arweave blockchain - posting transaction "
       + transaction.id);
+    trackStart("keeping");
     await this.arweave.postTransaction(transaction);
+    trackEnd("keeping");
+    logger.info(`Transaction posted: ${transaction.id}`);
   }
 
   async fetchAll(): Promise<PriceDataAfterAggregation[]> {
@@ -201,7 +237,7 @@ export default class Runner {
               source: {},
               symbol: price.symbol,
               timestamp,
-              version,
+              version: this.version,
             };
           }
           prices[price.symbol].source[source] = price.value;
@@ -209,7 +245,9 @@ export default class Runner {
       } catch (e) {
         // We don't throw an error because we want to continue with
         // other fetchers even if some fetchers failed
-        logger.error(`Fetching failed for source: ${source}`, e.stack);
+        const resData = e.response ? e.response.data : "";
+        logger.error(
+          `Fetching failed for source: ${source}: ${resData}`, e.stack);
       }
     }
 
@@ -218,9 +256,13 @@ export default class Runner {
     source: string;
     timeout: number;
   }): Promise<PriceDataFetched[]> {
+      trackStart(`fetching-${args.source}`);
       const fetchPromise = fetchers[args.source].fetchAll(args.symbols, {
         covalentApiKey: this.covalentApiKey,
         infuraApiKey: this.infuraApiKey,
+      }).then((prices) => {
+        trackEnd(`fetching-${args.source}`);
+        return prices;
       });
 
       return timeout(fetchPromise, args.timeout);
@@ -283,3 +325,8 @@ export default class Runner {
   }
 
 };
+
+function getVersionFromPackageJSON() {
+  const [major] = pjson.version.split(".");
+  return major;
+}

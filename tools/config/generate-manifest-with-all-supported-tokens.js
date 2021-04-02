@@ -1,15 +1,15 @@
-import _ from "lodash";
+const _ = require("lodash");
 
 // Load manifests with all supported tokens
-const balancer = require("../../sample-manifests/balancer.json") as any;
-const coinbase = require("../../sample-manifests/coinbase.json") as any;
-const coingecko = require("../../sample-manifests/coingecko.json") as any;
-const ecb = require("../../sample-manifests/ecb.json") as any;
-const kyber = require("../../sample-manifests/kyber.json") as any;
-const sushiswap = require("../../sample-manifests/sushiswap.json") as any;
-const uniswap = require("../../sample-manifests/uniswap.json") as any;
-const bitmart = require("../../sample-manifests/bitmart.json") as any;
-const huobi = require("../../sample-manifests/huobi.json") as any;
+const balancer = require("../../sample-manifests/balancer.json");
+const coinbase = require("../../sample-manifests/coinbase.json");
+const coingecko = require("../../sample-manifests/coingecko.json");
+const ecb = require("../../sample-manifests/ecb.json");
+const kyber = require("../../sample-manifests/kyber.json");
+const sushiswap = require("../../sample-manifests/sushiswap.json");
+const uniswap = require("../../sample-manifests/uniswap.json");
+const bitmart = require("../../sample-manifests/bitmart.json");
+const huobi = require("../../sample-manifests/huobi.json");
 
 main();
 
@@ -27,7 +27,7 @@ function main() {
   ];
 
   // Building tokens
-  const tokens: any = {};
+  const tokens = {};
   for (const sourceManifest of manifests) {
     const sourceId = sourceManifest.defaultSource[0];
 
@@ -43,7 +43,7 @@ function main() {
   }
 
   // Sort tokens by number of sources
-  const tokensWithSortedKeys: any = {};
+  const tokensWithSortedKeys = {};
   const sortedKeys = _.keys(tokens).sort((token1, token2) => {
     return tokens[token2].source.length - tokens[token1].source.length;
   });
