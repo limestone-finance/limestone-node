@@ -50,10 +50,9 @@ async function getTokenConfigFromCoinGecko() {
 
 function sortSymbols(tokensConfig) {
   const minIndices = {
-    "AR": 0,
-    "ETH": 1,
-    "BTC": 2,
-    "UNI": 3,
+    "AR": 1,
+    "ETH": 2,
+    "BTC": 3,
     "COMP": 4,
     "MKR": 5,
   };
