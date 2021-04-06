@@ -14,21 +14,19 @@ const ecbFetcher: Fetcher = {
     // Building prices array
     const prices = [];
     for (const symbol of symbols) {
-      if (rates[symbol] !== undefined) {
+      if (symbol === "EUR") {
+        prices.push({
+          symbol,
+          value: usdRate,
+        });
+      } else if (rates[symbol] !== undefined) {
         prices.push({
           symbol,
           value: (1 / rates[symbol]) * usdRate as number,
         });
       } else {
-        if (symbol === "EUR") {
-          prices.push({
-            symbol,
-            value: usdRate,
-          });
-        } else {
-          logger.warn(
-            `Token is not supported with ecb source: ${symbol}`);
-        }
+        logger.warn(
+          `Token is not supported with ecb source: ${symbol}`);
       }
     }
 
