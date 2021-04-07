@@ -7,7 +7,7 @@ import uniswap from "./uniswap";
 import bitmart from "./bitmart";
 import kyber from "./kyber";
 import huobi from "./huobi";
-import ecb from "./european-central-bank";
+import ecb from "./ecb";
 
 export default {
   coingecko,

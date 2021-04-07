@@ -14,7 +14,7 @@
     "coinbase": "^2.0.8",
     "coingecko-api": "^1.0.10",
     "consola": "^2.15.3",
-    "exchange-rates-api": "^1.0.2",
+    "ecb-euro-exchange-rates": "^2.0.0",
     "isomorphic-fetch": "^3.0.0",
     "limestone-api-v2-beta": "^0.2.8",
     "lodash": "^4.17.21",
