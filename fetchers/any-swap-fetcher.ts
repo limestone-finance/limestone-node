@@ -35,10 +35,14 @@ export default {
         }`;
 
         // Fetching pairs data from uniswap subgraph
+        const fetchStartTime = Date.now();
         const response = await graphProxy.executeQuery(
           config.subgraphUrl,
           query);
         if (response.data === undefined) {
+          const timeElapsed = Date.now() - fetchStartTime;
+          logger.warn(
+            `Any swap fetching failed. Elapsed time: ${timeElapsed / 1000} sec`);
           throw new Error(
             "Response data is undefined: " + JSON.stringify(response));
         }
