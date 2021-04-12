@@ -205,13 +205,6 @@
         "uniswap"
       ]
     },
-    "RSR": {
-      "source": [
-        "kyber",
-        "sushiswap",
-        "uniswap"
-      ]
-    },
     "1INCH": {
       "source": [
         "kyber",
@@ -378,6 +371,12 @@
       ]
     },
     "DIA": {
+      "source": [
+        "sushiswap",
+        "uniswap"
+      ]
+    },
+    "RSR": {
       "source": [
         "sushiswap",
         "uniswap"
