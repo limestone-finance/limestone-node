@@ -1,4 +1,4 @@
-import LimestoneApi from "limestone-api-v2-beta";
+import LimestoneApi from "limestone-api";
 import { Consola } from "consola";
 import axios from "axios";
 import { PriceDataFetched, Fetcher } from "../../types";
@@ -36,7 +36,10 @@ const binanceFetcher: Fetcher = {
     for (const symbol of tokenSymbols) {
       const value = pairs[symbol + "USDT"];
       if (value !== undefined) {
-        prices.push({ symbol, value });
+        prices.push({
+          symbol,
+          value: usdtPrice.value * value,
+        });
       } else {
         logger.warn(
           `Token is not supported with binance source: ${symbol}`);

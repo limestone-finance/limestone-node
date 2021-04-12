@@ -500,10 +500,10 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-limestone-api-v2-beta@^0.2.8:
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/limestone-api-v2-beta/-/limestone-api-v2-beta-0.2.8.tgz#487210da6e96d6d1c4eeaffbf2209de0a1181f2d"
-  integrity sha512-hwMMnV+nKRpZwNaZOjL/udjsqriYGiDswZvJk2j/Cp8Kdh2ZhTsf8UMRP2akFL72INDzdBKEE9tHMTzgrd9sPA==
+limestone-api@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/limestone-api/-/limestone-api-2.0.0.tgz#84e23d55392a5efae602c5f32a8399efd00c4d54"
+  integrity sha512-48s7FZs787G1CtnHaRv6juuzQ1VTlhaYDuRZtbX/vb7TqslrPVBNkDemisUhukCQid6nP21+5tHeRkSVTrKoZQ==
   dependencies:
     ar-gql "^0.0.6"
     arweave "^1.10.11"

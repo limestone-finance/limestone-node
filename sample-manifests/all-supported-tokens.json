@@ -290,12 +290,6 @@
         "binance"
       ]
     },
-    "STX": {
-      "source": [
-        "coingecko",
-        "binance"
-      ]
-    },
     "MATIC": {
       "source": [
         "coingecko",
@@ -922,6 +916,11 @@
     "YAX": {
       "source": [
         "uniswap"
+      ]
+    },
+    "STX": {
+      "source": [
+        "binance"
       ]
     }
   }

@@ -306,8 +306,17 @@ export default class Runner {
 
   calculateAggregatedValues(
     prices: PriceDataBeforeAggregation[]): PriceDataAfterAggregation[] {
-    return prices.map((p) =>
-      aggregators[this.manifest.priceAggregator].getAggregatedValue(p));
+    const aggregatedPrices: PriceDataAfterAggregation[] = [];
+    const aggregator = aggregators[this.manifest.priceAggregator];
+    for (const price of prices) {
+      try {
+        const priceAfterAggregation = aggregator.getAggregatedValue(price);
+        aggregatedPrices.push(priceAfterAggregation);
+      } catch (e) {
+        logger.error(e);
+      }
+    }
+    return aggregatedPrices;
   }
 
   async signPrice(
