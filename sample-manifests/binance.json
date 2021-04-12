@@ -1,0 +1,17 @@
+{
+  "interval": 15000,
+  "priceAggregator": "median",
+  "defaultSource": ["binance"],
+  "tokens": {
+    "BTC": {},
+    "ETH": {},
+    "BNB": {},
+    "UNI": {},
+    "DOT": {},
+    "ADA": {},
+    "XRP": {},
+    "DOGE": {},
+    "EOS": {},
+    "STX": {}
+  }
+}

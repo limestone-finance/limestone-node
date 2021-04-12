@@ -42,6 +42,16 @@
         "uniswap"
       ]
     },
+    "UNI": {
+      "source": [
+        "coinbase",
+        "coingecko",
+        "kyber",
+        "sushiswap",
+        "uniswap",
+        "binance"
+      ]
+    },
     "DAI": {
       "source": [
         "coinbase",
@@ -52,15 +62,6 @@
       ]
     },
     "WBTC": {
-      "source": [
-        "coinbase",
-        "coingecko",
-        "kyber",
-        "sushiswap",
-        "uniswap"
-      ]
-    },
-    "UNI": {
       "source": [
         "coinbase",
         "coingecko",
@@ -130,6 +131,22 @@
         "uniswap"
       ]
     },
+    "BTC": {
+      "source": [
+        "coinbase",
+        "coingecko",
+        "huobi",
+        "binance"
+      ]
+    },
+    "ETH": {
+      "source": [
+        "coinbase",
+        "coingecko",
+        "huobi",
+        "binance"
+      ]
+    },
     "LRC": {
       "source": [
         "coinbase",
@@ -170,18 +187,11 @@
         "uniswap"
       ]
     },
-    "BTC": {
+    "EOS": {
       "source": [
         "coinbase",
         "coingecko",
-        "huobi"
-      ]
-    },
-    "ETH": {
-      "source": [
-        "coinbase",
-        "coingecko",
-        "huobi"
+        "binance"
       ]
     },
     "AR": {
@@ -250,10 +260,40 @@
         "coingecko"
       ]
     },
-    "EOS": {
+    "BNB": {
       "source": [
-        "coinbase",
-        "coingecko"
+        "coingecko",
+        "binance"
+      ]
+    },
+    "ADA": {
+      "source": [
+        "coingecko",
+        "binance"
+      ]
+    },
+    "DOT": {
+      "source": [
+        "coingecko",
+        "binance"
+      ]
+    },
+    "XRP": {
+      "source": [
+        "coingecko",
+        "binance"
+      ]
+    },
+    "DOGE": {
+      "source": [
+        "coingecko",
+        "binance"
+      ]
+    },
+    "STX": {
+      "source": [
+        "coingecko",
+        "binance"
       ]
     },
     "MATIC": {
@@ -422,31 +462,6 @@
       "source": [
         "sushiswap",
         "uniswap"
-      ]
-    },
-    "BNB": {
-      "source": [
-        "coingecko"
-      ]
-    },
-    "ADA": {
-      "source": [
-        "coingecko"
-      ]
-    },
-    "DOT": {
-      "source": [
-        "coingecko"
-      ]
-    },
-    "XRP": {
-      "source": [
-        "coingecko"
-      ]
-    },
-    "DOGE": {
-      "source": [
-        "coingecko"
       ]
     },
     "OKB": {
@@ -660,11 +675,6 @@
       ]
     },
     "XSUSHI": {
-      "source": [
-        "coingecko"
-      ]
-    },
-    "STX": {
       "source": [
         "coingecko"
       ]
