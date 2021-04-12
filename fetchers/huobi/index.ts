@@ -55,7 +55,7 @@ const huobiFetcher: Fetcher = {
         })());
       } else {
         logger.warn(
-          `Token is not supported with coingecko source: ${symbol}`);
+          `Token is not supported with huobi source: ${symbol}`);
       }
     }
 

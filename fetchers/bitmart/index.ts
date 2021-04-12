@@ -16,7 +16,7 @@ const bitmartFetcher: Fetcher = {
     }
 
     if (tokenSymbols.some(symbol => symbol !== "AR")) {
-      logger.warn(`Currently bitmap fetcher supports only AR token`);
+      logger.warn(`Currently bitmart fetcher supports only AR token`);
     }
 
     // Fetching AR price in USDT from bitmart api
