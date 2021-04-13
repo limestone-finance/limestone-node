@@ -11,6 +11,7 @@ const uniswap = require("../../sample-manifests/uniswap.json");
 const bitmart = require("../../sample-manifests/bitmart.json");
 const huobi = require("../../sample-manifests/huobi.json");
 const binance = require("../../sample-manifests/binance.json");
+const kraken = require("../../sample-manifests/kraken.json");
 
 main();
 
@@ -26,6 +27,7 @@ function main() {
     bitmart,
     huobi,
     binance,
+    kraken,
   ];
 
   // Building tokens

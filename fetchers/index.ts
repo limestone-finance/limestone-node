@@ -6,6 +6,7 @@ import balancer from "./balancer";
 import uniswap from "./uniswap";
 import bitmart from "./bitmart";
 import binance from "./binance";
+import kraken from "./kraken";
 import kyber from "./kyber";
 import huobi from "./huobi";
 import ecb from "./ecb";
@@ -18,6 +19,7 @@ export default {
   uniswap,
   bitmart,
   binance,
+  kraken,
   kyber,
   huobi,
   ecb,
