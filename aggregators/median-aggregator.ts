@@ -24,7 +24,7 @@ const medianAggregator: Aggregator = {
           (Math.abs(value - initialMedian) / initialMedian) * 100;
         if (deviation > MAX_DEVIATION) {
           logger.warn(
-            `Value ${value} has too big deviation from median. `
+            `Value ${value} has too big deviation (${deviation}) from median. `
             + `Symbol: ${price.symbol}. Skipping...`,
             price);
         } else {

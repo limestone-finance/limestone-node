@@ -49,7 +49,7 @@ const krakenFetcher: Fetcher = {
       if (price !== undefined) {
         prices.push({
           symbol,
-          value: price.c[0],
+          value: Number(price.c[0]),
         });
       }
     }
