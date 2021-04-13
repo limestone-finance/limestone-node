@@ -2,6 +2,8 @@ import { Consola } from "consola";
 import graphProxy from "../utils/graph-proxy";
 import { PriceDataFetched, Fetcher } from "../types";
 
+const RETRY_TIME_LIMIT = 2000; // ms
+
 const logger =
   require("../utils/logger")("fetchers/any-swap-fetcher") as Consola;
 
@@ -36,13 +38,23 @@ export default {
 
         // Fetching pairs data from uniswap subgraph
         const fetchStartTime = Date.now();
-        const response = await graphProxy.executeQuery(
+        let response = await graphProxy.executeQuery(
           config.subgraphUrl,
           query);
+        const timeElapsed = Date.now() - fetchStartTime;
+
+        // Retrying to fetch if needed
+        if (response.data === undefined && timeElapsed <= RETRY_TIME_LIMIT) {
+          if (timeElapsed <= 2000) {
+            logger.info("Retrying to fetch data");
+            response = await graphProxy.executeQuery(
+              config.subgraphUrl,
+              query);
+          }
+        }
+
+        // Checking final response
         if (response.data === undefined) {
-          const timeElapsed = Date.now() - fetchStartTime;
-          logger.warn(
-            `Any swap fetching failed. Elapsed time: ${timeElapsed / 1000} sec`);
           throw new Error(
             "Response data is undefined: " + JSON.stringify(response));
         }
