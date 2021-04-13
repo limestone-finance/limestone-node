@@ -1,6 +1,6 @@
 {
   "name": "limestone-node",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "A data provider module that fetches price information and serves it to end users. ",
   "main": "index.js",
   "scripts": {
@@ -14,6 +14,7 @@
     "coinbase": "^2.0.8",
     "coingecko-api": "^1.0.10",
     "consola": "^2.15.3",
+    "deep-sort-object": "^1.0.2",
     "ecb-euro-exchange-rates": "^2.0.0",
     "isomorphic-fetch": "^3.0.0",
     "limestone-api": "^2.0.0",

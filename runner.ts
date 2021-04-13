@@ -19,6 +19,7 @@ import {
   Manifest,
 } from "./types";
 
+const deepSortObject = require("deep-sort-object");
 const logger = require("./utils/logger")("runner") as Consola;
 const pjson = require("./package.json") as any;
 
@@ -321,17 +322,15 @@ export default class Runner {
 
   async signPrice(
     price: PriceDataBeforeSigning): Promise<PriceDataSigned> {
+      const priceWithSortedProps = deepSortObject(price);
+      const priceStringified = JSON.stringify(priceWithSortedProps);
+      const signature = await this.arweave.sign(priceStringified);
 
-    // TODO: think about keeping stringified version which was signed
-    // to avoid problems with signature verification
-    const priceStringified = JSON.stringify(price);
-    const signature: string = await this.arweave.sign(priceStringified);
-
-    return {
-      ...price,
-      signature,
-    };
-  }
+      return {
+        ...price,
+        signature,
+      };
+    }
 
 };
 
