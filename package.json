@@ -37,6 +37,7 @@
     "ar-gql": "^0.0.6",
     "open": "^8.0.4",
     "plotly": "^1.0.6",
+    "typed-binary-json": "^1.17.4",
     "typescript": "^4.2.2"
   }
 }

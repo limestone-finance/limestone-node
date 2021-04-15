@@ -774,6 +774,11 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
 
+typed-binary-json@^1.17.4:
+  version "1.17.4"
+  resolved "https://registry.yarnpkg.com/typed-binary-json/-/typed-binary-json-1.17.4.tgz#24d82230cb7907951e5bd35164cf2f9653bfe907"
+  integrity sha512-iWjCctL4/aBSlrCuGHC89wBzzpFkCys7kZsam051cbxJXH1oSJJa4P4zlZG5ZAcxtnowx3wNVdkxv8SnhX1efQ==
+
 typescript@^4.2.2:
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.2.2.tgz#1450f020618f872db0ea17317d16d8da8ddb8c4c"

@@ -1,30 +1,8 @@
 const axios = require("axios");
-const { gzipSync, gunzipSync, deflateSync, unzipSync } = require('zlib');
 const _ = require("lodash");
+const compressions = require("./compressions");
 
 main();
-
-const compressions = {
-  deflate: {
-    compress(data) {
-      return deflateSync(data);
-    },
-
-    decompress(data) {
-      return unzipSync(data);
-    },
-  },
-
-  gzip: {
-    compress(data) {
-      return gzipSync(data);
-    },
-
-    decompress(data) {
-      return gunzipSync(data);
-    },
-  }
-};
 
 async function main() {
   const prices = await getAllPrices();
