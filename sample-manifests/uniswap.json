@@ -1,13 +1,14 @@
 {
   "interval": 15000,
   "priceAggregator": "median",
-  "defaultSource": ["uniswap"],
+  "defaultSource": [
+    "uniswap"
+  ],
   "tokens": {
     "LRC": {},
     "MATIC": {},
     "QNT": {},
     "SAND": {},
-    "LON": {},
     "UMA": {},
     "BASE": {},
     "STAKE": {},
@@ -21,13 +22,11 @@
     "KP3R": {},
     "UNI": {},
     "WBTC": {},
-    "YFL": {},
     "CREAM": {},
     "FXS": {},
     "BAC": {},
     "ESD": {},
     "BAO": {},
-    "CVP": {},
     "REN": {},
     "XOR": {},
     "PICKLE": {},
@@ -41,7 +40,6 @@
     "SUSHI": {},
     "TORN": {},
     "AAVE": {},
-    "LEND": {},
     "UBT": {},
     "DIA": {},
     "FRAX": {},
@@ -55,16 +53,11 @@
     "USDC": {},
     "MTA": {},
     "UST": {},
-    "RBC": {},
-    "ROOM": {},
-    "YOP": {},
-    "YAX": {},
     "SFI": {},
     "BAND": {},
     "PERP": {},
     "COMP": {},
     "SNX": {},
-    "WETH": {},
     "USDT": {}
   }
 }

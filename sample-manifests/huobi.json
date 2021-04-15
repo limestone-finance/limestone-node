@@ -1,7 +1,9 @@
 {
   "interval": 15000,
   "priceAggregator": "median",
-  "defaultSource": ["huobi"],
+  "defaultSource": [
+    "huobi"
+  ],
   "tokens": {
     "BTC": {},
     "ETH": {},
