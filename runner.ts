@@ -314,7 +314,7 @@ export default class Runner {
         const priceAfterAggregation = aggregator.getAggregatedValue(price);
         aggregatedPrices.push(priceAfterAggregation);
       } catch (e) {
-        logger.error(e);
+        logger.error(e.stack);
       }
     }
     return aggregatedPrices;
