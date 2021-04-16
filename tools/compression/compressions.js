@@ -1,4 +1,4 @@
-const { gzipSync, gunzipSync, deflateSync, unzipSync } = require('zlib');
+const { gzipSync, gunzipSync, deflateSync, unzipSync } = require("zlib");
 
 const compressions = {
   deflate: {

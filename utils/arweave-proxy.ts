@@ -2,6 +2,8 @@ import Arweave from "arweave/node";
 import Transaction from "arweave/node/lib/transaction";
 import { JWKInterface } from "arweave/node/lib/wallet";
 import { Consola } from "consola";
+import util from "util";
+import { gzip } from "zlib";
 import _  from "lodash";
 
 const logger =
@@ -45,8 +47,15 @@ export default class ArweaveProxy  {
   // This method creates and signs arweave transaction
   // It doesn't post transaction to arweave, to do so use postTransaction
   async prepareUploadTransaction(tags: any, data: any): Promise<Transaction> {
+    const stringifiedData = JSON.stringify(data);
+
+    // Compressing
+    const gzipPromisified = util.promisify(gzip);
+    const gzippedData = await gzipPromisified(stringifiedData);
+
+    // Transaction creation
     const uploadTx = await this.arweave.createTransaction({
-      data: JSON.stringify(data),
+      data: gzippedData,
     }, this.jwk);
 
     _.keys(tags).forEach((key) => {
