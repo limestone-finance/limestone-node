@@ -12,6 +12,7 @@ const bitmart = require("../../sample-manifests/bitmart.json");
 const huobi = require("../../sample-manifests/huobi.json");
 const binance = require("../../sample-manifests/binance.json");
 const kraken = require("../../sample-manifests/kraken.json");
+const bitfinex = require("../../sample-manifests/bitfinex.json");
 
 main();
 
@@ -28,6 +29,7 @@ function main() {
     huobi,
     binance,
     kraken,
+    bitfinex,
   ];
 
   // Building tokens
