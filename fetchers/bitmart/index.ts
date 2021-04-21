@@ -10,11 +10,6 @@ const URL = "https://api-cloud.bitmart.com/spot/v1/ticker";
 
 const bitmartFetcher: Fetcher = {
   async fetchAll(tokenSymbols: string[]): Promise<PriceDataFetched[]> {
-    if (tokenSymbols.length === 0) {
-      logger.warn(`Bitmap fetcher received an empty array of symbols`);
-      return [];
-    }
-
     if (tokenSymbols.some(symbol => symbol !== "AR")) {
       logger.warn(`Currently bitmart fetcher supports only AR token`);
     }

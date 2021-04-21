@@ -257,6 +257,11 @@ export default class Runner {
     source: string;
     timeout: number;
   }): Promise<PriceDataFetched[]> {
+      if (args.symbols.length === 0) {
+        throw new Error(
+          `${args.source} fetcher received an empty array of symbols`);
+      }
+
       trackStart(`fetching-${args.source}`);
       const fetchPromise = fetchers[args.source].fetchAll(args.symbols, {
         covalentApiKey: this.covalentApiKey,

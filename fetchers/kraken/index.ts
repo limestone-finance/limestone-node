@@ -10,11 +10,6 @@ const URL = "https://api.kraken.com/0/public/Ticker";
 
 const krakenFetcher: Fetcher = {
   async fetchAll(tokenSymbols: string[]): Promise<PriceDataFetched[]> {
-    if (tokenSymbols.length === 0) {
-      logger.warn(`Kraken fetcher received an empty array of symbols`);
-      return [];
-    }
-
     // Building params for api request
     const pairs = [];
     for (const symbol of tokenSymbols) {

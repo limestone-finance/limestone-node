@@ -10,11 +10,6 @@ const URL = "https://api.binance.com/api/v3/ticker/price";
 
 const binanceFetcher: Fetcher = {
   async fetchAll(tokenSymbols: string[]): Promise<PriceDataFetched[]> {
-    if (tokenSymbols.length === 0) {
-      logger.warn(`Binance fetcher received an empty array of symbols`);
-      return [];
-    }
-
     // Fetching ptices from Binance API
     const response = await axios.get(URL);
     if (response.data === undefined) {
