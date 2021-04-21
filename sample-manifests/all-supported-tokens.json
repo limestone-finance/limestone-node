@@ -114,22 +114,6 @@
         "uniswap"
       ]
     },
-    "WETH": {
-      "source": [
-        "balancer",
-        "kyber",
-        "sushiswap",
-        "uniswap"
-      ]
-    },
-    "LEND": {
-      "source": [
-        "balancer",
-        "kyber",
-        "sushiswap",
-        "uniswap"
-      ]
-    },
     "LRC": {
       "source": [
         "coinbase",
@@ -281,12 +265,6 @@
         "uniswap"
       ]
     },
-    "LON": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
     "BASE": {
       "source": [
         "sushiswap",
@@ -347,12 +325,6 @@
         "uniswap"
       ]
     },
-    "CVP": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
     "PICKLE": {
       "source": [
         "sushiswap",
@@ -396,18 +368,6 @@
       ]
     },
     "MTA": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
-    "ROOM": {
-      "source": [
-        "sushiswap",
-        "uniswap"
-      ]
-    },
-    "YOP": {
       "source": [
         "sushiswap",
         "uniswap"
@@ -545,17 +505,7 @@
         "coingecko"
       ]
     },
-    "CDAI": {
-      "source": [
-        "coingecko"
-      ]
-    },
     "KSM": {
-      "source": [
-        "coingecko"
-      ]
-    },
-    "CETH": {
       "source": [
         "coingecko"
       ]
@@ -586,11 +536,6 @@
       ]
     },
     "DCR": {
-      "source": [
-        "coingecko"
-      ]
-    },
-    "CUSDC": {
       "source": [
         "coingecko"
       ]
@@ -630,11 +575,6 @@
         "coingecko"
       ]
     },
-    "HBTC": {
-      "source": [
-        "coingecko"
-      ]
-    },
     "RUNE": {
       "source": [
         "coingecko"
@@ -660,11 +600,6 @@
         "coingecko"
       ]
     },
-    "XSUSHI": {
-      "source": [
-        "coingecko"
-      ]
-    },
     "STX": {
       "source": [
         "coingecko"
@@ -686,11 +621,6 @@
       ]
     },
     "MDX": {
-      "source": [
-        "coingecko"
-      ]
-    },
-    "RENBTC": {
       "source": [
         "coingecko"
       ]
@@ -736,11 +666,6 @@
       ]
     },
     "OMG": {
-      "source": [
-        "coingecko"
-      ]
-    },
-    "HUSD": {
       "source": [
         "coingecko"
       ]
@@ -840,11 +765,6 @@
         "sushiswap"
       ]
     },
-    "TEND": {
-      "source": [
-        "sushiswap"
-      ]
-    },
     "KIMCHI": {
       "source": [
         "sushiswap"
@@ -855,17 +775,7 @@
         "sushiswap"
       ]
     },
-    "YAMv2": {
-      "source": [
-        "sushiswap"
-      ]
-    },
     "SAND": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "YFL": {
       "source": [
         "uniswap"
       ]
@@ -901,16 +811,6 @@
       ]
     },
     "SPI": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "RBC": {
-      "source": [
-        "uniswap"
-      ]
-    },
-    "YAX": {
       "source": [
         "uniswap"
       ]
