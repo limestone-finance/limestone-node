@@ -494,6 +494,13 @@
         "kraken"
       ]
     },
+    "BTG": {
+      "source": [
+        "coingecko",
+        "binance",
+        "bitfinex"
+      ]
+    },
     "AUD": {
       "source": [
         "ecb",
@@ -570,12 +577,6 @@
       "source": [
         "coingecko",
         "binance"
-      ]
-    },
-    "GRT": {
-      "source": [
-        "coingecko",
-        "kraken"
       ]
     },
     "AVAX": {
@@ -668,22 +669,10 @@
         "binance"
       ]
     },
-    "NPXS": {
-      "source": [
-        "coingecko",
-        "binance"
-      ]
-    },
     "XVS": {
       "source": [
         "coingecko",
         "binance"
-      ]
-    },
-    "BTG": {
-      "source": [
-        "coingecko",
-        "bitfinex"
       ]
     },
     "EUR": {
@@ -824,6 +813,12 @@
         "binance"
       ]
     },
+    "GRT": {
+      "source": [
+        "binance",
+        "kraken"
+      ]
+    },
     "OKB": {
       "source": [
         "coingecko"
@@ -880,6 +875,11 @@
       ]
     },
     "ZKS": {
+      "source": [
+        "coingecko"
+      ]
+    },
+    "NPXS": {
       "source": [
         "coingecko"
       ]

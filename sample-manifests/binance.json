@@ -40,7 +40,6 @@
     "FTM": {},
     "ALGO": {},
     "DOGE": {},
-    "NPXS": {},
     "BAND": {},
     "BUSD": {},
     "XTZ": {},
@@ -85,9 +84,11 @@
     "NEAR": {},
     "FIL": {},
     "XEM": {},
+    "GRT": {},
     "1INCH": {},
     "TRU": {},
     "CAKE": {},
-    "PERP": {}
+    "PERP": {},
+    "BTG": {}
   }
 }

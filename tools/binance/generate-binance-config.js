@@ -4,7 +4,7 @@ const _ = require("lodash");
 const allSupportedConfig =
   require("../../sample-manifests/all-supported-tokens.json");
 
-const symbolsToSkip = ["LEND", "FTT", "GRT", "HOT", "PAX"];
+const symbolsToSkip = ["LEND", "FTT", "HOT", "PAX", "NPXS"];
 
 main();
 
