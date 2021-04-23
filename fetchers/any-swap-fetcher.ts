@@ -45,12 +45,10 @@ export default {
 
         // Retrying to fetch if needed
         if (response.data === undefined && timeElapsed <= RETRY_TIME_LIMIT) {
-          if (timeElapsed <= 2000) {
-            logger.info("Retrying to fetch data");
-            response = await graphProxy.executeQuery(
-              config.subgraphUrl,
-              query);
-          }
+          logger.info("Retrying to fetch data");
+          response = await graphProxy.executeQuery(
+            config.subgraphUrl,
+            query);
         }
 
         // Checking final response

@@ -317,6 +317,10 @@ export default class Runner {
     for (const price of prices) {
       try {
         const priceAfterAggregation = aggregator.getAggregatedValue(price);
+        if (priceAfterAggregation.value <= 0
+            || priceAfterAggregation.value === undefined) {
+              throw new Error("Invalid price value: " + JSON.stringify(priceAfterAggregation));
+        }
         aggregatedPrices.push(priceAfterAggregation);
       } catch (e) {
         logger.error(e.stack);
