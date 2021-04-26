@@ -5,7 +5,6 @@ const bitfinexSupportedTokens =
   require("../../fetchers/bitfinex/bitfinex-supported-tokens.json");
 
 const symbolsToSkip = [
-  "FTT",
   "AMP",
   "PAX",
   "GRT",

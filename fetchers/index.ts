@@ -10,6 +10,7 @@ import binance from "./binance";
 import kraken from "./kraken";
 import kyber from "./kyber";
 import huobi from "./huobi";
+import ftx from "./ftx";
 import ecb from "./ecb";
 
 export default {
@@ -24,5 +25,6 @@ export default {
   kraken,
   kyber,
   huobi,
+  ftx,
   ecb,
 } as { [name: string]: Fetcher };

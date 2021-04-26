@@ -1,4 +1,3 @@
-import LimestoneApi from "limestone-api";
 import { Consola } from "consola";
 import axios from "axios";
 import { PriceDataFetched, Fetcher } from "../../types";
