@@ -1,7 +1,9 @@
 {
   "interval": 15000,
   "priceAggregator": "median",
-  "defaultSource": ["ecb"],
+  "defaultSource": [
+    "ecb"
+  ],
   "tokens": {
     "EUR": {},
     "JPY": {},

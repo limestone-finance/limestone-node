@@ -1,9 +1,10 @@
 {
   "interval": 15000,
   "priceAggregator": "median",
-  "defaultSource": ["sushiswap"],
+  "defaultSource": [
+    "sushiswap"
+  ],
   "tokens": {
-    "LON": {},
     "UMA": {},
     "BASE": {},
     "YAM": {},
@@ -14,7 +15,6 @@
     "BAT": {},
     "DAO": {},
     "1INCH": {},
-    "TEND": {},
     "DPI": {},
     "KP3R": {},
     "KIMCHI": {},
@@ -24,7 +24,6 @@
     "FXS": {},
     "ESD": {},
     "BAO": {},
-    "CVP": {},
     "REN": {},
     "PICKLE": {},
     "TRU": {},
@@ -35,7 +34,6 @@
     "SUSHI": {},
     "TORN": {},
     "AAVE": {},
-    "LEND": {},
     "DIA": {},
     "RSR": {},
     "MPH": {},
@@ -46,15 +44,11 @@
     "YFII": {},
     "MTA": {},
     "UST": {},
-    "YAMv2": {},
-    "ROOM": {},
-    "YOP": {},
     "SFI": {},
     "BAND": {},
     "PERP": {},
     "COMP": {},
     "SNX": {},
-    "WETH": {},
     "USDT": {}
   }
 }

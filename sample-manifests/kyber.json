@@ -1,14 +1,13 @@
 {
   "interval": 15000,
   "priceAggregator": "median",
-  "defaultSource": ["kyber"],
+  "defaultSource": [
+    "kyber"
+  ],
   "tokens": {
     "YFV": {},
-    "WETH": {},
-    "LEND": {},
     "SUSHI": {},
     "CREAM": {},
-    "RSR": {},
     "1INCH": {},
     "BZRX": {},
     "USDT": {},

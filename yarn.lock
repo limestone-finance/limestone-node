@@ -281,6 +281,13 @@ debug@=3.1.0:
   dependencies:
     ms "2.0.0"
 
+deep-sort-object@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/deep-sort-object/-/deep-sort-object-1.0.2.tgz#3892dcef5dfd0efc2d6fa96beabccb33cd8ef91f"
+  integrity sha1-OJLc7139Dvwtb6lr6rzLM82O+R8=
+  dependencies:
+    is-plain-object "^2.0.1"
+
 define-lazy-prop@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/define-lazy-prop/-/define-lazy-prop-2.0.0.tgz#3f7ae421129bcaaac9bc74905c98a0009ec9ee7f"
@@ -445,6 +452,13 @@ is-fullwidth-code-point@^3.0.0:
   resolved "https://registry.yarnpkg.com/is-fullwidth-code-point/-/is-fullwidth-code-point-3.0.0.tgz#f116f8064fe90b3f7844a38997c0b75051269f1d"
   integrity sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==
 
+is-plain-object@^2.0.1:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-2.0.4.tgz#2c163b3fafb1b606d9d17928f05c2a1c38e07677"
+  integrity sha512-h5PpgXkWitc38BBMYawTYMWJHFZJVnBquFE57xFpjB8pJFiF6gZ+bU+WyI/yqXiFR5mdLsgYNaPe8uao6Uv9Og==
+  dependencies:
+    isobject "^3.0.1"
+
 is-typedarray@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-typedarray/-/is-typedarray-1.0.0.tgz#e479c80858df0c1b11ddda6940f96011fcda4a9a"
@@ -456,6 +470,11 @@ is-wsl@^2.2.0:
   integrity sha512-fKzAra0rGJUUBwGBgNkHZuToZcn+TtXHpeCgmkMJMMYx1sQDYaCSyjJBSCa2nH1DGm7s3n1oBnohoVTBaN7Lww==
   dependencies:
     is-docker "^2.0.0"
+
+isobject@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
+  integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
 isomorphic-fetch@^3.0.0:
   version "3.0.0"
@@ -500,10 +519,10 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-limestone-api-v2-beta@^0.2.8:
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/limestone-api-v2-beta/-/limestone-api-v2-beta-0.2.8.tgz#487210da6e96d6d1c4eeaffbf2209de0a1181f2d"
-  integrity sha512-hwMMnV+nKRpZwNaZOjL/udjsqriYGiDswZvJk2j/Cp8Kdh2ZhTsf8UMRP2akFL72INDzdBKEE9tHMTzgrd9sPA==
+limestone-api@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/limestone-api/-/limestone-api-2.0.0.tgz#84e23d55392a5efae602c5f32a8399efd00c4d54"
+  integrity sha512-48s7FZs787G1CtnHaRv6juuzQ1VTlhaYDuRZtbX/vb7TqslrPVBNkDemisUhukCQid6nP21+5tHeRkSVTrKoZQ==
   dependencies:
     ar-gql "^0.0.6"
     arweave "^1.10.11"
@@ -754,6 +773,11 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
+
+typed-binary-json@^1.17.4:
+  version "1.17.4"
+  resolved "https://registry.yarnpkg.com/typed-binary-json/-/typed-binary-json-1.17.4.tgz#24d82230cb7907951e5bd35164cf2f9653bfe907"
+  integrity sha512-iWjCctL4/aBSlrCuGHC89wBzzpFkCys7kZsam051cbxJXH1oSJJa4P4zlZG5ZAcxtnowx3wNVdkxv8SnhX1efQ==
 
 typescript@^4.2.2:
   version "4.2.2"

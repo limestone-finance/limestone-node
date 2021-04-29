@@ -1,30 +1,15 @@
+const fs = require("fs");
 const _ = require("lodash");
 
-// Load manifests with all supported tokens
-const balancer = require("../../sample-manifests/balancer.json");
-const coinbase = require("../../sample-manifests/coinbase.json");
-const coingecko = require("../../sample-manifests/coingecko.json");
-const ecb = require("../../sample-manifests/ecb.json");
-const kyber = require("../../sample-manifests/kyber.json");
-const sushiswap = require("../../sample-manifests/sushiswap.json");
-const uniswap = require("../../sample-manifests/uniswap.json");
-const bitmart = require("../../sample-manifests/bitmart.json");
-const huobi = require("../../sample-manifests/huobi.json");
+const manifestsToExclude = [
+  "5-top-tokens.json",
+  "all-supported-tokens.json",
+];
 
 main();
 
 function main() {
-  const manifests = [
-    balancer,
-    coinbase,
-    coingecko,
-    ecb,
-    kyber,
-    sushiswap,
-    uniswap,
-    bitmart,
-    huobi,
-  ];
+  const manifests = readManifests();
 
   // Building tokens
   const tokens = {};
@@ -58,4 +43,17 @@ function main() {
   };
 
   console.log(JSON.stringify(manifest, null, 2));
+}
+
+function readManifests() {
+  const manifestsDir = "./sample-manifests/";
+  const configs = [];
+  const files = fs.readdirSync(manifestsDir);
+  for (const fileName of files) {
+    if (!manifestsToExclude.includes(fileName)) {
+      const fileData = fs.readFileSync(manifestsDir + fileName, "utf8");
+      configs.push(JSON.parse(fileData));
+    }
+  }
+  return configs;
 }

@@ -1,4 +1,4 @@
-import LimestoneApi from "limestone-api-v2-beta";
+import LimestoneApi from "limestone-api";
 import { Consola } from "consola";
 import axios from "axios";
 import { PriceDataFetched, Fetcher } from "../../types";
@@ -55,7 +55,7 @@ const huobiFetcher: Fetcher = {
         })());
       } else {
         logger.warn(
-          `Token is not supported with coingecko source: ${symbol}`);
+          `Token is not supported with huobi source: ${symbol}`);
       }
     }
 

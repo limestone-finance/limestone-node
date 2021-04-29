@@ -1,5 +1,5 @@
 import { Consola } from "consola";
-import _ from "lodash";
+import _, { values } from "lodash";
 import {
   Aggregator,
   PriceDataBeforeAggregation,
@@ -9,27 +9,52 @@ import {
 const logger =
   require("../utils/logger")("aggregators/median-aggregator") as Consola;
 
-const MAX_DEVIATION = 20; // perecents
+const MAX_DEVIATION = 25; // perecents
 
 const medianAggregator: Aggregator = {
   getAggregatedValue(price: PriceDataBeforeAggregation
     ): PriceDataAfterAggregation {
-      const values = _.values(price.source);
-      const median = getMedianValue(values);
+      const initialValues = getNonZeroValues(price);
+      const initialMedian = getMedianValue(initialValues);
 
-      for (const value of values) {
-        const deviation = (Math.abs(value - median) / median) * 100;
+      // Filtering out values based on deviation from the initial median
+      const finalValues = [];
+      for (const value of initialValues) {
+        const deviation =
+          (Math.abs(value - initialMedian) / initialMedian) * 100;
         if (deviation > MAX_DEVIATION) {
-          logger.warn(`Value ${value} has too big deviation from median`, price);
+          logger.warn(
+            `Value ${value} has too big deviation (${deviation}) from median. `
+            + `Symbol: ${price.symbol}. Skipping...`,
+            price);
+        } else {
+          finalValues.push(value);
         }
       }
 
       return {
         ...price,
-        value: median,
+        value: getMedianValue(finalValues),
       };
     },
 };
+
+function getNonZeroValues(price: PriceDataBeforeAggregation): number[] {
+    const values: number[] = [];
+
+    for (const source of _.keys(price.source)) {
+      const value = price.source[source];
+      if (value <= 0) {
+        logger.warn(
+          `Incorrect price value (<= 0) for source: ${source}`,
+          price);
+      } else {
+        values.push(value);
+      }
+    }
+
+    return values;
+  }
 
 function getMedianValue(arr: number[]): number {
   arr = arr.sort((a, b) => a - b);

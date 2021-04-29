@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Consola } from "consola";
-import LimestoneApi from "limestone-api-v2-beta";
+import LimestoneApi from "limestone-api";
 import { PriceDataFetched, Fetcher } from "../../types";
 
 const logger =

@@ -1,4 +1,4 @@
-import LimestoneApi from "limestone-api-v2-beta";
+import LimestoneApi from "limestone-api";
 import { Consola } from "consola";
 import axios from "axios";
 import { PriceDataFetched, Fetcher } from "../../types";
@@ -10,13 +10,8 @@ const URL = "https://api-cloud.bitmart.com/spot/v1/ticker";
 
 const bitmartFetcher: Fetcher = {
   async fetchAll(tokenSymbols: string[]): Promise<PriceDataFetched[]> {
-    if (tokenSymbols.length === 0) {
-      logger.warn(`Bitmap fetcher received an empty array of symbols`);
-      return [];
-    }
-
     if (tokenSymbols.some(symbol => symbol !== "AR")) {
-      logger.warn(`Currently bitmap fetcher supports only AR token`);
+      logger.warn(`Currently bitmart fetcher supports only AR token`);
     }
 
     // Fetching AR price in USDT from bitmart api

@@ -1,7 +1,9 @@
 {
   "interval": 15000,
   "priceAggregator": "median",
-  "defaultSource": ["coinbase"],
+  "defaultSource": [
+    "coinbase"
+  ],
   "tokens": {
     "BTC": {},
     "ETH": {},

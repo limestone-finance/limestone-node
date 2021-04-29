@@ -19,7 +19,11 @@ async function prepareTransaction(
       type: "data",
       version,
 
-      // all prices should have the same timestamp
+      // Tags for HTTP headers
+      "Content-Type": "application/json",
+      "Content-Encoding": "gzip",
+
+      // All prices should have the same timestamp
       timestamp: String(prices[0].timestamp),
     };
 

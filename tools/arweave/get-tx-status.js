@@ -21,6 +21,10 @@ async function main() {
     const response = await arweave.transactions.getStatus(txId);
 
     console.log({response});
+
+    const tx = await arweave.transactions.get(txId);
+    console.log({tx});
+
   } catch (e) {
     console.error(e);
   }

@@ -1,10 +1,10 @@
 {
   "interval": 15000,
   "priceAggregator": "median",
-  "defaultSource": ["balancer"],
+  "defaultSource": [
+    "balancer"
+  ],
   "tokens": {
-    "WETH": {},
-    "LEND": {},
     "USDC": {},
     "SNX": {},
     "MKR": {},

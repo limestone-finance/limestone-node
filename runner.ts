@@ -19,6 +19,7 @@ import {
   Manifest,
 } from "./types";
 
+const deepSortObject = require("deep-sort-object");
 const logger = require("./utils/logger")("runner") as Consola;
 const pjson = require("./package.json") as any;
 
@@ -256,6 +257,11 @@ export default class Runner {
     source: string;
     timeout: number;
   }): Promise<PriceDataFetched[]> {
+      if (args.symbols.length === 0) {
+        throw new Error(
+          `${args.source} fetcher received an empty array of symbols`);
+      }
+
       trackStart(`fetching-${args.source}`);
       const fetchPromise = fetchers[args.source].fetchAll(args.symbols, {
         covalentApiKey: this.covalentApiKey,
@@ -306,23 +312,36 @@ export default class Runner {
 
   calculateAggregatedValues(
     prices: PriceDataBeforeAggregation[]): PriceDataAfterAggregation[] {
-    return prices.map((p) =>
-      aggregators[this.manifest.priceAggregator].getAggregatedValue(p));
+    const aggregatedPrices: PriceDataAfterAggregation[] = [];
+    const aggregator = aggregators[this.manifest.priceAggregator];
+    for (const price of prices) {
+      try {
+        const priceAfterAggregation = aggregator.getAggregatedValue(price);
+        if (priceAfterAggregation.value <= 0
+            || priceAfterAggregation.value === undefined) {
+              throw new Error(
+                "Invalid price value: "
+                + JSON.stringify(priceAfterAggregation));
+        }
+        aggregatedPrices.push(priceAfterAggregation);
+      } catch (e) {
+        logger.error(e.stack);
+      }
+    }
+    return aggregatedPrices;
   }
 
   async signPrice(
     price: PriceDataBeforeSigning): Promise<PriceDataSigned> {
+      const priceWithSortedProps = deepSortObject(price);
+      const priceStringified = JSON.stringify(priceWithSortedProps);
+      const signature = await this.arweave.sign(priceStringified);
 
-    // TODO: think about keeping stringified version which was signed
-    // to avoid problems with signature verification
-    const priceStringified = JSON.stringify(price);
-    const signature: string = await this.arweave.sign(priceStringified);
-
-    return {
-      ...price,
-      signature,
-    };
-  }
+      return {
+        ...price,
+        signature,
+      };
+    }
 
 };
 
