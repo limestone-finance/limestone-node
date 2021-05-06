@@ -918,16 +918,6 @@
         "coingecko"
       ]
     },
-    "AMP": {
-      "source": [
-        "coingecko"
-      ]
-    },
-    "MDX": {
-      "source": [
-        "coingecko"
-      ]
-    },
     "CHSB": {
       "source": [
         "coingecko"
@@ -939,11 +929,6 @@
       ]
     },
     "ZKS": {
-      "source": [
-        "coingecko"
-      ]
-    },
-    "NPXS": {
       "source": [
         "coingecko"
       ]
