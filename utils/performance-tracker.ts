@@ -1,6 +1,7 @@
 import { performance } from "perf_hooks";
 import axios from "axios";
 import { Consola } from "consola";
+import config from "../config";
 
 const logger = require("./logger")("utils/performance-tracker") as Consola;
 const URL = "https://api.limestone.finance/metrics";
@@ -41,7 +42,7 @@ export function trackEnd(label: string): void {
 }
 
 async function saveMetric(label: string, value: number): Promise<void> {
-  if (process.env.MODE === "prod") {
+  if (config.isProd) {
     await axios.post(URL, {
       label,
       value,

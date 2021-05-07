@@ -18,6 +18,7 @@ import {
   PriceDataSigned,
   Manifest,
 } from "./types";
+import config from "./config";
 
 const deepSortObject = require("deep-sort-object");
 const logger = require("./utils/logger")("runner") as Consola;
@@ -182,14 +183,20 @@ export default class Runner {
       }
     }
 
-    // Posting prices data on arweave blockchain
-    logger.info(
-      "Keeping prices on arweave blockchain - posting transaction "
-      + transaction.id);
-    trackStart("keeping");
-    await this.arweave.postTransaction(transaction);
-    trackEnd("keeping");
-    logger.info(`Transaction posted: ${transaction.id}`);
+
+    if (config.isProd) {
+      // Posting prices data on arweave blockchain
+      logger.info(
+        "Keeping prices on arweave blockchain - posting transaction "
+        + transaction.id);
+      trackStart("keeping");
+      await this.arweave.postTransaction(transaction);
+      trackEnd("keeping");
+      logger.info(`Transaction posted: ${transaction.id}`);
+    } else {
+      logger.info(
+        `Transaction posting skipped in non-prod env: ${transaction.id}`);
+    }
   }
 
   async fetchAll(): Promise<PriceDataAfterAggregation[]> {

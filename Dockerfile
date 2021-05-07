@@ -12,7 +12,7 @@ RUN yarn
 COPY . .
 
 # Setting production env variables
-ENV MODE=prod
+ENV MODE=PROD
 ENV ENABLE_JSON_LOGS=true
 
 # Running limestone node
