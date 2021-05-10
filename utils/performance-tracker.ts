@@ -26,8 +26,9 @@ export function trackEnd(label: string): void {
   }
 
   if (tasks[label] === undefined) {
-    throw new Error(
+    logger.warn(
       "Cannot execute trackEnd without trackStart calling");
+    return;
   }
 
   // Calculating time elapsed from the task trackStart
