@@ -519,15 +519,17 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-limestone-api@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/limestone-api/-/limestone-api-2.0.0.tgz#84e23d55392a5efae602c5f32a8399efd00c4d54"
-  integrity sha512-48s7FZs787G1CtnHaRv6juuzQ1VTlhaYDuRZtbX/vb7TqslrPVBNkDemisUhukCQid6nP21+5tHeRkSVTrKoZQ==
+limestone-api@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/limestone-api/-/limestone-api-3.0.3.tgz#834c977b7ff1c3e6169113334b55ca00d5fb8bb3"
+  integrity sha512-Bm4RGkdSMAbhikLerWbZFjv8PGWhF2fkjix3dxAAf/+wF0sGZ+HOePzzizk+YG6zTj1YbsI5dVw1byRqs2J0SQ==
   dependencies:
     ar-gql "^0.0.6"
     arweave "^1.10.11"
     axios "^0.21.1"
+    deep-sort-object "^1.0.2"
     lodash "^4.17.21"
+    pako "^2.0.3"
 
 lodash@3.1.0:
   version "3.1.0"
@@ -606,6 +608,11 @@ open@^8.0.4:
     define-lazy-prop "^2.0.0"
     is-docker "^2.1.1"
     is-wsl "^2.2.0"
+
+pako@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/pako/-/pako-2.0.3.tgz#cdf475e31b678565251406de9e759196a0ea7a43"
+  integrity sha512-WjR1hOeg+kki3ZIOjaf4b5WVcay1jaliKSYiEaB1XzwhMQZJxRdQRv0V31EKBYlxb4T7SK3hjfc/jxyU64BoSw==
 
 performance-now@^2.1.0:
   version "2.1.0"

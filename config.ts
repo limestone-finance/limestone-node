@@ -1,0 +1,30 @@
+function getEnv(name: string, required = false): string {
+  if (process.env[name] !== undefined) {
+    return process.env[name] as string;
+  } else {
+    if (required) {
+      throw new Error(`Required env variable not found: ${name}`);
+    } else {
+      return "";
+    }
+  }
+}
+
+const mode = getEnv("MODE");
+const isProd = mode === "PROD";
+
+function getBroadcasterUrl(): string {
+  if (isProd) {
+    return "https://api.limestone.finance/prices";
+  } else {
+    return "http://localhost:9000/prices";
+  }
+}
+
+const config = {
+  mode,
+  isProd,
+  broadcasterUrl: getBroadcasterUrl(),
+};
+
+export default config;

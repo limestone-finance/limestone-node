@@ -16,4 +16,4 @@ ENV MODE=PROD
 ENV ENABLE_JSON_LOGS=true
 
 # Running limestone node
-CMD yarn start --manifest sample-manifests/all-supported-tokens.json --jwk ./.secrets/limestone-jwk.json --covalent-key ckey_7dfd8019d0a84935bfdb6c3ffed
+CMD yarn start --manifest sample-manifests/10-top-tokens-frequent-updates.json --jwk ./.secrets/limestone-rapid-jwk.json --covalent-key ckey_7dfd8019d0a84935bfdb6c3ffed
