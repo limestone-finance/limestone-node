@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node index.ts",
-    "dev": "MODE=LOCAL ts-node index.ts --jwk ./.secrets/arweave.json --covalent-key ckey_7dfd8019d0a84935bfdb6c3ffed"
+    "dev": "MODE=LOCAL ts-node index.ts"
   },
   "license": "MIT",
   "dependencies": {

@@ -14,48 +14,40 @@ async function start() {
   } catch (e) {
     logger.error(e.stack);
     logger.info(
-      "USAGE: yarn start --manifest <PATH_TO_MANIFEST_FILE_WITH_VALID_JSON> --jwk <PATH_TO_JWK_FILE> [--infura-key <INFURA_API_KEY>] [--covalent-key <COVALENT_API_KEY>]");
+      "USAGE: yarn start --config <PATH_TO_CONFIG_FILE>");
   };
 }
 
 async function main(): Promise<void> {
   // Reading cli arguments
-  const argv = yargs(hideBin(process.argv)).argv,
-        manifestFilePath = argv.manifest,
-        jwkFilePath = argv.jwk,
-        infuraApiKey = argv["infura-key"] as string | undefined,
-        covalentApiKey = argv["covalent-key"] as string | undefined;
+  const argv = yargs(hideBin(process.argv)).argv;
+  const configFilePath = argv.config as string;
 
   // Validating cli arguments
-  if (manifestFilePath === undefined || manifestFilePath === "") {
+  if (configFilePath === undefined || configFilePath === "") {
     throw new Error("Path to manifest file cannot be empty");
   }
-  if (jwkFilePath === undefined || jwkFilePath === "") {
-    throw new Error("Path to jwk file cannot be empty");
-  }
 
-  // Reading and parsing manifest file
-  let manifest: Manifest,
-      jwk: JWKInterface;
-  const manifestFileContent: string =
-    fs.readFileSync(String(manifestFilePath), "utf-8");
-  const jwkFileContent: string =
-    fs.readFileSync(String(jwkFilePath), "utf-8");
-  try {
-    manifest = JSON.parse(manifestFileContent);
-    jwk = JSON.parse(jwkFileContent);
-  } catch (e) {
-    throw new Error("Manifest file and jwk file must be valid JSONs");
-  }
+  const config = readJSON(configFilePath);
+  const jwk = readJSON(config.arweaveKeysFile);
+  const manifest = readJSON(config.manifestFile);
 
   // Running limestone-node with manifest
   const runner = await Runner.init({
     manifest,
     jwk,
-    infuraApiKey,
-    covalentApiKey,
+    credentials: config.credentials,
   });
   runner.run();
+}
+
+function readJSON(path: string): any {
+  const content = fs.readFileSync(path, "utf-8");
+  try {
+    return JSON.parse(content);
+  } catch (e) {
+    throw new Error(`File "${path}" does not contain a valid JSON`);
+  }
 }
 
 start();

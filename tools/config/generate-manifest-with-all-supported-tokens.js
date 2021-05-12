@@ -5,6 +5,7 @@ const manifestsToExclude = [
   "5-top-tokens.json",
   "all-supported-tokens.json",
   "10-top-tokens-frequent-updates.json",
+  "stocks.json"
 ];
 
 main();

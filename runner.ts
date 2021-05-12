@@ -16,9 +16,10 @@ import {
   PriceDataBeforeSigning,
   PriceDataFetched,
   PriceDataSigned,
+  Credentials,
   Manifest,
 } from "./types";
-import config from "./config";
+import mode from "./mode";
 
 const deepSortObject = require("deep-sort-object");
 const logger = require("./utils/logger")("runner") as Consola;
@@ -31,37 +32,32 @@ export default class Runner {
   manifest: Manifest;
   arweave: ArweaveProxy;
   providerAddress: string;
-  infuraApiKey?: string;
-  covalentApiKey?: string;
+  credentials: Credentials;
   version: string;
 
   constructor(opts: {
     manifest: Manifest;
     arweave: ArweaveProxy;
+    credentials: Credentials;
     provider: string;
-    infuraApiKey?: string;
-    covalentApiKey?: string;
   }) {
     this.manifest = opts.manifest;
     this.arweave = opts.arweave;
     this.providerAddress = opts.provider;
-    this.infuraApiKey = opts.infuraApiKey;
-    this.covalentApiKey = opts.covalentApiKey;
+    this.credentials = opts.credentials;
     this.version = getVersionFromPackageJSON();
   }
 
   static async init(opts: {
-    manifest: Manifest,
-    jwk: JWKInterface,
-    infuraApiKey?: string,
-    covalentApiKey?: string
+    manifest: Manifest;
+    jwk: JWKInterface;
+    credentials: Credentials;
   }): Promise<Runner> {
       const arweave = new ArweaveProxy(opts.jwk);
       const provider = await arweave.getAddress();
       const optsToCopy = _.pick(opts, [
         "manifest",
-        "infuraApiKey",
-        "covalentApiKey"
+        "credentials",
       ]);
       return new Runner({
         ...optsToCopy,
@@ -184,7 +180,7 @@ export default class Runner {
     }
 
 
-    if (config.isProd) {
+    if (mode.isProd) {
       // Posting prices data on arweave blockchain
       logger.info(
         "Keeping prices on arweave blockchain - posting transaction "
@@ -271,8 +267,7 @@ export default class Runner {
 
       trackStart(`fetching-${args.source}`);
       const fetchPromise = fetchers[args.source].fetchAll(args.symbols, {
-        covalentApiKey: this.covalentApiKey,
-        infuraApiKey: this.infuraApiKey,
+        credentials: this.credentials,
       }).then((prices) => {
         trackEnd(`fetching-${args.source}`);
         return prices;
