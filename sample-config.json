@@ -2,8 +2,6 @@
   "arweaveKeysFile": "./secrets/limestone-jwk.json",
   "manifestFile": "./sample-manifests/stocks.json",
   "credentials": {
-    "alphavantageApiKey": "XXX",
-    "finnhubApiKey": "XXX",
     "covalentApiKey": "XXX",
     "infuraProjectId": "XXX"
   }

@@ -25,7 +25,7 @@ async function main(): Promise<void> {
 
   // Validating cli arguments
   if (configFilePath === undefined || configFilePath === "") {
-    throw new Error("Path to manifest file cannot be empty");
+    throw new Error("Path to the config file cannot be empty");
   }
 
   const config = readJSON(configFilePath);
