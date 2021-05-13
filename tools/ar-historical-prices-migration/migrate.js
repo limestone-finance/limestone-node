@@ -13,7 +13,6 @@ const coinGeckoClient = new CoinGecko();
 // please enable it again ;)
 
 const START_DATE = "2019-11-01";
-// const START_DATE = "2021-04-08";
 const END_DATE = "2021-04-09";
 
 main();
@@ -55,7 +54,6 @@ async function getARPriceForDateFromCoingecko(timestamp) {
   return response.data.market_data.current_price.usd;
 }
 
-// TODO: test
 async function generateAndSignPriceObj({
   value,
   timestamp,
@@ -76,14 +74,12 @@ async function generateAndSignPriceObj({
   return priceObj;
 }
 
-// TODO: test
 async function uploadPriceToRedstone(price) {
   console.log("Uploading price to redstone");
   await axios.post("https://api.limestone.finance/prices", price);
   console.log(`Price uploaded: ${price.id}`);
 }
 
-// TODO: test it
 async function doesPriceWithSameTimestampExist(timestamp) {
   try {
     const price = await limestone.getHistoricalPrice("AR", {
