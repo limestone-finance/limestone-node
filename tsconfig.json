@@ -3,6 +3,7 @@
     "strict": true,
     "target": "es5",
     "declaration": true,
+    "outDir": "./lib",
     "module": "commonjs",
     "resolveJsonModule": true,
     "esModuleInterop": true

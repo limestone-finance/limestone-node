@@ -12,8 +12,8 @@ const coinGeckoClient = new CoinGecko();
 // in limestone mongo endpoint. After migration
 // please enable it again ;)
 
-// const START_DATE = "2020-01-01";
-const START_DATE = "2021-04-08";
+const START_DATE = "2019-11-01";
+// const START_DATE = "2021-04-08";
 const END_DATE = "2021-04-09";
 
 main();
@@ -28,10 +28,10 @@ async function main() {
 
   let timestamp = startTimestamp;
 
-  while (timestamp < endTimestamp) {
+  while (timestamp <= endTimestamp) {
     const exists = await doesPriceWithSameTimestampExist(timestamp);
     if (exists) {
-      console.warn(`Price with timestamp ${timestamp} already exists in DB`);
+      console.warn(`[WARNING] Price with timestamp ${timestamp} already exists in DB`);
     } else {
       const value = await getARPriceForDateFromCoingecko(timestamp);
       const price = await generateAndSignPriceObj({
@@ -89,7 +89,7 @@ async function doesPriceWithSameTimestampExist(timestamp) {
     const price = await limestone.getHistoricalPrice("AR", {
       date: timestamp,
     });
-    return Math.abs(price.timestamp - timestamp) > 0;
+    return Math.abs(price.timestamp - timestamp) === 0;
   } catch (e) {
     if (e.toString().includes("Price not found for symbol")) {
       return false;
