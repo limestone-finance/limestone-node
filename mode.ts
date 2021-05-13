@@ -21,10 +21,8 @@ function getBroadcasterUrl(): string {
   }
 }
 
-const config = {
+export default {
   mode,
   isProd,
   broadcasterUrl: getBroadcasterUrl(),
 };
-
-export default config;

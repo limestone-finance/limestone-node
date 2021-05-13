@@ -8,6 +8,11 @@ export interface Manifest {
   tokens: { [symbol: string]: TokenConfig };
 };
 
+export interface Credentials {
+  infuraProjectId?: string;
+  covalentApiKey?: string;
+};
+
 export interface TokenConfig {
   source?: string[];
 };
@@ -16,8 +21,7 @@ export interface Fetcher {
   fetchAll: (
     tokenSymbols: string[],
     opts?: {
-      covalentApiKey?: string,
-      infuraApiKey?: string,
+      credentials: Credentials;
     }) => Promise<PriceDataFetched[]>;
 };
 

@@ -1,4 +1,5 @@
 import { Fetcher } from "../types";
+import yahooFinance from "./yahoo-finance";
 import coingecko from "./coingecko";
 import sushiswap from "./sushiswap";
 import coinbase from "./coinbase";
@@ -14,6 +15,7 @@ import ftx from "./ftx";
 import ecb from "./ecb";
 
 export default {
+  "yahoo-finance": yahooFinance,
   coingecko,
   sushiswap,
   coinbase,

@@ -1,0 +1,8 @@
+{
+  "arweaveKeysFile": "./secrets/limestone-jwk.json",
+  "manifestFile": "./sample-manifests/stocks.json",
+  "credentials": {
+    "covalentApiKey": "XXX",
+    "infuraProjectId": "XXX"
+  }
+}

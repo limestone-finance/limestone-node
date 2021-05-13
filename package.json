@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node index.ts",
-    "dev": "MODE=LOCAL ts-node index.ts --jwk ./.secrets/arweave.json --covalent-key ckey_7dfd8019d0a84935bfdb6c3ffed"
+    "dev": "MODE=LOCAL ts-node index.ts"
   },
   "license": "MIT",
   "dependencies": {
@@ -18,12 +18,13 @@
     "deep-sort-object": "^1.0.2",
     "ecb-euro-exchange-rates": "^2.0.0",
     "isomorphic-fetch": "^3.0.0",
-    "limestone-api": "^3.0.3",
+    "limestone-api": "^3.0.5",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "promise-timeout": "^1.3.0",
     "ts-node": "^9.1.1",
     "uuid-random": "^1.3.2",
+    "yahoo-finance": "^0.3.7",
     "yargs": "^16.2.0"
   },
   "devDependencies": {
@@ -36,6 +37,7 @@
     "@types/promise-timeout": "^1.3.0",
     "@types/yargs": "^16.0.0",
     "ar-gql": "^0.0.6",
+    "dateformat": "^4.5.1",
     "open": "^8.0.4",
     "plotly": "^1.0.6",
     "typed-binary-json": "^1.17.4",
