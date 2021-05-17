@@ -1,5 +1,5 @@
 {
-  "arweaveKeysFile": "./secrets/limestone-jwk.json",
+  "arweaveKeysFile": "./.secrets/arweave.json",
   "manifestFile": "./sample-manifests/stocks.json",
   "credentials": {
     "covalentApiKey": "XXX",
