@@ -39,8 +39,8 @@ export default class ArweaveProxy  {
   }
 
   async getBalance(): Promise<number> {
-    let address = await this.getAddress();
-    let rawBalance = await this.arweave.wallets.getBalance(address);
+    const address = await this.getAddress();
+    const rawBalance = await this.arweave.wallets.getBalance(address);
     return parseFloat(this.arweave.ar.winstonToAr(rawBalance));
   }
 

@@ -11,7 +11,7 @@ module.exports = (moduleName: string) => {
   }
 
   return consola.create({
-    // Here we can pass additional options for loger configuration
+    // Here we can pass additional options for logger configuration
 
     // level: 4
     reporters: [

@@ -1,170 +1,166 @@
-import uuid from "uuid-random";
-import _ from "lodash";
-import { Consola } from "consola";
-import { JWKInterface } from "arweave/node/lib/wallet";
+import {Consola} from "consola";
+import {JWKInterface} from "arweave/node/lib/wallet";
 import Transaction from "arweave/node/lib/transaction";
-import { timeout } from 'promise-timeout';
-import fetchers from "./fetchers";
-import keepers from "./keepers";
 import aggregators from "./aggregators";
 import broadcaster from "./broadcasters/lambda-broadcaster";
 import ArweaveProxy from "./utils/arweave-proxy";
-import { trackStart, trackEnd } from "./utils/performance-tracker";
-import {
-  PriceDataBeforeAggregation,
-  PriceDataAfterAggregation,
-  PriceDataBeforeSigning,
-  PriceDataFetched,
-  PriceDataSigned,
-  Credentials,
-  Manifest,
-} from "./types";
+import {trackEnd, trackStart} from "./utils/performance-tracker";
+import {Credentials, Manifest, PriceDataAfterAggregation, PriceDataSigned,} from "./types";
 import mode from "./mode";
+import ManifestHelper, {TokensBySource} from "./ManifestParser";
+import ArweaveService from "./ArweaveService";
+import PricesService, {PricesBeforeAggregation, PricesDataFetched} from "./PricesService";
+import {mergeObjects} from "./utils/objects";
 
-const deepSortObject = require("deep-sort-object");
 const logger = require("./utils/logger")("runner") as Consola;
 const pjson = require("./package.json") as any;
 
+//shouldn't we get this value from some external service/configuration
+// (that cannot be changed/accessed by node providers)?
 const MIN_AR_BALANCE = 0.1;
+
+//TODO: make it configurable (main and token lvl)
 const DEFAULT_FETCHER_TIMEOUT = 50000; // ms
 
 export default class Runner {
-  manifest: Manifest;
-  arweave: ArweaveProxy;
-  providerAddress: string;
-  credentials: Credentials;
-  version: string;
+  private version: string;
+  private arService: ArweaveService;
+  private priceFetchService: PricesService;
 
-  constructor(opts: {
-    manifest: Manifest;
-    arweave: ArweaveProxy;
-    credentials: Credentials;
-    provider: string;
-  }) {
-    this.manifest = opts.manifest;
-    this.arweave = opts.arweave;
-    this.providerAddress = opts.provider;
-    this.credentials = opts.credentials;
+  private constructor(
+    private manifest: Manifest,
+    private arweave: ArweaveProxy,
+    private providerAddress: string,
+    credentials: Credentials,
+  ) {
     this.version = getVersionFromPackageJSON();
+    this.arService = new ArweaveService(
+      this.arweave, this.version, MIN_AR_BALANCE);
+    this.priceFetchService = new PricesService(
+      DEFAULT_FETCHER_TIMEOUT, credentials);
+
+    //note: setInterval binds "this" to a new context
+    //https://www.freecodecamp.org/news/the-complete-guide-to-this-in-javascript/
+    //alternatively use arrow functions...
+    this.runIteration = this.runIteration.bind(this);
   }
 
-  static async init(opts: {
-    manifest: Manifest;
-    jwk: JWKInterface;
-    credentials: Credentials;
-  }): Promise<Runner> {
-      const arweave = new ArweaveProxy(opts.jwk);
-      const provider = await arweave.getAddress();
-      const optsToCopy = _.pick(opts, [
-        "manifest",
-        "credentials",
-      ]);
-      return new Runner({
-        ...optsToCopy,
-        arweave,
-        provider,
-      });
-    }
+  static async create(
+    manifest: Manifest,
+    jwk: JWKInterface,
+    credentials: Credentials,
+  ): Promise<Runner> {
+    const arweave = new ArweaveProxy(jwk);
+    const providerAddress = await arweave.getAddress();
+
+    return new Runner(
+      manifest,
+      arweave,
+      providerAddress,
+      credentials
+    );
+  }
 
   async run(): Promise<void> {
-    logger.info("Running limestone-node with manifest: ");
-    logger.info(JSON.stringify(this.manifest));
-    logger.info(`Version: ${this.version}`);
-    logger.info(`Address: ${this.providerAddress}`);
+    logger.info(
+      `Running limestone-node with manifest:
+      ${JSON.stringify(this.manifest)}
+      Version: ${this.version}
+      Address: ${this.providerAddress}
+    `);
 
     // Assure minimum balance
-    await this.checkBalance({
-      stopNodeIfBalanceIsLow: true,
-      notifyIfBalanceIsLow: false,
-    });
-
-    const runIteration = async () => {
-      try {
-        trackStart("processing-all");
-        await this.processAll();
-      } catch (e) {
-        logger.error("Processing all failed", e.stack);
-      } finally {
-        trackEnd("processing-all");
-      }
-
-      try {
-        trackStart("balance-checking");
-        await this.checkBalance({
-          stopNodeIfBalanceIsLow: false,
-          notifyIfBalanceIsLow: true,
-        });
-      } catch (e) {
-        logger.error("Balance checking failed", e.stack);
-      } finally {
-        trackEnd("balance-checking");
-      }
-    };
-
-    await runIteration(); // Start immediately then repeat in manifest.interval
-    setInterval(runIteration, this.manifest.interval);
-  }
-
-  private async checkBalance(args: {
-    stopNodeIfBalanceIsLow: boolean,
-    notifyIfBalanceIsLow: boolean,
-  }): Promise<void> {
-    const balance = await this.arweave.getBalance();
-    const isLow = balance < MIN_AR_BALANCE;
-    logger.info(`Balance: ${balance}`);
-
-    if (args.notifyIfBalanceIsLow && isLow) {
-      const warningText = `AR balance is quite low: ${balance}`;
-      logger.warn(warningText);
-    }
-
-    if (args.stopNodeIfBalanceIsLow && isLow) {
+    const {balance, isBalanceLow} = await this.arService.checkBalance();
+    if (isBalanceLow) {
       logger.fatal(
-        `You should have at least ${MIN_AR_BALANCE} AR to start a node service.`);
-      process.exit(0);
+        `You should have at least ${MIN_AR_BALANCE} AR to start a node service. Current balance: ${balance}`);
+      //TODO: I did not like the fact the some private method had a side-effect
+      // of exiting the whole app ("principle of least suprise"?)
+      // - so I'm moving this here - to the "top" level
+      process.exit(0); //TODO: why do we exit only on first check?
+    }
+
+    await this.runIteration(); // Start immediately then repeat in manifest.interval
+    setInterval(this.runIteration, this.manifest.interval);
+  }
+
+  private async runIteration() {
+    await this.processManifestTokens();
+    await this.warnIfARBalanceLow();
+  };
+
+  private async processManifestTokens() {
+    try {
+      trackStart("processing-all");
+      await this.doProcessTokens();
+    } catch (e) {
+      logger.error("Processing all failed", e.stack);
+    } finally {
+      trackEnd("processing-all");
     }
   }
 
-  async processAll(): Promise<void> {
+  private async warnIfARBalanceLow() {
+    try {
+      trackStart("balance-checking");
+      const {balance, isBalanceLow} = await this.arService.checkBalance();
+      if (isBalanceLow) {
+        logger.warn(`AR balance is quite low: ${balance}`);
+      }
+    } catch (e) {
+      logger.error("Balance checking failed", e.stack);
+    } finally {
+      trackEnd("balance-checking");
+    }
+  }
+
+  private async doProcessTokens(): Promise<void> {
     logger.info("Processing tokens");
 
+    const aggregatedPrices: PriceDataAfterAggregation[] = await this.fetchPrices();
+
+    //czy musimy tworzyc transakcje dla srodowiska testowego,
+    //skoro i tak nie jest potem efektywnie zapisywana?
+    const arTransaction: Transaction = await this.arService.prepareArweaweTransaction(aggregatedPrices);
+
+    const signedPrices: PriceDataSigned[] = await this.arService.signPrices(
+      aggregatedPrices, arTransaction.id, this.providerAddress);
+
+    await this.broadcastPrices(signedPrices)
+
+    if (mode.isProd) {
+      await this.arService.storePricesOnArweave(arTransaction);
+    } else {
+      logger.info(
+        `Transaction posting skipped in non-prod env: ${arTransaction.id}`);
+    }
+  }
+
+  private async fetchPrices(): Promise<PriceDataAfterAggregation[]> {
     trackStart("fetching-all");
-    const prices: PriceDataAfterAggregation[] = await this.fetchAll();
+    //is it necessary to run this in each 'runIteration'?
+    //- manifest doest not change in runtime (?)..
+    const tokensBySource: TokensBySource = ManifestHelper.groupTokensBySource(this.manifest);
+
+    const fetchTimestamp = Date.now();
+    const pricesData: PricesDataFetched = mergeObjects(
+      await this.priceFetchService.fetchInParallel(tokensBySource));
+
+    const pricesBeforeAggregation: PricesBeforeAggregation =
+      PricesService.groupPricesByToken(fetchTimestamp, pricesData, this.version);
+
+    const aggregatedPrices: PriceDataAfterAggregation[] = PricesService.calculateAggregatedValues(
+      Object.values(pricesBeforeAggregation), //what is the advantage of using lodash.values?
+      aggregators[this.manifest.priceAggregator]
+    );
+    this.printAggregatedPrices(aggregatedPrices);
+
     trackEnd("fetching-all");
 
-    trackStart("fetched-prices-printing");
-    for (const price of prices) {
-      const sourcesData = JSON.stringify(price.source);
-      logger.info(
-        `Fetched price : ${price.symbol} : ${price.value} | ${sourcesData}`);
-    }
-    trackEnd("fetched-prices-printing");
+    return aggregatedPrices;
+  }
 
-    // Preparing arweave transaction
-    logger.info("Keeping prices on arweave blockchain - preparing transaction");
-    trackStart("transaction-preparing");
-    const { prepareTransaction } = keepers.basic;
-    const transaction: Transaction =
-      await prepareTransaction(prices, this.version, this.arweave);
-    trackEnd("transaction-preparing");
-
-    // Signing each price separately
-    trackStart("signing");
-    const signedPrices: PriceDataSigned[] = [];
-    for (const price of prices) {
-      // Signing price data
-      logger.info(`Signing price: ${price.id}`);
-      const signed: PriceDataSigned = await this.signPrice({
-        ...price,
-        permawebTx: transaction.id,
-        provider: this.providerAddress,
-      });
-
-      signedPrices.push(signed);
-    }
-    trackEnd("signing");
-
-    // Broadcasting
+  private async broadcastPrices(signedPrices: PriceDataSigned[]) {
     logger.info("Broadcasting prices");
     try {
       trackStart("broadcasting");
@@ -178,173 +174,18 @@ export default class Runner {
         logger.error("Broadcasting failed", e.stack);
       }
     }
-
-
-    if (mode.isProd) {
-      // Posting prices data on arweave blockchain
-      logger.info(
-        "Keeping prices on arweave blockchain - posting transaction "
-        + transaction.id);
-      trackStart("keeping");
-      await this.arweave.postTransaction(transaction);
-      trackEnd("keeping");
-      logger.info(`Transaction posted: ${transaction.id}`);
-    } else {
-      logger.info(
-        `Transaction posting skipped in non-prod env: ${transaction.id}`);
-    }
   }
 
-  async fetchAll(): Promise<PriceDataAfterAggregation[]> {
-
-    const sources = this.groupTokensBySource();
-
-    // Fetching token prices from all sources in parallel
-    // And grouping them by token symbols
-    const prices: { [symbol: string]: PriceDataBeforeAggregation } = {};
-    const timestamp = Date.now();
-    const promises: Promise<void>[] = [];
-    for (const source in sources) {
-      promises.push(
-        this.safeFetchFromSourceAndGroup(
-          source,
-          sources,
-          timestamp,
-          prices));
-    }
-    await Promise.all(promises);
-
-    return this.calculateAggregatedValues(_.values(prices));
-  }
-
-  async safeFetchFromSourceAndGroup(
-    source: string,
-    sources: { [source: string]: string[] },
-    timestamp: number,
-    prices: { [symbol: string]: PriceDataBeforeAggregation }) {
-      try {
-        // Fetching
-        const pricesFromSource = await this.fetchFromSource({
-          symbols: sources[source],
-          source,
-          timeout: DEFAULT_FETCHER_TIMEOUT,
-        });
-        logger.info(
-          `Fetched prices in USD for ${pricesFromSource.length} `
-          + `currencies from source: "${source}"`);
-
-        // Grouping
-        for (const price of pricesFromSource) {
-          if (prices[price.symbol] === undefined) {
-            prices[price.symbol] = {
-              id: uuid(), // Generating unique id for each price
-              source: {},
-              symbol: price.symbol,
-              timestamp,
-              version: this.version,
-            };
-          }
-          prices[price.symbol].source[source] = price.value;
-        }
-      } catch (e) {
-        // We don't throw an error because we want to continue with
-        // other fetchers even if some fetchers failed
-        const resData = e.response ? e.response.data : "";
-        logger.error(
-          `Fetching failed for source: ${source}: ${resData}`, e.stack);
-      }
-    }
-
-  async fetchFromSource(args: {
-    symbols: string[];
-    source: string;
-    timeout: number;
-  }): Promise<PriceDataFetched[]> {
-      if (args.symbols.length === 0) {
-        throw new Error(
-          `${args.source} fetcher received an empty array of symbols`);
-      }
-
-      trackStart(`fetching-${args.source}`);
-      const fetchPromise = fetchers[args.source].fetchAll(args.symbols, {
-        credentials: this.credentials,
-      }).then((prices) => {
-        trackEnd(`fetching-${args.source}`);
-        return prices;
-      });
-
-      return timeout(fetchPromise, args.timeout);
-    }
-
-  // This function converts tokens from manifest to object with the following
-  // type: { <SourceName>: <Array of tokens to fetch from source> }
-  groupTokensBySource(): { [source: string]: string[] } {
-    const sources: { [source: string]: string[] } = {};
-
-    for (const symbol in this.manifest.tokens) {
-      const source = this.manifest.tokens[symbol].source;
-      let sourcesForToken: string[];
-
-      // If no source is defined for token
-      // we use global source from manifest
-      if (source === undefined) {
-        if (this.manifest.defaultSource === undefined) {
-          const errMsg =
-            `Token source is not defined for "${symbol}"`
-            + ` and global source is not defined`;
-          throw new Error(errMsg);
-        } else {
-          sourcesForToken = this.manifest.defaultSource;
-        }
-      } else {
-        sourcesForToken = source;
-      }
-
-      for (const singleSource of sourcesForToken) {
-        if (!sources[singleSource]) {
-          sources[singleSource] = [symbol];
-        } else {
-          sources[singleSource].push(symbol);
-        }
-      }
-    }
-
-    return sources;
-  }
-
-  calculateAggregatedValues(
-    prices: PriceDataBeforeAggregation[]): PriceDataAfterAggregation[] {
-    const aggregatedPrices: PriceDataAfterAggregation[] = [];
-    const aggregator = aggregators[this.manifest.priceAggregator];
+  private printAggregatedPrices(prices: PriceDataAfterAggregation[]): void {
+    //czy musimy mierzyć wydajność logowania..? :)
+    trackStart("fetched-prices-printing");
     for (const price of prices) {
-      try {
-        const priceAfterAggregation = aggregator.getAggregatedValue(price);
-        if (priceAfterAggregation.value <= 0
-            || priceAfterAggregation.value === undefined) {
-              throw new Error(
-                "Invalid price value: "
-                + JSON.stringify(priceAfterAggregation));
-        }
-        aggregatedPrices.push(priceAfterAggregation);
-      } catch (e) {
-        logger.error(e.stack);
-      }
+      const sourcesData = JSON.stringify(price.source);
+      logger.info(
+        `Fetched price : ${price.symbol} : ${price.value} | ${sourcesData}`);
     }
-    return aggregatedPrices;
+    trackEnd("fetched-prices-printing");
   }
-
-  async signPrice(
-    price: PriceDataBeforeSigning): Promise<PriceDataSigned> {
-      const priceWithSortedProps = deepSortObject(price);
-      const priceStringified = JSON.stringify(priceWithSortedProps);
-      const signature = await this.arweave.sign(priceStringified);
-
-      return {
-        ...price,
-        signature,
-      };
-    }
-
 };
 
 function getVersionFromPackageJSON() {

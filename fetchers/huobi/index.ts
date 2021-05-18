@@ -48,7 +48,7 @@ const huobiFetcher: Fetcher = {
 
           // Saving result
           prices.push({
-            symbol,
+            symbol: symbol,
             value: priceInUSD,
           });
 

@@ -1,29 +1,14 @@
 import axios from "axios";
 import { ConsolaLogObject } from "consola";
-import uuid from "uuid-random";
+import { v4 as uuidv4 } from 'uuid'
 
 // We don't use logger here, because logger uses this module
 
+//TODO: make it configurable?
+//all errors from local env are currently sent to public api??
 const URL = "https://api.limestone.finance/errors";
 
-export async function reportError(args: {
-  error: string;
-  errorTitle: string;
-}): Promise<void> {
-  const errorId = uuid();
-  try {
-    console.log(`Reporting an error ${errorId}`, args);
-    await axios.post(URL, args);
-    console.log(`Error reported ${errorId}`);
-  } catch (e) {
-    console.error(
-      `Error occured during error reporting ${errorId}`,
-      e.stack);
-  }
-}
-
 export class ConsolaErrorReporter {
-  constructor() {}
 
   log(logObj: ConsolaLogObject) {
     const levels = {
@@ -41,3 +26,19 @@ export class ConsolaErrorReporter {
     }
   }
 };
+
+export async function reportError(args: {
+  error: string;
+  errorTitle: string;
+}): Promise<void> {
+  const errorId = uuidv4();
+  try {
+    console.log(`Reporting an error ${errorId}`, args);
+    await axios.post(URL, args);
+    console.log(`Error reported ${errorId}`);
+  } catch (e) {
+    console.error(
+      `Error occurred during error reporting ${errorId}`,
+      e.stack);
+  }
+}

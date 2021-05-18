@@ -1,15 +1,11 @@
-import { Consola } from "consola";
-import _, { values } from "lodash";
-import {
-  Aggregator,
-  PriceDataBeforeAggregation,
-  PriceDataAfterAggregation,
-} from "../types";
+import {Consola} from "consola";
+import {Aggregator, PriceDataAfterAggregation, PriceDataBeforeAggregation,} from "../types";
 
 const logger =
   require("../utils/logger")("aggregators/median-aggregator") as Consola;
 
-const MAX_DEVIATION = 25; // perecents
+//TODO- czy to ta wartość ma być konfigurowalna?
+const MAX_DEVIATION_PERCENT = 25;
 
 const medianAggregator: Aggregator = {
   getAggregatedValue(price: PriceDataBeforeAggregation
@@ -22,7 +18,7 @@ const medianAggregator: Aggregator = {
       for (const value of initialValues) {
         const deviation =
           (Math.abs(value - initialMedian) / initialMedian) * 100;
-        if (deviation > MAX_DEVIATION) {
+        if (deviation > MAX_DEVIATION_PERCENT) {
           logger.warn(
             `Value ${value} has too big deviation (${deviation}) from median. `
             + `Symbol: ${price.symbol}. Skipping...`,
@@ -33,16 +29,16 @@ const medianAggregator: Aggregator = {
       }
 
       return {
-        ...price,
+        ...price,//czy ceny, które nie zostały uwzględnione przy liczeniu mediany, nie powinny stąd wylecieć?
         value: getMedianValue(finalValues),
       };
     },
 };
 
-function getNonZeroValues(price: PriceDataBeforeAggregation): number[] {
+export function getNonZeroValues(price: PriceDataBeforeAggregation): number[] {
     const values: number[] = [];
 
-    for (const source of _.keys(price.source)) {
+    for (const source of Object.keys(price.source)) {
       const value = price.source[source];
       if (value <= 0) {
         logger.warn(
@@ -56,12 +52,12 @@ function getNonZeroValues(price: PriceDataBeforeAggregation): number[] {
     return values;
   }
 
-function getMedianValue(arr: number[]): number {
-  arr = arr.sort((a, b) => a - b);
-
+export function getMedianValue(arr: number[]): number {
   if (arr.length === 0) {
-    throw new Error("Can not get median value of an empty array");
+    throw new Error("Cannot get median value of an empty array");
   }
+
+  arr = arr.sort((a, b) => a - b);
 
   const middle = Math.floor(arr.length / 2);
 

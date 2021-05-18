@@ -36,7 +36,7 @@ const bitfinexFetcher: Fetcher = {
     for (const symbol of tokenSymbols) {
       if (fetchedPrices[symbol] !== undefined) {
         prices.push({
-          symbol,
+          symbol: symbol,
           value: fetchedPrices[symbol],
         });
       } else {

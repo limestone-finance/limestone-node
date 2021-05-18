@@ -11,6 +11,7 @@ async function prepareTransaction(
   version: string,
   arweaveProxy: ArweaveProxy): Promise<Transaction> {
     if (prices.length === 0) {
+      //TODO: what exactly "prepareTransaction" does? it doesn't seem to "keep"/store anything on AR..
       throw new Error("Can not keep empty array of prices in arweave");
     }
 
@@ -24,6 +25,7 @@ async function prepareTransaction(
       "Content-Encoding": "gzip",
 
       // All prices should have the same timestamp
+      //TODO: shouldn't this be validated at function entry? (same as prices.length?)
       timestamp: String(prices[0].timestamp),
     };
 

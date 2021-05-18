@@ -44,6 +44,7 @@ export function trackEnd(label: string): void {
 
 async function saveMetric(label: string, value: number): Promise<void> {
   if (mode.isProd) {
+    //co jeśli z api poleci np. 500? czy to nie wywali nam działania?
     await axios.post(URL, {
       label,
       value,

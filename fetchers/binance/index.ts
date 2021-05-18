@@ -32,7 +32,7 @@ const binanceFetcher: Fetcher = {
       const value = pairs[symbol + "USDT"];
       if (value !== undefined) {
         prices.push({
-          symbol,
+          symbol: symbol,
           value: usdtPrice.value * value,
         });
       } else {

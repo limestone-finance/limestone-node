@@ -26,7 +26,7 @@ const kyberFetcher: Fetcher = {
           `Token is not supported with kyber source: ${symbol}`);
       } else {
         prices.push({
-          symbol,
+          symbol: symbol,
           value: ethPrice * pair.currentPrice,
         });
       }

@@ -1,6 +1,7 @@
 import Transaction from "arweave/node/lib/transaction";
 import ArweaveProxy from "./utils/arweave-proxy";
 
+//I would move each interface to a separate file..
 export interface Manifest {
   interval: number;
   priceAggregator: string;
@@ -13,13 +14,14 @@ export interface Credentials {
   covalentApiKey?: string;
 };
 
+//not sure if this interface is necessary...
 export interface TokenConfig {
   source?: string[];
 };
 
 export interface Fetcher {
   fetchAll: (
-    tokenSymbols: string[],
+    tokens: string[],
     opts?: {
       credentials: Credentials;
     }) => Promise<PriceDataFetched[]>;
@@ -30,6 +32,7 @@ export interface Aggregator {
     (price: PriceDataBeforeAggregation) => PriceDataAfterAggregation;
 };
 
+//dlaczego akurat 'Keeper'?
 export interface Keeper {
   prepareTransaction: (
     prices: PriceDataAfterAggregation[],
@@ -42,20 +45,20 @@ export interface Broadcaster {
 };
 
 export interface PriceDataFetched {
-  symbol: string;
+  symbol: string; //symbol or token?
   value: number;
 };
 
 export interface PriceDataBeforeAggregation {
   id: string;
-  symbol: string;
+  symbol: string; //token or symbol or symbolToken? :-)
   source: { [sourceName: string]: number };
   timestamp: number;
   version: string;
 };
 
 export interface PriceDataAfterAggregation extends PriceDataBeforeAggregation {
-  value: number;
+  value: number; //TODO: rename to "aggregatedValue"?
 };
 
 export interface PriceDataBeforeSigning extends PriceDataAfterAggregation {

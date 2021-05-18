@@ -33,7 +33,7 @@ const balancerFetcher: Fetcher = {
       const prices: PriceDataFetched[] = [];
       for (const symbol in pricesObj) {
         prices.push({
-          symbol,
+          symbol: symbol,
           value: pricesObj[symbol],
         });
       }

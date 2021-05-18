@@ -1,8 +1,6 @@
 import fs from "fs";
 import yargs from "yargs";
-import { JWKInterface } from "arweave/node/lib/wallet";
-import { Consola } from "consola"
-import { Manifest } from "./types";
+import {Consola} from "consola"
 import Runner from "./runner";
 
 const logger = require("./utils/logger")("index") as Consola;
@@ -33,12 +31,12 @@ async function main(): Promise<void> {
   const manifest = readJSON(config.manifestFile);
 
   // Running limestone-node with manifest
-  const runner = await Runner.init({
+  const runner = await Runner.create(
     manifest,
     jwk,
-    credentials: config.credentials,
-  });
-  runner.run();
+    config.credentials
+  );
+  await runner.run();
 }
 
 function readJSON(path: string): any {

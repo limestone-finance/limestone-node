@@ -1,5 +1,5 @@
 {
-  "interval": 15000,
+  "interval": 3000,
   "priceAggregator": "median",
   "defaultSource": ["yahoo-finance"],
   "tokens": {
