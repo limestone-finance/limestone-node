@@ -27,7 +27,7 @@ const yahooFinanceFetcher: Fetcher = {
       if (details !== undefined) {
         prices.push({
           symbol,
-          value: details.price.regularMarketPrice,
+          value: getPriceValue(details),
         });
       } else {
         logger.warn(
@@ -38,5 +38,14 @@ const yahooFinanceFetcher: Fetcher = {
     return prices;
   }
 };
+
+function getPriceValue(details: any) {
+  const value: any = details.price.regularMarketPrice;
+  if (isNaN(value)) {
+    return value.raw;
+  } else {
+    return value;
+  }
+}
 
 export default yahooFinanceFetcher;
