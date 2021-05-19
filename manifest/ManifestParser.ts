@@ -1,4 +1,4 @@
-import { Manifest } from "./types";
+import {Manifest, SourceTimeout} from "../types";
 
 export type TokensBySource = { [source: string]: string[] };
 
@@ -40,4 +40,23 @@ export default class ManifestHelper {
     return result;
   }
 
+  static getTimeoutForSource(source: string, manifest: Manifest): number | undefined {
+    if (!source.length) {
+      throw ('Source for timeout not defined');
+    }
+    const timeoutConfiguration: number | SourceTimeout | undefined = manifest.sourceTimeout;
+    if (!timeoutConfiguration) {
+      return undefined;
+    }
+
+    if (typeof(timeoutConfiguration) === 'number') {
+      return timeoutConfiguration;
+    }
+
+    if (timeoutConfiguration.source[source] === undefined) {
+      return timeoutConfiguration.default;
+    }
+
+    return timeoutConfiguration.source[source];
+  }
 }

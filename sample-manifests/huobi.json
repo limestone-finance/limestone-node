@@ -4,6 +4,7 @@
   "defaultSource": [
     "huobi"
   ],
+  "sourceTimeout": 50000,
   "tokens": {
     "BTC": {},
     "ETH": {},

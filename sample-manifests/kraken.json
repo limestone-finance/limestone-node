@@ -4,6 +4,7 @@
   "defaultSource": [
     "kraken"
   ],
+  "sourceTimeout": 50000,
   "tokens": {
     "AAVE": {},
     "ADA": {},

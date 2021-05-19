@@ -4,6 +4,7 @@
   "defaultSource": [
     "uniswap"
   ],
+  "sourceTimeout": 50000,
   "tokens": {
     "LRC": {},
     "MATIC": {},

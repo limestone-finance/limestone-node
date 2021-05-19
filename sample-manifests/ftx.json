@@ -4,6 +4,7 @@
   "defaultSource": [
     "ftx"
   ],
+  "sourceTimeout": 50000,
   "tokens": {
     "SNX": {},
     "BAT": {},

@@ -7,10 +7,11 @@ import ArweaveProxy from "./utils/arweave-proxy";
 import {trackEnd, trackStart} from "./utils/performance-tracker";
 import {Credentials, Manifest, PriceDataAfterAggregation, PriceDataSigned,} from "./types";
 import mode from "./mode";
-import ManifestHelper, {TokensBySource} from "./ManifestParser";
+import ManifestHelper, {TokensBySource} from "./manifest/ManifestParser";
 import ArweaveService from "./ArweaveService";
 import PricesService, {PricesBeforeAggregation, PricesDataFetched} from "./PricesService";
 import {mergeObjects} from "./utils/objects";
+import ManifestConfigError from "./manifest/ManifestConfigError";
 
 const logger = require("./utils/logger")("runner") as Consola;
 const pjson = require("./package.json") as any;
@@ -18,9 +19,6 @@ const pjson = require("./package.json") as any;
 //shouldn't we get this value from some external service/configuration
 // (that cannot be changed/accessed by node providers)?
 const MIN_AR_BALANCE = 0.1;
-
-//TODO: make it configurable (main and token lvl)
-const DEFAULT_FETCHER_TIMEOUT = 50000; // ms
 
 export default class Runner {
   private version: string;
@@ -36,8 +34,7 @@ export default class Runner {
     this.version = getVersionFromPackageJSON();
     this.arService = new ArweaveService(
       this.arweave, this.version, MIN_AR_BALANCE);
-    this.priceFetchService = new PricesService(
-      DEFAULT_FETCHER_TIMEOUT, credentials);
+    this.priceFetchService = new PricesService(manifest, credentials);
 
     //note: setInterval binds "this" to a new context
     //https://www.freecodecamp.org/news/the-complete-guide-to-this-in-javascript/
@@ -74,27 +71,33 @@ export default class Runner {
     if (isBalanceLow) {
       logger.fatal(
         `You should have at least ${MIN_AR_BALANCE} AR to start a node service. Current balance: ${balance}`);
-      //TODO: I did not like the fact the some private method had a side-effect
-      // of exiting the whole app ("principle of least suprise"?)
-      // - so I'm moving this here - to the "top" level
-      process.exit(0); //TODO: why do we exit only on first check?
+      process.exit(0);
     }
 
-    await this.runIteration(); // Start immediately then repeat in manifest.interval
-    setInterval(this.runIteration, this.manifest.interval);
+    try {
+      await this.runIteration(); // Start immediately then repeat in manifest.interval
+      setInterval(this.runIteration, this.manifest.interval);
+    } catch (e) {
+      if (e.name == "ManifestConfigError") {
+        process.exit(0);
+      }
+    }
   }
 
   private async runIteration() {
-    await this.processManifestTokens();
+    await this.safeProcessManifestTokens();
     await this.warnIfARBalanceLow();
   };
 
-  private async processManifestTokens() {
+  private async safeProcessManifestTokens() {
     try {
       trackStart("processing-all");
       await this.doProcessTokens();
     } catch (e) {
       logger.error("Processing all failed", e.stack);
+      if (e.name == "ManifestConfigError") {
+        throw e;
+      }
     } finally {
       trackEnd("processing-all");
     }

@@ -4,6 +4,7 @@
   "defaultSource": [
     "ecb"
   ],
+  "sourceTimeout": 50000,
   "tokens": {
     "EUR": {},
     "JPY": {},

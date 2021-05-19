@@ -6,7 +6,13 @@ export interface Manifest {
   interval: number;
   priceAggregator: string;
   defaultSource?: string[];
+  sourceTimeout?: number | SourceTimeout;
   tokens: { [symbol: string]: TokenConfig };
+};
+
+export interface SourceTimeout {
+  default: number;
+  source: { [symbol: string]: number };
 };
 
 export interface Credentials {

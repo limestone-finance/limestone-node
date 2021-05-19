@@ -4,6 +4,7 @@
   "defaultSource": [
     "coingecko"
   ],
+  "sourceTimeout": 50000,
   "tokens": {
     "AR": {},
     "BTC": {},

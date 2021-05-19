@@ -4,6 +4,7 @@
   "defaultSource": [
     "balancer"
   ],
+  "sourceTimeout": 50000,
   "tokens": {
     "USDC": {},
     "SNX": {},

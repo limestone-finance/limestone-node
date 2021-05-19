@@ -4,6 +4,7 @@
   "defaultSource": [
     "bitmart"
   ],
+  "sourceTimeout": 50000,
   "tokens": {
     "AR": {}
   }

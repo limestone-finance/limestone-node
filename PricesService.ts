@@ -1,16 +1,17 @@
 import { Consola } from "consola";
 import { timeout } from "promise-timeout";
 import fetchers from "./fetchers";
-import { TokensBySource } from "./ManifestParser";
+import ManifestHelper, { TokensBySource } from "./manifest/ManifestParser";
 import {
   Aggregator,
-  Credentials,
+  Credentials, Manifest,
   PriceDataAfterAggregation,
   PriceDataBeforeAggregation,
   PriceDataFetched
 } from "./types";
 import { trackEnd, trackStart } from "./utils/performance-tracker";
 import { v4 as uuidv4 } from 'uuid'
+import ManifestConfigError from "./manifest/ManifestConfigError";
 
 const logger = require("./utils/logger")("PricesFetcher") as Consola;
 
@@ -20,7 +21,7 @@ export type PricesBeforeAggregation = { [token: string]: PriceDataBeforeAggregat
 export default class PricesService {
 
   constructor(
-    private fetchTimeout: number,
+    private manifest: Manifest,
     private credentials: Credentials
   ) {
   }
@@ -52,22 +53,24 @@ export default class PricesService {
       }
 
     } catch (e) {
-      // We don't throw an error because we want to continue with
-      // other fetchers even if some fetchers failed
-      const resData = e.response ? e.response.data : "";
-      logger.error(
-        `Fetching failed for source: ${source}: ${resData}`, e.stack);
-      return {};
+      //not sure why instanceof is not working, crap.
+      if (e.name == "ManifestConfigError") {
+        throw e;
+      } else {
+        // We don't throw an error because we want to continue with
+        // other fetchers even if some fetchers failed
+        const resData = e.response ? e.response.data : "";
+        logger.error(
+          `Fetching failed for source: ${source}: ${resData}`, e.stack);
+        return {};
+      }
     }
   }
 
   private async doFetchFromSource(source: string, tokens: string[])
   : Promise<PriceDataFetched[]> {
     if (tokens.length === 0) {
-      //to później jest łapane w "safeFetch". Nie wiem, czy to dobrze
-      //bo chyba taka sytuacja świadczy o błędzie w implementacji/konfiguracji
-      //i raczej powinniśmy tutaj "fail fast"?
-      throw new Error(
+       throw new ManifestConfigError(
         `${source} fetcher received an empty array of symbols`);
     }
 
@@ -82,8 +85,14 @@ export default class PricesService {
       return prices;
     });
 
+    const sourceTimeout = ManifestHelper.getTimeoutForSource(source, this.manifest);
+    if (sourceTimeout === undefined) {
+      throw new ManifestConfigError(`No timeout configured for ${source}. Did you forget to add "sourceTimeout" field in manifest file?`)
+    }
+    logger.info(`Call to ${source} will timeout after ${sourceTimeout}ms`);
+
     //fail if there is no response after given timeout
-    return timeout(fetchPromise, this.fetchTimeout);
+    return timeout(fetchPromise, sourceTimeout);
   }
 
   static groupPricesByToken(

@@ -4,6 +4,7 @@
   "defaultSource": [
     "sushiswap"
   ],
+  "sourceTimeout": 50000,
   "tokens": {
     "UMA": {},
     "BASE": {},
