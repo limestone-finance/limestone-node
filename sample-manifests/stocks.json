@@ -1,5 +1,5 @@
 {
-  "interval": 3000,
+  "interval": 15000,
   "priceAggregator": "median",
   "defaultSource": ["yahoo-finance"],
   "sourceTimeout": 50000,

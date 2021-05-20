@@ -11,5 +11,5 @@
   "ts-node": {
     "files": true
   },
-  "exclude": ["node_modules", "tools"]
+  "exclude": ["node_modules", "tools", "test"]
 }

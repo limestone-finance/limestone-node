@@ -1,4 +1,4 @@
-import graphProxy from "../../utils/graph-proxy";
+import graphProxy from "../../src/utils/graph-proxy";
 
 interface Pair {
   id: string;

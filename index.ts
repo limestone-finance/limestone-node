@@ -1,9 +1,10 @@
 import fs from "fs";
 import yargs from "yargs";
 import {Consola} from "consola"
-import Runner from "./runner";
+import NodeRunner from "./src/NodeRunner";
+import {NodeConfig} from "./src/types";
 
-const logger = require("./utils/logger")("index") as Consola;
+const logger = require("./src/utils/logger")("index") as Consola;
 const { hideBin } = require("yargs/helpers") as any;
 
 async function start() {
@@ -26,15 +27,16 @@ async function main(): Promise<void> {
     throw new Error("Path to the config file cannot be empty");
   }
 
-  const config = readJSON(configFilePath);
+  //TODO: validate config files and manifest files - use json schema? https://2ality.com/2020/06/validating-data-typescript.html
+  const config: NodeConfig = readJSON(configFilePath);
   const jwk = readJSON(config.arweaveKeysFile);
   const manifest = readJSON(config.manifestFile);
 
   // Running limestone-node with manifest
-  const runner = await Runner.create(
+  const runner = await NodeRunner.create(
     manifest,
     jwk,
-    config.credentials
+    config
   );
   await runner.run();
 }
