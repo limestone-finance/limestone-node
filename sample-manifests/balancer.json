@@ -5,6 +5,7 @@
     "balancer"
   ],
   "sourceTimeout": 50000,
+  "maxPriceDeviationPercent": 25,
   "tokens": {
     "USDC": {},
     "SNX": {},

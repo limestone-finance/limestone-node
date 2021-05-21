@@ -20,7 +20,7 @@ const pjson = require("../package.json") as any;
 export default class NodeRunner {
   private version: string;
   private arService: ArweaveService;
-  private priceFetchService: PricesService;
+  private pricesService: PricesService;
   private tokensBySource: TokensBySource;
 
   private constructor(
@@ -32,7 +32,7 @@ export default class NodeRunner {
     this.version = getVersionFromPackageJSON();
     this.arService = new ArweaveService(
       this.arweave, this.version, this.nodeConfig.minimumArBalance);
-    this.priceFetchService = new PricesService(manifest, this.nodeConfig.credentials);
+    this.pricesService = new PricesService(manifest, this.nodeConfig.credentials);
     this.tokensBySource = ManifestHelper.groupTokensBySource(manifest);
 
     //note: setInterval binds "this" to a new context
@@ -143,12 +143,12 @@ export default class NodeRunner {
 
     const fetchTimestamp = Date.now();
     const pricesData: PricesDataFetched = mergeObjects(
-      await this.priceFetchService.fetchInParallel(this.tokensBySource));
+      await this.pricesService.fetchInParallel(this.tokensBySource));
 
     const pricesBeforeAggregation: PricesBeforeAggregation =
       PricesService.groupPricesByToken(fetchTimestamp, pricesData, this.version);
 
-    const aggregatedPrices: PriceDataAfterAggregation[] = PricesService.calculateAggregatedValues(
+    const aggregatedPrices: PriceDataAfterAggregation[] = this.pricesService.calculateAggregatedValues(
       Object.values(pricesBeforeAggregation), //what is the advantage of using lodash.values?
       aggregators[this.manifest.priceAggregator]
     );

@@ -68,7 +68,7 @@ describe('medianAggregator', () => {
     };
 
     //when
-    const result: PriceDataAfterAggregation = medianAggregator.getAggregatedValue(input);
+    const result: PriceDataAfterAggregation = medianAggregator.getAggregatedValue(input, 25);
 
     //then
     expect(result.value).toEqual(6);
@@ -93,7 +93,7 @@ describe('medianAggregator', () => {
     };
 
     //then
-    expect(() => medianAggregator.getAggregatedValue(input)).toThrow("Cannot get median value of an empty array");
+    expect(() => medianAggregator.getAggregatedValue(input, 25)).toThrow("Cannot get median value of an empty array");
   });
 
   it('should filter prices that deviate too much from the median value', () => {
@@ -115,7 +115,7 @@ describe('medianAggregator', () => {
     };
 
     //when
-    const result: PriceDataAfterAggregation = medianAggregator.getAggregatedValue(input);
+    const result: PriceDataAfterAggregation = medianAggregator.getAggregatedValue(input, 25);
 
     //then
     expect(result.value).toEqual((100 + 110) / 2);

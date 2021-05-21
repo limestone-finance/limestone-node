@@ -3,6 +3,7 @@
   "priceAggregator": "median",
   "defaultSource": ["yahoo-finance"],
   "sourceTimeout": 50000,
+  "maxPriceDeviationPercent": 25,
   "tokens": {
     "TSLA": {},
     "AAPL": {},

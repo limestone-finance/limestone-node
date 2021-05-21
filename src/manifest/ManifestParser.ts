@@ -40,15 +40,30 @@ export default class ManifestHelper {
     return result;
   }
 
-  static getTimeoutForSource(source: string, manifest: Manifest): number | undefined {
+  static getTimeoutForSource(source: string, manifest: Manifest): number | null {
     if (!source.length) {
       throw ('Source for timeout not defined');
     }
     const timeoutConfiguration = manifest.sourceTimeout;
     if (!timeoutConfiguration || typeof(timeoutConfiguration) !== 'number') {
-      return undefined;
+      return null;
     }
 
     return timeoutConfiguration;
+  }
+
+  static getMaxDeviationForSymbol(symbol: string, manifest: Manifest): number | null {
+    if (manifest.tokens[symbol] === undefined) {
+      return null;
+    }
+    let result = manifest.tokens[symbol].maxPriceDeviationPercent;
+    if (result === undefined) {
+      result = manifest.maxPriceDeviationPercent;
+    }
+    if (typeof(result) !== 'number') {
+      return null;
+    }
+
+    return result;
   }
 }

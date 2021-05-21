@@ -1,16 +1,17 @@
-import { Consola } from "consola";
-import { timeout } from "promise-timeout";
+import {Consola} from "consola";
+import {timeout} from "promise-timeout";
 import fetchers from "./index";
-import ManifestHelper, { TokensBySource } from "../manifest/ManifestParser";
+import ManifestHelper, {TokensBySource} from "../manifest/ManifestParser";
 import {
   Aggregator,
-  Credentials, Manifest,
+  Credentials,
+  Manifest,
   PriceDataAfterAggregation,
   PriceDataBeforeAggregation,
   PriceDataFetched
 } from "../types";
-import { trackEnd, trackStart } from "../utils/performance-tracker";
-import { v4 as uuidv4 } from 'uuid'
+import {trackEnd, trackStart} from "../utils/performance-tracker";
+import {v4 as uuidv4} from 'uuid'
 import ManifestConfigError from "../manifest/ManifestConfigError";
 
 const logger = require("../utils/logger")("PricesFetcher") as Consola;
@@ -86,7 +87,7 @@ export default class PricesService {
     });
 
     const sourceTimeout = ManifestHelper.getTimeoutForSource(source, this.manifest);
-    if (sourceTimeout === undefined) {
+    if (sourceTimeout === null) {
       throw new ManifestConfigError(`No timeout configured for ${source}. Did you forget to add "sourceTimeout" field in manifest file?`)
     }
     logger.info(`Call to ${source} will timeout after ${sourceTimeout}ms`);
@@ -120,7 +121,7 @@ export default class PricesService {
     return result;
   }
 
-  static calculateAggregatedValues(
+  calculateAggregatedValues(
     prices: PriceDataBeforeAggregation[],
     aggregator: Aggregator
   ): PriceDataAfterAggregation[] {
@@ -128,7 +129,7 @@ export default class PricesService {
     const aggregatedPrices: PriceDataAfterAggregation[] = [];
     for (const price of prices) {
       try {
-        const priceAfterAggregation = aggregator.getAggregatedValue(price);
+        const priceAfterAggregation = aggregator.getAggregatedValue(price, this.maxPriceDeviationPercent(price.symbol));
         if (priceAfterAggregation.value <= 0
           || priceAfterAggregation.value === undefined) {
           throw new Error(
@@ -141,5 +142,16 @@ export default class PricesService {
       }
     }
     return aggregatedPrices;
+  }
+
+  private maxPriceDeviationPercent(priceSymbol: string): number {
+    const result = ManifestHelper.getMaxDeviationForSymbol(priceSymbol, this.manifest);
+    if (result === null) {
+      throw new ManifestConfigError(`Could not determine maxPriceDeviationPercent for ${priceSymbol}.
+        Did you forget to add maxPriceDeviationPercent parameter in the manifest file?`);
+    }
+    logger.debug(`maxPriceDeviationPercent for ${priceSymbol}: ${result}`)
+
+    return result;
   }
 }

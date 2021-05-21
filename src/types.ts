@@ -6,6 +6,7 @@ export interface Manifest {
   priceAggregator: string;
   defaultSource?: string[];
   sourceTimeout: number;
+  maxPriceDeviationPercent: number,
   tokens: { [symbol: string]: TokenConfig };
 };
 
@@ -21,6 +22,7 @@ export interface Credentials {
 
 export interface TokenConfig {
   source?: string[];
+  maxPriceDeviationPercent?: number;
 };
 
 export interface Fetcher {
@@ -33,7 +35,7 @@ export interface Fetcher {
 
 export interface Aggregator {
   getAggregatedValue:
-    (price: PriceDataBeforeAggregation) => PriceDataAfterAggregation;
+    (price: PriceDataBeforeAggregation, maxPriceDeviationPercent: number) => PriceDataAfterAggregation;
 };
 
 export interface Keeper {
