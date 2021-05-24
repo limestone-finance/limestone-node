@@ -29,10 +29,10 @@ jest.mock('../../src/fetchers/kraken');
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 mockedAxios.post.mockImplementation((url) => {
-  if (url == mode.broadcasterUrl) {
+  if (url == mode.broadcasterUrl || url == "https://api.limestone.finance/metrics") {
     return Promise.resolve();
   }
-  return Promise.reject("mock not available and should not be called");
+  return Promise.reject(`mock for ${url} not available and should not be called`);
 });
 
 const modeMock = jest.requireMock("../../mode");
@@ -81,6 +81,7 @@ describe('NodeRunner', () => {
 
     mockArProxy.getBalance.mockClear();
     mockArProxy.prepareUploadTransaction.mockClear();
+    mockArProxy.sign.mockClear();
     mockedAxios.post.mockClear();
 
     fetchers["coinbase"] = {

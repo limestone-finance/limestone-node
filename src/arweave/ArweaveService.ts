@@ -1,8 +1,7 @@
-import { Consola } from "consola";
-import keepers from "../keepers";
-import { PriceDataAfterAggregation, PriceDataBeforeSigning, PriceDataSigned } from "../types";
+import {Consola} from "consola";
+import {ArweaveTransactionTags, PriceDataAfterAggregation, PriceDataBeforeSigning, PriceDataSigned} from "../types";
 import ArweaveProxy from "./ArweaveProxy";
-import { trackEnd, trackStart } from "../utils/performance-tracker";
+import {trackEnd, trackStart} from "../utils/performance-tracker";
 import Transaction from "arweave/node/lib/transaction";
 
 const logger = require("../utils/logger")("ArweaveService") as Consola;
@@ -15,18 +14,20 @@ export default class ArweaveService {
 
   constructor(
     private arweave: ArweaveProxy,
-    private version: string,
     private minBalance: number
-  ) { }
+  ) {
+  }
 
-  async prepareArweaveTransaction(prices: PriceDataAfterAggregation[])
+  async prepareArweaveTransaction(prices: PriceDataAfterAggregation[], nodeVersion: string)
     : Promise<Transaction> {
     trackStart("transaction-preparing");
 
     logger.info("Keeping prices on arweave blockchain - preparing transaction");
-    const { prepareTransaction } = keepers.basic; //why 'basic'? any example of 'non-basic'?
-    const transaction: Transaction =
-      await prepareTransaction(prices, this.version, this.arweave);
+    this.checkAllPricesHaveSameTimestamp(prices);
+
+    const tags = this.prepareTransactionTags(nodeVersion, prices);
+
+    const transaction = await this.arweave.prepareUploadTransaction(tags, prices);
     trackEnd("transaction-preparing");
 
     return transaction;
@@ -37,7 +38,7 @@ export default class ArweaveService {
     const isBalanceLow = balance < this.minBalance;
     logger.info(`Balance: ${balance}`);
 
-    return { balance, isBalanceLow };
+    return {balance, isBalanceLow};
   }
 
   async storePricesOnArweave(arTransaction: Transaction) {
@@ -87,5 +88,39 @@ export default class ArweaveService {
       ...price,
       signature,
     };
+  }
+
+  private checkAllPricesHaveSameTimestamp(prices: PriceDataAfterAggregation[]) {
+    if (!prices || prices.length === 0) {
+      throw new Error("Can not keep empty array of prices in Arweave");
+    }
+
+    const differentTimestamps = new Set(prices.map(price => price.timestamp));
+    if (differentTimestamps.size !== 1) {
+      throw new Error(`All prices should have same timestamps.
+     Found ${differentTimestamps.size} different timestamps.`);
+    }
+  }
+
+  private prepareTransactionTags(nodeVersion: string, prices: PriceDataAfterAggregation[]) {
+    const tags: ArweaveTransactionTags = {
+      app: "Limestone",
+      type: "data",
+      version: nodeVersion,
+
+      // Tags for HTTP headers
+      "Content-Type": "application/json",
+      "Content-Encoding": "gzip",
+
+      // All prices have the same timestamp
+      timestamp: String(prices[0].timestamp),
+    };
+
+    // Adding AR price to tags if possible
+    const arPrice = prices.find(p => p.symbol === "AR");
+    if (arPrice !== undefined) {
+      tags["AR"] = String(arPrice.value);
+    }
+    return tags;
   }
 }

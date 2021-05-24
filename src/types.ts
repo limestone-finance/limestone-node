@@ -38,13 +38,6 @@ export interface Aggregator {
     (price: PriceDataBeforeAggregation, maxPriceDeviationPercent: number) => PriceDataAfterAggregation;
 };
 
-export interface Keeper {
-  prepareTransaction: (
-    prices: PriceDataAfterAggregation[],
-    version: string,
-    arweaveProxy: ArweaveProxy) => Promise<Transaction>;
-};
-
 export interface Broadcaster {
   broadcast: (prices: PriceDataSigned[]) => Promise<void>;
 };

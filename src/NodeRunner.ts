@@ -31,7 +31,7 @@ export default class NodeRunner {
   ) {
     this.version = getVersionFromPackageJSON();
     this.arService = new ArweaveService(
-      this.arweave, this.version, this.nodeConfig.minimumArBalance);
+      this.arweave, this.nodeConfig.minimumArBalance);
     this.pricesService = new PricesService(manifest, this.nodeConfig.credentials);
     this.tokensBySource = ManifestHelper.groupTokensBySource(manifest);
 
@@ -120,7 +120,7 @@ export default class NodeRunner {
 
     const aggregatedPrices: PriceDataAfterAggregation[] = await this.fetchPrices();
 
-    const arTransaction: Transaction = await this.arService.prepareArweaveTransaction(aggregatedPrices);
+    const arTransaction: Transaction = await this.arService.prepareArweaveTransaction(aggregatedPrices, this.version);
 
     const signedPrices: PriceDataSigned[] = await this.arService.signPrices(
       aggregatedPrices, arTransaction.id, this.providerAddress);
