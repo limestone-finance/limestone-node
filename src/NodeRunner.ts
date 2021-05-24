@@ -71,7 +71,7 @@ export default class NodeRunner {
       await this.runIteration(); // Start immediately then repeat in manifest.interval
       setInterval(this.runIteration, this.manifest.interval);
     } catch (e) {
-      this.exitIfManifestConfigError(e);
+      this.reThrowIfManifestConfigError(e);
     }
   }
 
@@ -81,7 +81,7 @@ export default class NodeRunner {
       logger.fatal(
         `You should have at least ${this.nodeConfig.minimumArBalance}
          AR to start a node service. Current balance: ${balance}`);
-      process.exit(0);
+      throw new Error("AR balance too low to start node.");
     }
   }
 
@@ -95,10 +95,7 @@ export default class NodeRunner {
       trackStart("processing-all");
       await this.doProcessTokens();
     } catch (e) {
-      logger.error("Processing all failed", e.stack);
-      if (e.name == "ManifestConfigError") {
-        throw e;
-      }
+      this.reThrowIfManifestConfigError(e);
     } finally {
       trackEnd("processing-all");
     }
@@ -123,7 +120,7 @@ export default class NodeRunner {
 
     const aggregatedPrices: PriceDataAfterAggregation[] = await this.fetchPrices();
 
-    const arTransaction: Transaction = await this.arService.prepareArweaweTransaction(aggregatedPrices);
+    const arTransaction: Transaction = await this.arService.prepareArweaveTransaction(aggregatedPrices);
 
     const signedPrices: PriceDataSigned[] = await this.arService.signPrices(
       aggregatedPrices, arTransaction.id, this.providerAddress);
@@ -142,9 +139,8 @@ export default class NodeRunner {
     trackStart("fetching-all");
 
     const fetchTimestamp = Date.now();
-    const pricesData: PricesDataFetched = mergeObjects(
-      await this.pricesService.fetchInParallel(this.tokensBySource));
-
+    const fetchedPrices = await this.pricesService.fetchInParallel(this.tokensBySource)
+    const pricesData: PricesDataFetched = mergeObjects(fetchedPrices);
     const pricesBeforeAggregation: PricesBeforeAggregation =
       PricesService.groupPricesByToken(fetchTimestamp, pricesData, this.version);
 
@@ -164,14 +160,15 @@ export default class NodeRunner {
     try {
       trackStart("broadcasting");
       await broadcaster.broadcast(signedPrices);
-      trackEnd("broadcasting");
-      logger.info("Broadcasting completed");
     } catch (e) {
       if (e.response !== undefined) {
         logger.error("Broadcasting failed: " + e.response.data, e.stack);
       } else {
         logger.error("Broadcasting failed", e.stack);
       }
+    } finally {
+      trackEnd("broadcasting");
+      logger.info("Broadcasting completed");
     }
   }
 
@@ -185,9 +182,11 @@ export default class NodeRunner {
     trackEnd("fetched-prices-printing");
   }
 
-  private exitIfManifestConfigError(e: Error) {
+  private reThrowIfManifestConfigError(e: Error) {
     if (e.name == "ManifestConfigError") {
-      process.exit(0);
+      throw e;
+    } else {
+      logger.error(e.stack);
     }
   }
 };

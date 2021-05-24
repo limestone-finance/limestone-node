@@ -19,7 +19,7 @@ export default class ArweaveService {
     private minBalance: number
   ) { }
 
-  async prepareArweaweTransaction(prices: PriceDataAfterAggregation[])
+  async prepareArweaveTransaction(prices: PriceDataAfterAggregation[])
     : Promise<Transaction> {
     trackStart("transaction-preparing");
 

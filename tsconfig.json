@@ -6,7 +6,7 @@
     "outDir": "./lib",
     "module": "commonjs",
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
   },
   "ts-node": {
     "files": true

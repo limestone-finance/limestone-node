@@ -50,7 +50,7 @@ export default class PricesService {
       const pricesFromSource = await this.doFetchFromSource(source, tokens);
 
       return {
-        source: pricesFromSource
+        [source]: pricesFromSource
       }
 
     } catch (e) {
@@ -128,8 +128,9 @@ export default class PricesService {
 
     const aggregatedPrices: PriceDataAfterAggregation[] = [];
     for (const price of prices) {
+      const maxPriceDeviationPercent = this.maxPriceDeviationPercent(price.symbol);
       try {
-        const priceAfterAggregation = aggregator.getAggregatedValue(price, this.maxPriceDeviationPercent(price.symbol));
+        const priceAfterAggregation = aggregator.getAggregatedValue(price, maxPriceDeviationPercent);
         if (priceAfterAggregation.value <= 0
           || priceAfterAggregation.value === undefined) {
           throw new Error(

@@ -1,3 +1,3 @@
 export function mergeObjects(objects: Array<any>) {
-  return Object.assign({}, ...objects)
+  return Object.assign({}, ...objects);
 }
