@@ -2,6 +2,7 @@ import LimestoneApi from "limestone-api";
 import { Consola } from "consola";
 import axios from "axios";
 import { PriceDataFetched, Fetcher } from "../../types";
+import {PriceData} from "limestone-api/lib/types";
 
 const logger =
   require("../../utils/logger")("fetchers/binance") as Consola;
@@ -24,7 +25,9 @@ const binanceFetcher: Fetcher = {
     }
 
     // Fetching USDT price from limestone
-    const usdtPrice = await LimestoneApi.getPrice("USDT");
+    // note: not all prices in binance response are available as USD pairs
+    // - that's why we're using USDT.
+    const usdtPrice: PriceData = await LimestoneApi.getPrice("USDT");
 
     // Building prices
     const prices: PriceDataFetched[] = [];

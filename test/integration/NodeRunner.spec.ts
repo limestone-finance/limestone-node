@@ -19,14 +19,14 @@ const mockArProxy = {
   sign: jest.fn().mockResolvedValue("mock_signed"),
   postTransaction: jest.fn()
 }
-jest.mock('../../src/arweave/ArweaveProxy', () => {
+jest.mock("../../src/arweave/ArweaveProxy", () => {
   return jest.fn().mockImplementation(() => mockArProxy);
 });
 
-jest.mock('../../src/fetchers/coinbase');
-jest.mock('../../src/fetchers/kraken');
+jest.mock("../../src/fetchers/coinbase");
+jest.mock("../../src/fetchers/kraken");
 
-jest.mock('axios');
+jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 mockedAxios.post.mockImplementation((url) => {
   if (url == mode.broadcasterUrl || url == "https://api.limestone.finance/metrics") {
@@ -36,18 +36,18 @@ mockedAxios.post.mockImplementation((url) => {
 });
 
 const modeMock = jest.requireMock("../../mode");
-jest.mock('../../mode', () => ({
+jest.mock("../../mode", () => ({
   isProd: false,
   broadcasterUrl: "http://broadcast.test"
 }));
 
-jest.mock('uuid',
-  () => ({v4: () => '00000000-0000-0000-0000-000000000000'}));
+jest.mock("uuid",
+  () => ({v4: () => "00000000-0000-0000-0000-000000000000"}));
 global.Date.now = jest.fn(() => 111111111);
 /****** MOCKS END ******/
 
 
-describe('NodeRunner', () => {
+describe("NodeRunner", () => {
 
   const manifest: Manifest = {
     defaultSource: ["kraken"],
@@ -97,7 +97,7 @@ describe('NodeRunner', () => {
   });
 
 
-  it('should create node instance', async () => {
+  it("should create node instance", async () => {
     //given
     const mockedArProxy = mocked(ArweaveProxy, true);
 
@@ -112,7 +112,7 @@ describe('NodeRunner', () => {
     expect(mockedArProxy).toHaveBeenCalledWith(jwk)
   });
 
-  it('should throw if no maxDeviationPercent configured for token', async () => {
+  it("should throw if no maxDeviationPercent configured for token", async () => {
     //given
     mockArProxy.getBalance.mockResolvedValue(0.2);
 
@@ -136,7 +136,7 @@ describe('NodeRunner', () => {
     return expect(sut.run()).rejects.toThrowError("Could not determine maxPriceDeviationPercent");
   });
 
-  it('should throw if no sourceTimeout', async () => {
+  it("should throw if no sourceTimeout", async () => {
     //given
     mockArProxy.getBalance.mockResolvedValue(0.2);
     const sut = await NodeRunner.create(
@@ -159,7 +159,7 @@ describe('NodeRunner', () => {
     return expect(sut.run()).rejects.toThrowError("No timeout configured for");
   });
 
-  it('should throw if Arweave balance too low on initial check', async () => {
+  it("should throw if Arweave balance too low on initial check", async () => {
     //given
     mockArProxy.getBalance.mockResolvedValue(0.1);
     const sut = await NodeRunner.create(
@@ -172,7 +172,7 @@ describe('NodeRunner', () => {
   });
 
 
-  it('should broadcast fetched and signed prices', async () => {
+  it("should broadcast fetched and signed prices", async () => {
     //given
     mockArProxy.getBalance.mockResolvedValue(0.2);
 
@@ -224,7 +224,7 @@ describe('NodeRunner', () => {
     expect(setInterval).toHaveBeenCalledWith(anything(), manifest.interval);
   });
 
-  it('should not broadcast fetched and signed prices if values deviates too much', async () => {
+  it("should not broadcast fetched and signed prices if values deviates too much", async () => {
     //given
     mockArProxy.getBalance.mockResolvedValue(0.2);
 
@@ -243,7 +243,7 @@ describe('NodeRunner', () => {
   });
 
 
-  it('should save transaction on Arweave in mode=PROD', async () => {
+  it("should save transaction on Arweave in mode=PROD", async () => {
     //given
     mockArProxy.getBalance.mockResolvedValue(0.2);
     modeMock.isProd = true;

@@ -1,6 +1,3 @@
-import Transaction from "arweave/node/lib/transaction";
-import ArweaveProxy from "./arweave/ArweaveProxy";
-
 export interface Manifest {
   interval: number;
   priceAggregator: string;

@@ -1,6 +1,6 @@
-import { Consola } from "consola";
+import {Consola} from "consola";
 import graphProxy from "../utils/graph-proxy";
-import { PriceDataFetched, Fetcher } from "../types";
+import {PriceDataFetched, Fetcher} from "../types";
 
 const RETRY_TIME_LIMIT = 2000; // ms
 
@@ -80,17 +80,17 @@ function convertSymbolsToPairIds(
   symbols: string[],
   symbolToPairId: SymbolToPairId,
   sourceName: string): string[] {
-    const pairIds = [];
+  const pairIds = [];
 
-    for (const symbol of symbols) {
-      const pairId = symbolToPairId[symbol];
-      if (pairId === undefined) {
-        logger.warn(
-          `Token is not supported with ${sourceName} source: ${symbol}`);
-      } else {
-        pairIds.push(pairId);
-      }
+  for (const symbol of symbols) {
+    const pairId = symbolToPairId[symbol];
+    if (pairId === undefined) {
+      logger.warn(
+        `Token is not supported with ${sourceName} source: ${symbol}`);
+    } else {
+      pairIds.push(pairId);
     }
-
-    return pairIds;
   }
+
+  return pairIds;
+}

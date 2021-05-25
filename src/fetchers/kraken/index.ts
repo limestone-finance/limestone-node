@@ -22,7 +22,7 @@ const krakenFetcher: Fetcher = {
       }
     }
 
-    // Fetching ptices from Kraken API
+    // Fetching prices from Kraken API
     const response = await axios.get(URL, {
       params: {
         pair: pairs.join(","),

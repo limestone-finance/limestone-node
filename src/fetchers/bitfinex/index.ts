@@ -3,7 +3,7 @@ import axios from "axios";
 import { PriceDataFetched, Fetcher } from "../../types";
 
 const logger =
-  require("../../utils/logger")("fetchers/bitmart") as Consola;
+  require("../../utils/logger")("fetchers/bitfinex") as Consola;
 
 const URL = "https://api-pub.bitfinex.com/v2/tickers";
 
