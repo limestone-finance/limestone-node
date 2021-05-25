@@ -29,7 +29,7 @@ jest.mock("../../src/fetchers/kraken");
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 mockedAxios.post.mockImplementation((url) => {
-  if (url == mode.broadcasterUrl || url == "https://api.limestone.finance/metrics") {
+  if (url == mode.broadcasterUrl || url == "https://api.redstone.finance/metrics") {
     return Promise.resolve();
   }
   return Promise.reject(`mock for ${url} not available and should not be called`);
@@ -187,10 +187,10 @@ describe("NodeRunner", () => {
       {
         "Content-Encoding": "gzip",
         "Content-Type": "application/json",
-        "app": "Limestone",
+        "app": "Redstone",
         "timestamp": "111111111",
         "type": "data",
-        "version": "3",
+        "version": "0.4",
       },
       [{
         "id": "00000000-0000-0000-0000-000000000000",
@@ -198,11 +198,11 @@ describe("NodeRunner", () => {
         "symbol": "BTC",
         "timestamp": 111111111,
         "value": 444.5,
-        "version": "3"
+        "version": "0.4"
       }],
     );
     expect(mockArProxy.sign).toHaveBeenCalledWith(
-      "{\"id\":\"00000000-0000-0000-0000-000000000000\",\"permawebTx\":\"mockArTransactionId\",\"provider\":\"mockArAddress\",\"source\":{\"coinbase\":444,\"kraken\":445},\"symbol\":\"BTC\",\"timestamp\":111111111,\"value\":444.5,\"version\":\"3\"}"
+      "{\"id\":\"00000000-0000-0000-0000-000000000000\",\"permawebTx\":\"mockArTransactionId\",\"provider\":\"mockArAddress\",\"source\":{\"coinbase\":444,\"kraken\":445},\"symbol\":\"BTC\",\"timestamp\":111111111,\"value\":444.5,\"version\":\"0.4\"}"
     );
     expect(axios.post).toHaveBeenCalledWith(
       "http://broadcast.test",
@@ -216,7 +216,7 @@ describe("NodeRunner", () => {
           "symbol": "BTC",
           "timestamp": 111111111,
           "value": 444.5,
-          "version": "3"
+          "version": "0.4"
         }
       ]
     );
@@ -267,7 +267,7 @@ describe("NodeRunner", () => {
           "symbol": "BTC",
           "timestamp": 111111111,
           "value": 444.5,
-          "version": "3"
+          "version": "0.4"
         }
       ]);
     expect(mockArProxy.postTransaction).toHaveBeenCalledWith({

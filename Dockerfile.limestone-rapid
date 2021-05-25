@@ -15,5 +15,5 @@ COPY . .
 ENV MODE=PROD
 ENV ENABLE_JSON_LOGS=true
 
-# Running limestone node
-CMD yarn start --config ./.secrets/config-limestone-rapid.json
+# Running redstone node
+CMD yarn start --config ./.secrets/config-redstone-rapid.json

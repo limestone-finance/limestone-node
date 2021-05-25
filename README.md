@@ -1,4 +1,4 @@
-# Limestone node
+# Redstone node
 
 ## Run locally
 ```bash

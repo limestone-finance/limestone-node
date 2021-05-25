@@ -59,7 +59,7 @@ export default class NodeRunner {
 
   async run(): Promise<void> {
     logger.info(
-      `Running limestone-node with manifest:
+      `Running redstone-node with manifest:
       ${JSON.stringify(this.manifest)}
       Version: ${this.version}
       Address: ${this.providerAddress}
@@ -192,6 +192,6 @@ export default class NodeRunner {
 };
 
 function getVersionFromPackageJSON() {
-  const [major] = pjson.version.split(".");
-  return major;
+  const [major, minor] = pjson.version.split(".");
+  return major + '.' + minor;
 }

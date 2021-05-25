@@ -84,7 +84,7 @@ async function getLimestoneTransactions(after) {
       {
         transactions(
           tags: [
-            { name: "app", values: "Limestone" }
+            { name: "app", values: "Redstone" }
             { name: "type", values: "data" }
             { name: "version", values: "${VERSION}" }
           ]

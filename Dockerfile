@@ -16,4 +16,4 @@ ENV MODE=PROD
 ENV ENABLE_JSON_LOGS=true
 
 # Running limestone node
-CMD yarn start --config ./.secrets/config-limestone.json
+CMD yarn start --config ./.secrets/config-redstone.json

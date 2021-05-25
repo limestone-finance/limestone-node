@@ -4,7 +4,7 @@ import { Consola } from "consola";
 import mode from "../../mode";
 
 const logger = require("./logger")("utils/performance-tracker") as Consola;
-const URL = "https://api.limestone.finance/metrics";
+const URL = "https://api.redstone.finance/metrics";
 const tasks: { [label: string]: number } = {};
 
 export function trackStart(label: string): void {
@@ -38,7 +38,7 @@ export function trackEnd(label: string): void {
   // Clear the start value
   delete tasks[label];
 
-  // Saving metric using Limestone HTTP endpoint
+  // Saving metric using Redstone HTTP endpoint
   saveMetric(label, value);
 }
 

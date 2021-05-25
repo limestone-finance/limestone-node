@@ -15,7 +15,7 @@ const isProd = mode === "PROD";
 
 function getBroadcasterUrl(): string {
   if (isProd) {
-    return "https://api.limestone.finance/prices";
+    return "https://api.redstone.finance/prices";
   } else {
     return "http://localhost:9000/prices";
   }

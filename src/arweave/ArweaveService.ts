@@ -104,7 +104,7 @@ export default class ArweaveService {
 
   private prepareTransactionTags(nodeVersion: string, prices: PriceDataAfterAggregation[]) {
     const tags: ArweaveTransactionTags = {
-      app: "Limestone",
+      app: "Redstone",
       type: "data",
       version: nodeVersion,
 
