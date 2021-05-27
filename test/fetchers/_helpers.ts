@@ -1,13 +1,13 @@
-import {GetPriceOptions, PriceData} from "limestone-api/lib/types";
-import LimestoneApi from "limestone-api";
+import {GetPriceOptions, PriceData} from "redstone-api/lib/types";
+import RedstoneApi from "redstone-api";
 import {MockProxy} from "jest-mock-extended";
 import axios from "axios";
 
 export type GetSinglePrice = (symbol: string, opts?: GetPriceOptions) => Promise<PriceData>;
 
 export function mockLimestoneApiPrice(value: number, symbol: string = "USDT", ) {
-  jest.mock('limestone-api');
-  const mockedApi = LimestoneApi as MockProxy<typeof LimestoneApi>
+  jest.mock('redstone-api');
+  const mockedApi = RedstoneApi as MockProxy<typeof RedstoneApi>
 
   (mockedApi.getPrice as GetSinglePrice) = jest.fn((symbol: string) => {
     return Promise.resolve({

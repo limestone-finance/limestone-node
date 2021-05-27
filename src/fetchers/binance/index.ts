@@ -1,8 +1,8 @@
-import LimestoneApi from "limestone-api";
+import Redstone from "redstone-api";
 import { Consola } from "consola";
 import axios from "axios";
 import { PriceDataFetched, Fetcher } from "../../types";
-import {PriceData} from "limestone-api/lib/types";
+import {PriceData} from "redstone-api/lib/types";
 
 const logger =
   require("../../utils/logger")("fetchers/binance") as Consola;
@@ -24,10 +24,10 @@ const binanceFetcher: Fetcher = {
       pairs[pair.symbol] = Number(pair.price);
     }
 
-    // Fetching USDT price from limestone
+    // Fetching USDT price from redstone
     // note: not all prices in binance response are available as USD pairs
     // - that's why we're using USDT.
-    const usdtPrice: PriceData = await LimestoneApi.getPrice("USDT");
+    const usdtPrice: PriceData = await Redstone.getPrice("USDT");
 
     // Building prices
     const prices: PriceDataFetched[] = [];

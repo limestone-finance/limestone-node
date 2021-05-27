@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Consola } from "consola";
-import LimestoneApi from "limestone-api";
+import RedstoneApi from "redstone-api";
 import { PriceDataFetched, Fetcher } from "../../types";
 
 const logger =
@@ -37,7 +37,7 @@ const kyberFetcher: Fetcher = {
 };
 
 async function getETHPriceInUSD(): Promise<number> {
-  const price = await LimestoneApi.getPrice("ETH");
+  const price = await RedstoneApi.getPrice("ETH");
   if (price === undefined) {
     throw new Error("Cannot fetch ETH price from limestone api");
   }

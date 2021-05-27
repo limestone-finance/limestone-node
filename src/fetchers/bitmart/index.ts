@@ -1,4 +1,4 @@
-import LimestoneApi from "limestone-api";
+import RedstoneApi from "redstone-api";
 import { Consola } from "consola";
 import axios from "axios";
 import { PriceDataFetched, Fetcher } from "../../types";
@@ -24,8 +24,8 @@ const bitmartFetcher: Fetcher = {
     }
     const arPriceInUSDT = Number(response.data.data.tickers[0].last_price);
 
-    // Fetching USDT price in USD from Limestone api
-    const usdtPrice = await LimestoneApi.getPrice("USDT");
+    // Fetching USDT price in USD from Redstone api
+    const usdtPrice = await RedstoneApi.getPrice("USDT");
     if (usdtPrice === undefined) {
       throw new Error("Cannot fetch USDT price from limestone");
     }

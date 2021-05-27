@@ -1,4 +1,4 @@
-import LimestoneApi from "limestone-api";
+import RedstoneApi from "redstone-api";
 import { Consola } from "consola";
 import axios from "axios";
 import { PriceDataFetched, Fetcher } from "../../types";
@@ -50,7 +50,7 @@ const huobiFetcher: Fetcher = {
 };
 
 async function getUsdtPriceInUSD(): Promise<number> {
-  const usdtPriceInUSD = await LimestoneApi.getPrice("USDT");
+  const usdtPriceInUSD = await RedstoneApi.getPrice("USDT");
   if (usdtPriceInUSD === undefined) {
     throw new Error("Cannot fetch USDT price from limestone api");
   }
