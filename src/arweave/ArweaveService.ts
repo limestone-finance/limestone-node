@@ -34,21 +34,29 @@ export default class ArweaveService {
   }
 
   async checkBalance(): Promise<BalanceCheckResult> {
-    const balance = await this.arweave.getBalance();
-    const isBalanceLow = balance < this.minBalance;
-    logger.info(`Balance: ${balance}`);
+    try {
+      const balance = await this.arweave.getBalance();
+      const isBalanceLow = balance < this.minBalance;
+      logger.info(`Balance: ${balance}`);
+      return {balance, isBalanceLow};
+    } catch (e) {
+      logger.error("Error while checking balance on Arweave", e.stack);
+      return {balance: 0, isBalanceLow: true};
+    }
 
-    return {balance, isBalanceLow};
   }
 
   async storePricesOnArweave(arTransaction: Transaction) {
-    // Posting prices data on arweave blockchain
     logger.info(
       `Keeping prices on arweave blockchain - posting transaction
        arTransaction.id`);
     trackStart("keeping");
-    //TODO: Handle errors https://app.clickup.com/t/k38r91
-    await this.arweave.postTransaction(arTransaction);
+    //TODO: Handle errors in a more sensible way ;-) https://app.clickup.com/t/k38r91
+    try {
+      await this.arweave.postTransaction(arTransaction);
+    } catch (e) {
+      logger.error("Error while storing prices on Arweave", e.stack);
+    }
     trackEnd("keeping");
     logger.info(`Transaction posted: ${arTransaction.id}`);
   }

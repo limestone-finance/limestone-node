@@ -1,24 +1,17 @@
 import yahooFinance from "yahoo-finance";
-import { Consola } from "consola";
-import { PriceDataFetched, Fetcher } from "../../types";
+import {Consola} from "consola";
+import {Fetcher, PriceDataFetched} from "../../types";
+import YahooFinanceProxy from "./YahooFinanceProxy";
 
 const logger =
   require("../../utils/logger")("fetchers/yahoo-finance") as Consola;
 
+const yahooFinanceProxy = new YahooFinanceProxy();
+
 const yahooFinanceFetcher: Fetcher = {
   async fetchAll(symbols: string[]): Promise<PriceDataFetched[]> {
     // Fetching prices from Yahoo Finance
-    const quotes: any = await new Promise((resolve, reject) => {
-      yahooFinance.quote({
-        symbols,
-        modules: ["price"],
-      }, (err: any, quotes: any) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(quotes);
-      });
-    });
+    const quotes: any = await yahooFinanceProxy.getExchangeRates(symbols);
 
     // Building prices
     const prices: PriceDataFetched[] = [];

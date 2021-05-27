@@ -253,7 +253,6 @@
       "source": [
         "binance",
         "kraken",
-        "kyber",
         "sushiswap",
         "uniswap"
       ]
@@ -611,8 +610,7 @@
     "YFII": {
       "source": [
         "binance",
-        "ftx",
-        "sushiswap"
+        "ftx"
       ]
     },
     "DIA": {
@@ -794,8 +792,7 @@
     },
     "BTMX": {
       "source": [
-        "coingecko",
-        "ftx"
+        "coingecko"
       ]
     },
     "UBT": {
@@ -812,7 +809,6 @@
     },
     "BASE": {
       "source": [
-        "sushiswap",
         "uniswap"
       ]
     },

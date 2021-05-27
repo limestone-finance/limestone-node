@@ -1,19 +1,16 @@
 import axios from "axios";
 import {Credentials} from "../../src/types";
 import fetchers from "../../src/fetchers/index"
-import * as fs from "fs";
+import {mockFetcherResponse} from "./_helpers";
 
 jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe("balancer fetcher", () => {
   const sut = fetchers["balancer"];
-  const response = fs.readFileSync("./src/fetchers/balancer/example-covalent-response.json", "utf-8");
-  const exampleResponse = JSON.parse(response);
 
   beforeEach(() => {
-    mockedAxios.get.mockResolvedValue({data: exampleResponse});
-  });
+    mockFetcherResponse("../../src/fetchers/balancer/example-response.json");
+  })
 
   it('should throw if no covalent api key passed in options', async () => {
     await expect(sut.fetchAll([])).rejects.toThrowError();

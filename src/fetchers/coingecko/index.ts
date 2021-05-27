@@ -1,32 +1,19 @@
 import { Consola } from "consola";
 import { PriceDataFetched, Fetcher } from "../../types";
-
-const CoinGecko = require("coingecko-api") as any;
+import CoingeckoProxy from "./CoingeckoProxy";
 const logger =
   require("../../utils/logger")("fetchers/coingecko") as Consola;
 const symbolToId: { [symbol: string]: string } =
   require("./coingecko-symbol-to-id.json") as any;
 
-const coinGeckoClient = new CoinGecko();
+const coingeckoProxy = new CoingeckoProxy();
 
 const coingeckoFetcher: Fetcher = {
   async fetchAll(tokenSymbols: string[]): Promise<PriceDataFetched[]> {
-    // Converting array of symbols to array of ids
-    const ids = [];
-    const idToSymbol: { [id: string]: string } = {};
-    for (const symbol of tokenSymbols) {
-      const id = symbolToId[symbol];
-      if (id !== undefined) {
-        ids.push(symbolToId[symbol]);
-        idToSymbol[id] = symbol;
-      } else {
-        logger.warn(
-          `Token is not supported with coingecko source: ${symbol}`);
-      }
-    }
+    const idToSymbol: { [id: string]: string } = idsToSymbols(tokenSymbols);
 
     // Fetching prices data
-    const response = await coinGeckoClient.simple.price({ ids });
+    const response = await coingeckoProxy.getExchangeRates(Object.keys(idToSymbol));
 
     // Building prices array
     const prices = [];
@@ -40,5 +27,20 @@ const coingeckoFetcher: Fetcher = {
     return prices;
   },
 };
+
+function idsToSymbols(tokenSymbols: string[]): { [id: string]: string } {
+  const idToSymbol: { [id: string]: string } = {};
+  for (const symbol of tokenSymbols) {
+    const id = symbolToId[symbol];
+    if (id !== undefined) {
+      idToSymbol[id] = symbol;
+    } else {
+      logger.warn(
+        `Token is not supported with coingecko source: ${symbol}`);
+    }
+  }
+
+  return idToSymbol;
+}
 
 export default coingeckoFetcher;

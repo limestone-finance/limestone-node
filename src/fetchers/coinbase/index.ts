@@ -1,30 +1,17 @@
-import Coinbase from "coinbase";
-import { Consola } from "consola";
-import { PriceDataFetched, Fetcher } from "../../types";
+import {Consola} from "consola";
+import {Fetcher, PriceDataFetched} from "../../types";
+import CoinbaseProxy from "./CoinbaseProxy";
 
 const logger =
   require("../../utils/logger")("fetchers/coinbase") as Consola;
 
-const coinbaseClient = new Coinbase.Client({
-  "apiKey": "KEY",
-  "apiSecret": "SECRET",
-  "strictSSL": false,
-} as any);
+const coinbaseProxy = new CoinbaseProxy();
 
 const coinbaseFetcher: Fetcher = {
   async fetchAll(tokenSymbols: string[]): Promise<PriceDataFetched[]> {
     // Fetching prices
-    const currencies: any = await new Promise((resolve, reject) => {
-      coinbaseClient.getExchangeRates({
-        "currency": "USD",
-      }, (err, response) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(response.data);
-        }
-      });
-    });
+    const exchangeRates = await coinbaseProxy.getExchangeRates();
+    const currencies: any = exchangeRates.data;
 
     // Building prices array
     const prices = [];

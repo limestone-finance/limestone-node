@@ -6,30 +6,33 @@ jest.mock('axios');
 
 mockLimestoneApiPrice(1.002);
 
-describe("binance fetcher", () => {
-  const sut = fetchers["binance"];
+describe("huobi fetcher", () => {
+  const sut = fetchers["huobi"];
 
   beforeEach(() => {
-    mockFetcherResponse("../../src/fetchers/binance/example-response.json");
+    mockFetcherResponse("../../src/fetchers/huobi/example-response.json");
   });
-
 
   it('should properly fetch data', async () => {
     //given
 
     //when
-    const result = await sut.fetchAll(["BAL", "USDC", "WETH"]);
+    const result = await sut.fetchAll(["BTC", "ETH", "AR"]);
 
     //then
     expect(result).toEqual([
       {
-        "symbol": "BAL",
-        "value": 31.821516,
+        "symbol": "BTC",
+        "value": 39941.31318
       },
       {
-        "symbol": "USDC",
-        "value": 1.0002966,
+        "symbol": "ETH",
+        "value": 2835.79026
       },
+      {
+        "symbol": "AR",
+        "value": 16.444323
+      }
     ]);
 
   });

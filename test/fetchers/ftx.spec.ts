@@ -4,11 +4,11 @@ import {mockFetcherResponse} from "./_helpers";
 
 jest.mock('axios');
 
-describe("bitfinex fetcher", () => {
-  const sut = fetchers["bitfinex"];
+describe("ftx fetcher", () => {
+  const sut = fetchers["ftx"];
 
   beforeEach(() => {
-    mockFetcherResponse("../../src/fetchers/bitfinex/example-response.json");
+    mockFetcherResponse("../../src/fetchers/ftx/example-response.json");
   });
 
   it('should properly fetch data', async () => {
@@ -18,16 +18,19 @@ describe("bitfinex fetcher", () => {
     const result = await sut.fetchAll(["USDT", "ETH", "DOGE", "UST"]);
 
     //then
-    // TODO: no value for DOGE and USDT?
     expect(result).toEqual([
-      {
-        "symbol": "ETH",
-        "value": 2615.68658095,
-      },
-      {
-        "symbol": "UST",
-        "value": 1.0012,
-      },
+        {
+          "symbol": "USDT",
+          "value": 1.0012
+        },
+        {
+          "symbol": "ETH",
+          "value": 2806.5
+        },
+        {
+          "symbol": "DOGE",
+          "value": 0.3450825
+        }
     ]);
 
   });

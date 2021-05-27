@@ -9,7 +9,7 @@ const logger =
 const symbolToUsdtPairId: { [symbol: string]: string } =
   require("./huobi-symbol-to-usdt-pair-id.json") as any;
 
-const URL = "https://api.huobi.pro/market/detail";
+const URL = "https://api.huobi.pro/market/tickers";
 
 const huobiFetcher: Fetcher = {
   async fetchAll(tokenSymbols: string[]): Promise<PriceDataFetched[]> {
@@ -19,54 +19,36 @@ const huobiFetcher: Fetcher = {
     const usdtPrice = await getUsdtPriceInUSD();
     trackEnd("huobi-fetcher-usdt-price-fetching");
 
+    const response: any = await axios.get(URL);
+    if (response.data === undefined) {
+      throw new Error(
+        "Response data is undefined: " + JSON.stringify(response));
+    }
+
+    const huobiPrices: {[symbol: string]: number} = {};
+    for (const huobiPrice of response.data.data) {
+      huobiPrices[huobiPrice.symbol] = huobiPrice.close;
+    }
+
     // Fetching prices asynchronously
-    const promises: Promise<void>[] = [];
     for (const symbol of tokenSymbols) {
       const usdtPairId = symbolToUsdtPairId[symbol];
-      if (usdtPairId !== undefined) {
-        promises.push((async () => {
-          // Fetching price for current symbol in USDT
-          const fetchingLabel =
-            `huobi-fetcher-${symbol.toLowerCase()}-fetching`;
-          trackStart(fetchingLabel);
-          const response = await axios.get(URL, {
-            params: {
-              symbol: usdtPairId,
-            },
-          });
-          trackEnd(fetchingLabel);
+      if (usdtPairId !== undefined && huobiPrices[usdtPairId] !== undefined) {
+        prices.push({
+          symbol,
+          value: huobiPrices[usdtPairId] * usdtPrice,
+        });
 
-          if (response.data === undefined) {
-            throw new Error(
-              "Response data is undefined: " + JSON.stringify(response));
-          }
-
-          const priceInUSDT = response.data.tick.close;
-
-          // Calculating price for current symbol in USD
-          const priceInUSD = usdtPrice * priceInUSDT;
-
-          // Saving result
-          prices.push({
-            symbol,
-            value: priceInUSD,
-          });
-
-        })());
       } else {
         logger.warn(
           `Token is not supported with huobi source: ${symbol}`);
       }
     }
 
-    // Waiting for all fetches completion
-    await Promise.all(promises);
-
     return prices;
   }
 };
 
-// Fetching from Limestone API
 async function getUsdtPriceInUSD(): Promise<number> {
   const usdtPriceInUSD = await LimestoneApi.getPrice("USDT");
   if (usdtPriceInUSD === undefined) {

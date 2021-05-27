@@ -5,7 +5,7 @@ import aggregators from "./aggregators";
 import broadcaster from "./broadcasters/lambda-broadcaster";
 import ArweaveProxy from "./arweave/ArweaveProxy";
 import {trackEnd, trackStart} from "./utils/performance-tracker";
-import {Manifest, NodeConfig, PriceDataAfterAggregation, PriceDataSigned,} from "./types";
+import {Manifest, NodeConfig, PriceDataAfterAggregation, PriceDataSigned} from "./types";
 import mode from "../mode";
 import ManifestHelper, {TokensBySource} from "./manifest/ManifestParser";
 import ArweaveService from "./arweave/ArweaveService";
