@@ -77,8 +77,12 @@ export default class ArweaveProxy  {
   }
 
   async postTransaction(tx: Transaction): Promise<void> {
-    const response = await this.arweave.transactions.post(tx);
-    logger.info("Tx response: ", response);
+    const uploader = await this.arweave.transactions.getUploader(tx);
+
+    while (!uploader.isComplete) {
+      await uploader.uploadChunk();
+      logger.info(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`);
+    }
   }
 
 };
