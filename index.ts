@@ -13,7 +13,7 @@ async function start() {
   } catch (e) {
     logger.error(e.stack);
     logger.info(
-      "USAGE: yarn start --config <PATH_TO_CONFIG_FILE>");
+      "USAGE: yarn start:prod --config <PATH_TO_CONFIG_FILE>");
   };
 }
 
