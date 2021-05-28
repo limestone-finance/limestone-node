@@ -160,6 +160,7 @@ export default class NodeRunner {
     try {
       trackStart("broadcasting");
       await broadcaster.broadcast(signedPrices);
+      logger.info("Broadcasting completed");
     } catch (e) {
       if (e.response !== undefined) {
         logger.error("Broadcasting failed: " + e.response.data, e.stack);
@@ -168,7 +169,6 @@ export default class NodeRunner {
       }
     } finally {
       trackEnd("broadcasting");
-      logger.info("Broadcasting completed");
     }
   }
 
