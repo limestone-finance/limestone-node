@@ -16,4 +16,4 @@ ENV MODE=PROD
 ENV ENABLE_JSON_LOGS=true
 
 # Running redstone node
-CMD yarn start --config ./secrets/config-redstone-rapid.json
+CMD yarn start --config ./.secrets/config-redstone-rapid.json
