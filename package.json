@@ -4,7 +4,7 @@
   "description": "A data provider module that fetches price information and serves it to end users. ",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf dist && tsc",
     "start:prod": "node dist/index.js",
     "start:prod:old": "ts-node index.ts",
     "start:dev": "MODE=LOCAL ts-node index.ts",
