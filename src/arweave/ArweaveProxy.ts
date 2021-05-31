@@ -3,8 +3,9 @@ import Transaction from "arweave/node/lib/transaction";
 import { JWKInterface } from "arweave/node/lib/wallet";
 import { Consola } from "consola";
 import util from "util";
-import { gzip } from "zlib";
+import {gunzip, gzip} from "zlib";
 import _  from "lodash";
+import {TransactionStatusResponse} from "arweave/node/transactions";
 
 const logger =
   require("../utils/logger")("utils/arweave-proxy") as Consola;
@@ -52,7 +53,7 @@ export default class ArweaveProxy  {
 
     // Compressing
     const gzipPromisified = util.promisify(gzip);
-    const gzippedData = await gzipPromisified(stringifiedData);
+    const gzippedData: Buffer = await gzipPromisified(stringifiedData);
 
     // Transaction creation
     const uploadTx = await this.arweave.createTransaction({
@@ -62,13 +63,6 @@ export default class ArweaveProxy  {
     _.keys(tags).forEach((key) => {
       uploadTx.addTag(key, tags[key]);
     });
-
-    // This is an experiment
-    // We want to measure transaction confirmation delay
-    // For smaller gas costs
-    // [UPDATE] looks like any transaction with smaller than default reward
-    // is not accepted by arweave :(
-    // uploadTx.reward = String(Math.round(Number(uploadTx.reward) * 0.5));
 
     // Transaction id is generated during signing
     await this.arweave.transactions.sign(uploadTx, this.jwk);
@@ -83,6 +77,20 @@ export default class ArweaveProxy  {
       await uploader.uploadChunk();
       logger.info(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`);
     }
+  }
+
+  async getDataString(idTransaction: string): Promise<string> {
+    const data = await this.arweave.transactions.getData(idTransaction, {
+      decode: true
+    }) as Uint8Array;
+    const gunzipPromisified = util.promisify(gunzip);
+    const unzippedData: Buffer = await gunzipPromisified(data);
+
+    return unzippedData.toString("utf8");
+  }
+
+  async transactionStatus(idTransaction: string): Promise<TransactionStatusResponse> {
+    return this.arweave.transactions.getStatus(idTransaction);
   }
 
 };

@@ -1,6 +1,6 @@
 {
   "arweaveKeysFile": "./.secrets/arweave.json",
-  "manifestFile": "./sample-manifests/stocks.json",
+  "manifestFile": "vlXsPzba_GWKFBQIoUPZVO8-pB-s0VJhqWqF4TA_YXw",
   "minimumArBalance": 0.1,
   "credentials": {
     "covalentApiKey": "XXX",

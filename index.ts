@@ -1,8 +1,9 @@
 import fs from "fs";
 import yargs from "yargs";
 import {Consola} from "consola"
+import {Manifest, NodeConfig} from "./src/types";
+import ManifestService from "./src/manifest/ManifestService";
 import NodeRunner from "./src/NodeRunner";
-import {NodeConfig} from "./src/types";
 
 const logger = require("./src/utils/logger")("index") as Consola;
 const { hideBin } = require("yargs/helpers") as any;
@@ -20,6 +21,26 @@ async function start() {
 async function main(): Promise<void> {
   // Reading cli arguments
   const argv = yargs(hideBin(process.argv)).argv;
+
+  const manifestPath = argv.manifest as string;
+  if (manifestPath !== undefined) {
+    if (manifestPath.length == 0) {
+      throw new Error("Manifest path not defined");
+    }
+    const jwkPath = argv.jwk as string;
+    const jwk = readJSON(jwkPath);
+
+    const manifest: Manifest = readJSON(manifestPath);
+    const manifestService: ManifestService = new ManifestService(jwk);
+
+    await manifestService.updateManifest(manifest);
+
+  } else {
+    await doRunNode(argv);
+  }
+}
+
+async function doRunNode(argv: any) {
   const configFilePath = argv.config as string;
 
   // Validating cli arguments
@@ -30,7 +51,11 @@ async function main(): Promise<void> {
   //TODO: validate config files and manifest files - use json schema? https://2ality.com/2020/06/validating-data-typescript.html
   const config: NodeConfig = readJSON(configFilePath);
   const jwk = readJSON(config.arweaveKeysFile);
-  const manifest = readJSON(config.manifestFile);
+  const manifestService = new ManifestService(jwk);
+
+  logger.info(`Reading manifest with id ${config.manifestFile} from Arweave`);
+
+  const manifest = await manifestService.getCurrentManifest(config.manifestFile);
 
   // Running limestone-node with manifest
   const runner = await NodeRunner.create(
