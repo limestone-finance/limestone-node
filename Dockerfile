@@ -11,9 +11,12 @@ RUN yarn
 # Copying all files
 COPY . .
 
+# Building app
+RUN yarn build
+
 # Setting production env variables
 ENV MODE=PROD
 ENV ENABLE_JSON_LOGS=true
 
-# Running limestone node
-CMD yarn start --config ./.secrets/config-limestone.json
+# Running redstone node
+CMD yarn start:prod --config ./.secrets/config-redstone.json

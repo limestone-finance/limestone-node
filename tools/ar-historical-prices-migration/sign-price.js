@@ -1,6 +1,6 @@
 const Arweave = require("arweave/node");
 const deepSortObject = require("deep-sort-object");
-const jwk = require("../../.secrets/limestone-jwk.json");
+const jwk = require("../../.secrets/redstone-jwk.json");
 
 module.exports = async (price) => {
   const priceWithSortedProps = deepSortObject(price);

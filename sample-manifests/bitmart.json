@@ -4,6 +4,8 @@
   "defaultSource": [
     "bitmart"
   ],
+  "sourceTimeout": 50000,
+  "maxPriceDeviationPercent": 25,
   "tokens": {
     "AR": {}
   }

@@ -2,7 +2,7 @@ const _ = require("lodash");
 const allSupportedConfig =
   require("../../sample-manifests/all-supported-tokens.json");
 const coingeckoTokens =
-  require("../../fetchers/coingecko/coingecko-symbol-to-details.json");
+  require("../../src/fetchers/coingecko/coingecko-symbol-to-details.json");
 
 const hardcodedNames = {
   SOL: "Solana",

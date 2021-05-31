@@ -2,7 +2,7 @@ const _ = require("lodash");
 const allTokensConfig =
   require("../../sample-manifests/all-supported-tokens.json");
 const ftxSupportedTokens =
-  require("../../fetchers/ftx/fts-supported-tokens.json");
+  require("../../src/fetchers/ftx/fts-supported-tokens.json");
 
 const symbolsToSkip = [
   // "FTT",

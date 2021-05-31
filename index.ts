@@ -1,11 +1,10 @@
 import fs from "fs";
 import yargs from "yargs";
-import { JWKInterface } from "arweave/node/lib/wallet";
-import { Consola } from "consola"
-import { Manifest } from "./types";
-import Runner from "./runner";
+import {Consola} from "consola"
+import NodeRunner from "./src/NodeRunner";
+import {NodeConfig} from "./src/types";
 
-const logger = require("./utils/logger")("index") as Consola;
+const logger = require("./src/utils/logger")("index") as Consola;
 const { hideBin } = require("yargs/helpers") as any;
 
 async function start() {
@@ -14,7 +13,7 @@ async function start() {
   } catch (e) {
     logger.error(e.stack);
     logger.info(
-      "USAGE: yarn start --config <PATH_TO_CONFIG_FILE>");
+      "USAGE: yarn start:prod --config <PATH_TO_CONFIG_FILE>");
   };
 }
 
@@ -28,17 +27,18 @@ async function main(): Promise<void> {
     throw new Error("Path to the config file cannot be empty");
   }
 
-  const config = readJSON(configFilePath);
+  //TODO: validate config files and manifest files - use json schema? https://2ality.com/2020/06/validating-data-typescript.html
+  const config: NodeConfig = readJSON(configFilePath);
   const jwk = readJSON(config.arweaveKeysFile);
   const manifest = readJSON(config.manifestFile);
 
   // Running limestone-node with manifest
-  const runner = await Runner.init({
+  const runner = await NodeRunner.create(
     manifest,
     jwk,
-    credentials: config.credentials,
-  });
-  runner.run();
+    config
+  );
+  await runner.run();
 }
 
 function readJSON(path: string): any {

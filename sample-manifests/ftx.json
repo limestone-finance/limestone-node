@@ -4,6 +4,8 @@
   "defaultSource": [
     "ftx"
   ],
+  "sourceTimeout": 50000,
+  "maxPriceDeviationPercent": 25,
   "tokens": {
     "SNX": {},
     "BAT": {},
@@ -56,7 +58,6 @@
     "OKB": {},
     "CRO": {},
     "HT": {},
-    "FTT": {},
-    "BTMX": {}
+    "FTT": {}
   }
 }

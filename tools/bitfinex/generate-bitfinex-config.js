@@ -2,7 +2,7 @@ const _ = require("lodash");
 const allTokensConfig =
   require("../../sample-manifests/all-supported-tokens.json");
 const bitfinexSupportedTokens =
-  require("../../fetchers/bitfinex/bitfinex-supported-tokens.json");
+  require("../../src/fetchers/bitfinex/bitfinex-supported-tokens.json");
 
 const symbolsToSkip = [
   "AMP",

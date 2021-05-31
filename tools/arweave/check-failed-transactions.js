@@ -6,7 +6,7 @@ const SKIP = 5;
 const LIMIT = 24 * 60;
 
 const arweave = Arweave.init({
-  host: "arweave.net", // Hostname or IP address for a Arweave host
+  host: "arweave.dev", // Hostname or IP address for a Arweave host
   port: 443,           // Port
   protocol: "https",   // Network protocol http or https
   timeout: 60000,      // Network request timeouts in milliseconds
@@ -40,10 +40,10 @@ async function checkTxStatus(txId) {
 }
 
 async function loadLastTxIds(limit) {
-  const response = await axios.get("https://api.limestone.finance/b2/prices", {
+  const response = await axios.get("https://api.redstone.finance/prices", {
     params: {
       symbol: "AR",
-      provider: "limestone",
+      provider: "redstone",
       limit,
     },
   });

@@ -4,14 +4,14 @@
   "defaultSource": [
     "sushiswap"
   ],
+  "sourceTimeout": 50000,
+  "maxPriceDeviationPercent": 25,
   "tokens": {
     "UMA": {},
-    "BASE": {},
     "YAM": {},
     "STAKE": {},
     "API3": {},
     "YFI": {},
-    "wNXM": {},
     "BAT": {},
     "DAO": {},
     "1INCH": {},
@@ -41,7 +41,6 @@
     "MKR": {},
     "FARM": {},
     "USDC": {},
-    "YFII": {},
     "MTA": {},
     "UST": {},
     "SFI": {},

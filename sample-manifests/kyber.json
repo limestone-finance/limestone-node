@@ -4,6 +4,8 @@
   "defaultSource": [
     "kyber"
   ],
+  "sourceTimeout": 50000,
+  "maxPriceDeviationPercent": 25,
   "tokens": {
     "YFV": {},
     "SUSHI": {},
@@ -11,7 +13,6 @@
     "1INCH": {},
     "BZRX": {},
     "USDT": {},
-    "OCEAN": {},
     "UBT": {},
     "QNT": {},
     "SWRV": {},
