@@ -1,6 +1,6 @@
 import * as exchangeRates from "ecb-euro-exchange-rates";
 import { Consola } from "consola";
-import { PriceDataFetched, Fetcher } from "../../types";
+import { PriceDataFetched, Fetcher } from "types";
 
 const logger =
   require("../../utils/logger")("fetchers/ecb") as Consola;

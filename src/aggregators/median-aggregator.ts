@@ -1,6 +1,5 @@
 import {Consola} from "consola";
-import {Aggregator, Manifest, PriceDataAfterAggregation, PriceDataBeforeAggregation,} from "../types";
-import ManifestHelper from "../manifest/ManifestParser";
+import {Aggregator, PriceDataAfterAggregation, PriceDataBeforeAggregation,} from "types";
 
 const logger =
   require("../utils/logger")("aggregators/median-aggregator") as Consola;

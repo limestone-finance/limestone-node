@@ -9,10 +9,10 @@ import {
   PriceDataAfterAggregation,
   PriceDataBeforeAggregation,
   PriceDataFetched
-} from "../types";
-import {trackEnd, trackStart} from "../utils/performance-tracker";
+} from "types";
+import {trackEnd, trackStart} from "utils/performance-tracker";
 import {v4 as uuidv4} from 'uuid'
-import ManifestConfigError from "../manifest/ManifestConfigError";
+import ManifestConfigError from "manifest/ManifestConfigError";
 
 const logger = require("../utils/logger")("PricesFetcher") as Consola;
 

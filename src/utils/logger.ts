@@ -1,5 +1,5 @@
-import consola from "consola";
-import { ConsolaErrorReporter } from "./error-reporter";
+import consola, {LogLevel} from "consola";
+import {ConsolaErrorReporter} from "./error-reporter";
 
 module.exports = (moduleName: string) => {
 
@@ -14,6 +14,7 @@ module.exports = (moduleName: string) => {
     // Here we can pass additional options for logger configuration
 
     // level: 4
+    level: LogLevel.Debug,
     reporters: [
       mainReporter,
       new ConsolaErrorReporter(),

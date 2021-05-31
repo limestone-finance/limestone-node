@@ -1,5 +1,5 @@
-import lambda from "./lambda-broadcaster";
-import { Broadcaster } from "../types";
+import lambda from "broadcasters/lambda-broadcaster";
+import {Broadcaster} from "types";
 
 export default {
   lambda,

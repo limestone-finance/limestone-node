@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ConsolaLogObject } from "consola";
 import { v4 as uuidv4 } from 'uuid'
-import mode from "../../mode";
+import mode from "mode";
 
 // We don't use logger here, because logger uses this module
 const URL = "https://api.redstone.finance/errors";

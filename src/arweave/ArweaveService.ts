@@ -1,8 +1,8 @@
 import {Consola} from "consola";
 import {ArweaveTransactionTags, PriceDataAfterAggregation, PriceDataBeforeSigning, PriceDataSigned} from "../types";
-import ArweaveProxy from "./ArweaveProxy";
-import {trackEnd, trackStart} from "../utils/performance-tracker";
 import Transaction from "arweave/node/lib/transaction";
+import {trackEnd, trackStart} from "utils/performance-tracker";
+import ArweaveProxy from "arweave/ArweaveProxy";
 
 const logger = require("../utils/logger")("ArweaveService") as Consola;
 const deepSortObject = require("deep-sort-object");

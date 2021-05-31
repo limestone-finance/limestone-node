@@ -1,12 +1,13 @@
-import ArweaveProxy from "../arweave/ArweaveProxy";
-import {ArweaveTransactionTags, Manifest} from "../types";
+import ArweaveProxy from "arweave/ArweaveProxy";
+import {ArweaveTransactionTags, Manifest} from "types";
 import {Consola} from "consola";
 import {JWKInterface} from "arweave/node/lib/wallet";
-import {trackEnd, trackStart} from "../utils/performance-tracker";
+import {trackEnd, trackStart} from "utils/performance-tracker";
+import ManifestLoader from "./ManifestLoader";
 
-const logger = require("../utils/logger")("ManifestService") as Consola;
+const logger = require("../utils/logger")("ArweaveManifestLoader") as Consola;
 
-export default class ManifestService {
+export default class ArweaveManifestLoader implements ManifestLoader {
   private arweaveProxy: ArweaveProxy;
 
   constructor(private jwk: JWKInterface) {
@@ -14,8 +15,8 @@ export default class ManifestService {
     this.waitForConfirmation = this.waitForConfirmation.bind(this);
   }
 
-  async updateManifest(manifest: Manifest) {
-    logger.info("Updating manifest");
+  async storeManifest(manifest: Manifest) {
+    logger.info("Saving manifest");
 
     const tags: ArweaveTransactionTags = {
       app: "Redstone",
@@ -35,6 +36,14 @@ export default class ManifestService {
     await this.waitForConfirmation(transaction.id);
   }
 
+  async loadManifest(idTransaction: string): Promise<Manifest> {
+    trackStart("reading-manifest");
+    const dataString = await this.arweaveProxy.getDataString(idTransaction);
+    trackEnd("reading-manifest");
+
+    return JSON.parse(dataString);
+  }
+
   private async waitForConfirmation(idTransaction: string) {
     const status = await this.arweaveProxy.transactionStatus(idTransaction);
 
@@ -52,11 +61,4 @@ export default class ManifestService {
     }
   }
 
-  async getCurrentManifest(idTransaction: string): Promise<Manifest> {
-    trackStart("reading-manifest");
-    const dataString = await this.arweaveProxy.getDataString(idTransaction);
-    trackEnd("reading-manifest");
-
-    return JSON.parse(dataString);
-  }
 }

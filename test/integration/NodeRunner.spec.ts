@@ -4,7 +4,7 @@ import {JWKInterface} from "arweave/node/lib/wallet";
 import {mocked} from "ts-jest/utils";
 import ArweaveProxy from "../../src/arweave/ArweaveProxy";
 import fetchers from "../../src/fetchers";
-import mode from "../../mode";
+import mode from "../../src/mode";
 import axios from "axios";
 import anything = jasmine.anything;
 

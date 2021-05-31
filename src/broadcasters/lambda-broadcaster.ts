@@ -1,6 +1,6 @@
 import axios from "axios";
-import mode from "../../mode";
-import { PriceDataSigned, Broadcaster } from "../types";
+import {Broadcaster, PriceDataSigned} from "types";
+import mode from "mode";
 
 // "lambda" as this is deployed on AWS Lambda
 const lambdaBroadcaster: Broadcaster = {

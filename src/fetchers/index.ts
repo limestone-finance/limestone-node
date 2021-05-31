@@ -1,4 +1,4 @@
-import { Fetcher } from "../types";
+import { Fetcher } from "types";
 import yahooFinance from "./yahoo-finance";
 import coingecko from "./coingecko";
 import sushiswap from "./sushiswap";

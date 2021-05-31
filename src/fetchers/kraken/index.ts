@@ -1,6 +1,6 @@
 import { Consola } from "consola";
 import axios, {AxiosResponse} from "axios";
-import { PriceDataFetched, Fetcher } from "../../types";
+import { PriceDataFetched, Fetcher } from "types";
 
 const logger =
   require("../../utils/logger")("fetchers/kraken") as Consola;

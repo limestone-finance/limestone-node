@@ -1,7 +1,7 @@
 import RedstoneApi from "redstone-api";
 import { Consola } from "consola";
 import axios from "axios";
-import { PriceDataFetched, Fetcher } from "../../types";
+import { PriceDataFetched, Fetcher } from "types";
 
 const logger =
   require("../../utils/logger")("fetchers/bitmart") as Consola;

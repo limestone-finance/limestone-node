@@ -1,9 +1,10 @@
 import fs from "fs";
 import yargs from "yargs";
 import {Consola} from "consola"
-import {Manifest, NodeConfig} from "./src/types";
-import ManifestService from "./src/manifest/ManifestService";
-import NodeRunner from "./src/NodeRunner";
+import {Manifest, NodeConfig} from "types";
+import NodeRunner from "NodeRunner";
+import ManifestLoader from "manifest/ManifestLoader";
+import ArweaveManifestLoader from "manifest/ArweaveManifestLoader";
 
 const logger = require("./src/utils/logger")("index") as Consola;
 const { hideBin } = require("yargs/helpers") as any;
@@ -21,6 +22,7 @@ async function start() {
 async function main(): Promise<void> {
   // Reading cli arguments
   const argv = yargs(hideBin(process.argv)).argv;
+  logger.debug("debug: ", argv);
 
   const manifestPath = argv.manifest as string;
   if (manifestPath !== undefined) {
@@ -31,9 +33,9 @@ async function main(): Promise<void> {
     const jwk = readJSON(jwkPath);
 
     const manifest: Manifest = readJSON(manifestPath);
-    const manifestService: ManifestService = new ManifestService(jwk);
+    const manifestLoader: ManifestLoader = new ArweaveManifestLoader(jwk);
 
-    await manifestService.updateManifest(manifest);
+    await manifestLoader.storeManifest(manifest);
 
   } else {
     await doRunNode(argv);
@@ -51,11 +53,11 @@ async function doRunNode(argv: any) {
   //TODO: validate config files and manifest files - use json schema? https://2ality.com/2020/06/validating-data-typescript.html
   const config: NodeConfig = readJSON(configFilePath);
   const jwk = readJSON(config.arweaveKeysFile);
-  const manifestService = new ManifestService(jwk);
+  const manifestLoader: ManifestLoader = new ArweaveManifestLoader(jwk);
 
   logger.info(`Reading manifest with id ${config.manifestFile} from Arweave`);
 
-  const manifest = await manifestService.getCurrentManifest(config.manifestFile);
+  const manifest = await manifestLoader.loadManifest(config.manifestFile);
 
   // Running limestone-node with manifest
   const runner = await NodeRunner.create(

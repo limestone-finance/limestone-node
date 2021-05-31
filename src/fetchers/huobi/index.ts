@@ -1,8 +1,8 @@
 import RedstoneApi from "redstone-api";
 import { Consola } from "consola";
 import axios from "axios";
-import { PriceDataFetched, Fetcher } from "../../types";
-import { trackStart, trackEnd } from "../../utils/performance-tracker";
+import { PriceDataFetched, Fetcher } from "types";
+import { trackStart, trackEnd } from "utils/performance-tracker";
 
 const logger =
   require("../../utils/logger")("fetchers/huobi") as Consola;

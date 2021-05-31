@@ -1,7 +1,7 @@
 import Redstone from "redstone-api";
 import { Consola } from "consola";
 import axios from "axios";
-import { PriceDataFetched, Fetcher } from "../../types";
+import { PriceDataFetched, Fetcher } from "types";
 import {PriceData} from "redstone-api/lib/types";
 
 const logger =

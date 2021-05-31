@@ -1,5 +1,5 @@
 import { Consola } from "consola";
-import { PriceDataFetched, Fetcher } from "../../types";
+import { PriceDataFetched, Fetcher } from "types";
 import CoingeckoProxy from "./CoingeckoProxy";
 const logger =
   require("../../utils/logger")("fetchers/coingecko") as Consola;

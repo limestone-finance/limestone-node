@@ -1,5 +1,5 @@
 import axios, {AxiosResponse} from "axios";
-import {PriceDataFetched, Fetcher, Credentials} from "../../types";
+import {PriceDataFetched, Fetcher, Credentials} from "types";
 
 const URL = "https://api.covalenthq.com/v1/1/address/balancer.eth/stacks/balancer/balances/";
 

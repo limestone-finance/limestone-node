@@ -1,5 +1,5 @@
 import {Consola} from "consola";
-import {Fetcher, PriceDataFetched} from "../../types";
+import {Fetcher, PriceDataFetched} from "types";
 import CoinbaseProxy from "./CoinbaseProxy";
 
 const logger =

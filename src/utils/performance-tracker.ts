@@ -1,7 +1,7 @@
 import { performance } from "perf_hooks";
 import axios from "axios";
 import { Consola } from "consola";
-import mode from "../../mode";
+import mode from "mode";
 
 const logger = require("./logger")("utils/performance-tracker") as Consola;
 const URL = "https://api.redstone.finance/metrics";

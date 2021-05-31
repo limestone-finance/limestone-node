@@ -6,7 +6,17 @@
     "outDir": "./dist",
     "module": "commonjs",
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": "src",
+    "paths": {
+      "utils/*": ["utils/*"],
+      "arweave/*": ["arweave/*"],
+      "types": ["types"],
+      "mode": ["mode"],
+      "manifest": ["manifest"],
+      "aggregators": ["aggregators"],
+      "broadcasters": ["broadcasters"]
+    }
   },
   "ts-node": {
     "files": true
